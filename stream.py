@@ -28,7 +28,7 @@ if st.session_state['acesso_permitido']:
     
     class EmpresaAnalysis:
         def __init__(self):
-            self.df_mkt = pd.read_csv(excel_file_path)
+            self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
             self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
                             "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
                             "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
@@ -58,7 +58,7 @@ if st.session_state['acesso_permitido']:
             ]
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
-            ax.set_title(f"Variável {variavel} para {empresa} de {data_de} até {data_ate}")
+            ax.set_title(f"Variável {variavel} para {empresa} de {data_de.strftime('%Y-%m-%d')} até {data_ate.strftime('%Y-%m-%d')}")
             ax.set_xlabel("Data")
             ax.set_ylabel(variavel)
             ax.set_ylim([df_filtrado[variavel].min(), df_filtrado[variavel].max()])  # Ajusta o range do eixo Y
@@ -98,9 +98,19 @@ if st.session_state['acesso_permitido']:
             datas_disponiveis = np.sort(datas_disponiveis)
 
             with col4:
-                data_de = st.selectbox('De', datas_disponiveis[:-1])  # Remove a última data da lista
-                data_ate = st.selectbox('Até', datas_disponiveis[1:])  # Remove a primeira data da lista
+                # Aqui convertemos as datas para exibição em formato correto
+                datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%Y-%m-%d')
+
+                # Caixa de seleção "De" (remover a última data)
+                data_de = st.selectbox('De', datas_formatadas[:-1])  # Remover a última data da lista
+
+                # Caixa de seleção "Até" (remover a primeira data)
+                data_ate = st.selectbox('Até', datas_formatadas[1:])  # Remover a primeira data da lista
 
             # Só atualiza o gráfico quando todas as seleções estão preenchidas
             if ano_selecionado and data_de and data_ate:
+                # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
+                data_de = pd.to_datetime(data_de)
+                data_ate = pd.to_datetime(data_ate)
+
                 st.pyplot(analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate))
