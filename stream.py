@@ -57,33 +57,49 @@ if st.session_state['acesso_permitido']:
                 (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
             ]
             fig, ax = plt.subplots(figsize=(10, 6))
-            ax.plot(df_filtrado['DATA ATUALIZACAO'], df_filtrado[variavel], marker='o')
+            ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
             ax.set_title(f"Variável {variavel} para {empresa} de {data_de} até {data_ate}")
             ax.set_xlabel("Data")
             ax.set_ylabel(variavel)
+            ax.set_ylim([df_filtrado[variavel].min(), df_filtrado[variavel].max()])  # Ajusta o range do eixo Y
             ax.grid(True)
+            plt.xticks(rotation=45)  # Rotaciona os ticks de data
             return fig
     
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
     
-    # Dropdown para selecionar empresa (Ticker)
-    empresa_selecionada = st.selectbox('Ticker', analysis.empresas)
+    # Layout das seleções usando colunas para alinhamento
+    col1, col2 = st.columns(2)
+    
+    # Dropdown para selecionar empresa (Ticker) no lado esquerdo
+    with col1:
+        empresa_selecionada = st.selectbox('Ticker', analysis.empresas)
 
     if empresa_selecionada:
         # Filtrar variáveis disponíveis para a empresa selecionada
         variaveis_disponiveis = analysis.filtrar_variaveis(empresa_selecionada)
-        variavel_selecionada = st.selectbox('Variável analisada', variaveis_disponiveis)
+
+        # Caixa de seleção para variável analisada no lado direito
+        with col2:
+            variavel_selecionada = st.selectbox('Variável analisada', variaveis_disponiveis)
 
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
             anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
-            ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
+            col3, col4 = st.columns(2)
+
+            with col3:
+                ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
 
             # Filtrar datas disponíveis
             datas_disponiveis = analysis.filtrar_datas(empresa_selecionada, variavel_selecionada)
-            data_de = st.selectbox('De', datas_disponiveis[:-1])  # Remove a última data da lista
-            data_ate = st.selectbox('Até', datas_disponiveis[1:])  # Remove a primeira data da lista
+            # Ordenar as datas em ordem crescente
+            datas_disponiveis = np.sort(datas_disponiveis)
+
+            with col4:
+                data_de = st.selectbox('De', datas_disponiveis[:-1])  # Remove a última data da lista
+                data_ate = st.selectbox('Até', datas_disponiveis[1:])  # Remove a primeira data da lista
 
             # Só atualiza o gráfico quando todas as seleções estão preenchidas
             if ano_selecionado and data_de and data_ate:
