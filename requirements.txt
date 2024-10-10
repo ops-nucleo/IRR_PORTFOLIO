@@ -1,6 +1,6 @@
 streamlit==1.10.0
-pandas==1.5.0  # Use uma versão compatível com Python 3.12
-matplotlib==3.6.0  # Certifique-se de que esta versão seja compatível com o Python 3.12
+pandas==1.4.2
+matplotlib==3.5.1
 plotly==5.8.0
 openpyxl
-numpy==1.24.0  # Versão mais recente que é compatível com Python 3.12
+numpy==1.21.4  # Atualize o numpy para uma versão mais estável
