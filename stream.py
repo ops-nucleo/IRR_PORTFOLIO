@@ -12,7 +12,7 @@ st.markdown("""
     <style>
     div[data-baseweb="select"] > div {
         background-color: rgb(221, 235, 247);
-        padding: 10px;
+        padding: 5px;
         border-radius: 5px;
         margin-top: -20px;  /* Ajustar a margem para mover tudo para cima */
     }
