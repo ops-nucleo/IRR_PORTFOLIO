@@ -110,7 +110,7 @@ if st.session_state['acesso_permitido']:
             fig.autofmt_xdate()  # Rotaciona e ajusta as datas
 
             ax.grid(True)
-            return fig
+            return fig, df_filtrado  # Retornamos a df_filtrada para mostrar abaixo do gráfico
     
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
@@ -161,4 +161,11 @@ if st.session_state['acesso_permitido']:
                 data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
                 data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
 
-                st.pyplot(analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate))
+                # Gerar gráfico e obter DataFrame filtrado
+                fig, df_filtrado = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate)
+
+                # Exibir gráfico
+                st.pyplot(fig)
+
+                # Exibir DataFrame filtrado logo abaixo do gráfico
+                st.data
