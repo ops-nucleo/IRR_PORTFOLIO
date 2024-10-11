@@ -10,6 +10,21 @@ excel_file_path = 'base_empilhada_total.csv'
 
 st.markdown("""
     <style>
+    div[data-baseweb="select"] > div {
+        background-color: rgb(221, 235, 247);
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: -30px;  /* Ajustar a margem para mover tudo para cima */
+    }
+
+    label[data-testid="stMarkdownContainer"] {
+        margin-top: -30px;  /* Mover os títulos junto com as caixas */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
     div[data-testid="stSelectbox"] {
         background-color: rgb(221, 235, 247);
         padding: 5px;  /* Diminuir o padding para reduzir a altura */
