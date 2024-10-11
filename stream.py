@@ -110,7 +110,7 @@ if st.session_state['acesso_permitido']:
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
             anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
-            col3, col4 = st.columns(2)
+            col3, col4, col5 = st.columns([1, 1, 2])  # Definindo três colunas: Ano Ref na primeira e De/Até na segunda e terceira
 
             with col3:
                 ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
@@ -120,15 +120,17 @@ if st.session_state['acesso_permitido']:
             # Ordenar as datas em ordem crescente
             datas_disponiveis = np.sort(datas_disponiveis)
 
+            # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
             with col4:
                 # Aqui convertemos as datas para exibição em formato correto
                 datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%Y-%m-%d')
 
                 # Caixa de seleção "De" (remover a última data)
-                data_de = st.selectbox('De', datas_formatadas[:-1])  # Remover a última data da lista
+                data_de = st.selectbox('De', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
 
+            with col5:
                 # Caixa de seleção "Até" (remover a primeira data)
-                data_ate = st.selectbox('Até', datas_formatadas[1:])  # Remover a primeira data da lista
+                data_ate = st.selectbox('Até', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
 
             # Só atualiza o gráfico quando todas as seleções estão preenchidas
             if ano_selecionado and data_de and data_ate:
