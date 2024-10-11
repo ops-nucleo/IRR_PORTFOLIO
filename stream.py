@@ -7,11 +7,12 @@ import matplotlib.dates as mdates
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
 
+
 st.markdown("""
     <style>
-    div[data-testid="stSelectbox"] {
+    div[data-baseweb="select"] > div {
         background-color: rgb(221, 235, 247);
-        padding: 5px;  /* Diminuir o padding para reduzir a altura */
+        padding: 10px;
         border-radius: 5px;
         margin-top: -20px;  /* Ajustar a margem para mover tudo para cima */
     }
