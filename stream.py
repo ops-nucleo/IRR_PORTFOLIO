@@ -168,4 +168,4 @@ if st.session_state['acesso_permitido']:
                 st.pyplot(fig)
 
                 # Exibir DataFrame filtrado logo abaixo do gráfico
-                st.data
+                st.dataframe(df_filtrado)  
