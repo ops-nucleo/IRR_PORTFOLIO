@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates  # Para controlar o formato das datas no gráfico
+import matplotlib.dates as mdates
 
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
@@ -80,8 +80,21 @@ if st.session_state['acesso_permitido']:
                 (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
                 (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
             ]
+            
+            # Calculando os limites do eixo Y com base em 40% de folga
+            min_val = df_filtrado[variavel].min()
+            max_val = df_filtrado[variavel].max()
+            y_folga = 0.4 * (max_val - min_val)  # Folga de 40%
+
+            # Calculando os limites do eixo X (datas) com folga
+            data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
+            data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
+            x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
+
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
+
+            # Ajustar o título e labels
             ax.set_title(f"Variável {variavel} para {empresa} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}")
             ax.set_xlabel("Data")
             ax.set_ylabel(variavel)
@@ -89,9 +102,9 @@ if st.session_state['acesso_permitido']:
             # Definir o formato da data no eixo X
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))  # Formato dd/mm/aaaa
 
-            # Definir apenas as datas que estão no intervalo selecionado, sem valores intermediários
-            ax.set_xlim([data_de, data_ate])
-            ax.set_ylim([df_filtrado[variavel].min(), df_filtrado[variavel].max()])  # Ajusta o range do eixo Y
+            # Ajustar os limites dos eixos com as folgas calculadas
+            ax.set_xlim([data_inicio - x_folga, data_fim + x_folga])
+            ax.set_ylim([min_val - y_folga, max_val + y_folga])
 
             # Melhorar o espaçamento das datas
             fig.autofmt_xdate()  # Rotaciona e ajusta as datas
