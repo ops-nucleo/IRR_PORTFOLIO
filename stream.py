@@ -10,8 +10,8 @@ excel_file_path = 'base_empilhada_total.csv'
 # Adiciona o CSS customizado
 st.markdown("""
     <style>
-    div[data-testid="stSelectbox"] {
-        background-color: rgb(217, 217, 217);
+    div[data-baseweb="select"] > div {
+        background-color: rgb(221, 235, 247);
         padding: 10px;
         border-radius: 5px;
     }
