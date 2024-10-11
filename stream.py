@@ -25,6 +25,29 @@ if not st.session_state['acesso_permitido']:
         st.stop()  # Impede que o resto do aplicativo seja executado se nenhuma senha for inserida
 
 if st.session_state['acesso_permitido']:
+        # Definir o CSS para usar uma imagem de fundo
+    def set_background(logo_path):
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/png;base64,{logo_path}");
+                background-size: cover;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    
+    # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
+    import base64
+    def get_image_as_base64(path):
+        with open(path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode()
+    
+    # Caminho para o arquivo da logo
+    logo_path = 'nucleo.png'
+    set_background(get_image_as_base64(logo_path))
     
     class EmpresaAnalysis:
         def __init__(self):
