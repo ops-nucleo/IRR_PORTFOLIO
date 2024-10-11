@@ -11,7 +11,7 @@ excel_file_path = 'base_empilhada_total.csv'
 st.markdown("""
     <style>
     div[data-testid="stSelectbox"] {
-        background-color: rgb(221, 235, 247);
+        background-color: rgb(217, 217, 217);
         padding: 10px;
         border-radius: 5px;
     }
