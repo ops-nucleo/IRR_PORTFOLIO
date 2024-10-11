@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates  # Para controlar o formato das datas no gráfico
 
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
@@ -25,7 +26,7 @@ if not st.session_state['acesso_permitido']:
         st.stop()  # Impede que o resto do aplicativo seja executado se nenhuma senha for inserida
 
 if st.session_state['acesso_permitido']:
-        # Definir o CSS para usar uma imagem de fundo
+    # Definir o CSS para usar uma imagem de fundo
     def set_background(logo_path):
         st.markdown(
             f"""
@@ -81,12 +82,21 @@ if st.session_state['acesso_permitido']:
             ]
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
-            ax.set_title(f"Variável {variavel} para {empresa} de {data_de.strftime('%Y-%m-%d')} até {data_ate.strftime('%Y-%m-%d')}")
+            ax.set_title(f"Variável {variavel} para {empresa} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}")
             ax.set_xlabel("Data")
             ax.set_ylabel(variavel)
+
+            # Definir o formato da data no eixo X
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))  # Formato dd/mm/aaaa
+
+            # Definir apenas as datas que estão no intervalo selecionado, sem valores intermediários
+            ax.set_xlim([data_de, data_ate])
             ax.set_ylim([df_filtrado[variavel].min(), df_filtrado[variavel].max()])  # Ajusta o range do eixo Y
+
+            # Melhorar o espaçamento das datas
+            fig.autofmt_xdate()  # Rotaciona e ajusta as datas
+
             ax.grid(True)
-            plt.xticks(rotation=45)  # Rotaciona os ticks de data
             return fig
     
     # Instancia a classe de análise
@@ -123,7 +133,7 @@ if st.session_state['acesso_permitido']:
             # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
             with col4:
                 # Aqui convertemos as datas para exibição em formato correto
-                datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%Y-%m-%d')
+                datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
 
                 # Caixa de seleção "De" (remover a última data)
                 data_de = st.selectbox('De', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
@@ -135,7 +145,7 @@ if st.session_state['acesso_permitido']:
             # Só atualiza o gráfico quando todas as seleções estão preenchidas
             if ano_selecionado and data_de and data_ate:
                 # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
-                data_de = pd.to_datetime(data_de)
-                data_ate = pd.to_datetime(data_ate)
+                data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
+                data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
 
                 st.pyplot(analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate))
