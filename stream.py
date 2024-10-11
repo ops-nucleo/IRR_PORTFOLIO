@@ -81,6 +81,9 @@ if st.session_state['acesso_permitido']:
                 (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
             ]
             
+            # Ajuste de escala para evitar notação científica no eixo Y
+            df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
+
             # Calculando os limites do eixo Y com base em 40% de folga
             min_val = df_filtrado[variavel].min()
             max_val = df_filtrado[variavel].max()
@@ -109,9 +112,11 @@ if st.session_state['acesso_permitido']:
             # Melhorar o espaçamento das datas
             fig.autofmt_xdate()  # Rotaciona e ajusta as datas
 
+            # Desativar a notação científica no eixo Y
+            ax.ticklabel_format(useOffset=False, style='plain', axis='y')
+
             ax.grid(True)
-            return fig, df_filtrado  # Retornamos a df_filtrada para mostrar abaixo do gráfico
-    
+            return fig, df_filtrado  # Retornamos a df_filtrada para mostrar abaixo do gráfico    
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
     
