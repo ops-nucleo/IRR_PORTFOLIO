@@ -18,7 +18,7 @@ st.markdown("""
     }
 
     label[data-testid="stMarkdownContainer"] {
-        margin-top: -30px;  /* Mover os títulos junto com as caixas */
+        margin-top: -10px;  /* Mover os títulos junto com as caixas */
     }
     </style>
     """, unsafe_allow_html=True)
