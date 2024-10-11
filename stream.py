@@ -14,7 +14,7 @@ st.markdown("""
         background-color: rgb(221, 235, 247);
         padding: 0.01px;
         border-radius: 5px;
-        margin-top: -30px;  /* Ajustar a margem para mover tudo para cima */
+        margin-top: -50px;  /* Ajustar a margem para mover tudo para cima */
     }
 
     label[data-testid="stMarkdownContainer"] {
