@@ -110,7 +110,7 @@ if st.session_state['acesso_permitido']:
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
             anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
-            col3, col4, col5 = st.columns([1, 1, 2])  # Definindo três colunas: Ano Ref na primeira e De/Até na segunda e terceira
+            col3, col4, col5 = st.columns([2, 1, 1])  # Definindo três colunas: Ano Ref na primeira e De/Até na segunda e terceira
 
             with col3:
                 ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
