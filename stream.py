@@ -129,7 +129,7 @@ if st.session_state['acesso_permitido']:
             ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
 
             # Ajustar o título e labels
-            ax.set_title(f"Variável {variavel} para {empresa} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}")
+            ax.set_title(f"{empresa} - {variavel} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}")
             ax.set_xlabel("Data")
             ax.set_ylabel(variavel)
 
