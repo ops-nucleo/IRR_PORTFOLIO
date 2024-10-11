@@ -7,6 +7,17 @@ import matplotlib.dates as mdates
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
 
+# Adiciona o CSS customizado
+st.markdown("""
+    <style>
+    div[data-testid="stSelectbox"] {
+        background-color: rgb(221, 235, 247);
+        padding: 10px;
+        border-radius: 5px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Inicializa uma variável de sessão para controlar o acesso
 if 'acesso_permitido' not in st.session_state:
     st.session_state['acesso_permitido'] = False
