@@ -14,6 +14,8 @@ st.markdown("""
         background-color: rgb(221, 235, 247);
         padding: 0.05px;
         border-radius: 5px;
+        
+        margin-top: -20px;  /* Ajustar a margem para mover tudo para cima */
     }
     </style>
     """, unsafe_allow_html=True)
