@@ -4,3 +4,4 @@ matplotlib==3.5.1
 plotly==5.8.0
 openpyxl
 numpy==1.21.4  # Atualize o numpy para uma versão mais estável
+altair==4.2.0
