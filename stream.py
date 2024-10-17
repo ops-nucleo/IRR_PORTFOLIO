@@ -116,6 +116,7 @@ if st.session_state['acesso_permitido']:
             max_val = df_filtrado[variavel].max()
             if pd.isna(min_val) or pd.isna(max_val) or np.isinf(min_val) or np.isinf(max_val):
                 st.warning(f"Valores inválidos encontrados para {variavel} (NaN ou Inf) no eixo Y. Não será possível gerar o gráfico.")
+                st.dataframe(df_filtrado)  
                 return None, None
 
             # Calculando os limites do eixo Y com base em 40% de folga
