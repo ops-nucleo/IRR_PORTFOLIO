@@ -108,8 +108,8 @@ if st.session_state['acesso_permitido']:
                 (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
             ]
             
-            # Ajuste de escala para evitar notação científica no eixo Y
-            df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
+            # # Ajuste de escala para evitar notação científica no eixo Y
+            # df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
 
             # Calculando os limites do eixo Y com base em 40% de folga
             min_val = df_filtrado[variavel].min()
