@@ -114,11 +114,19 @@ if st.session_state['acesso_permitido']:
             # Calculando os limites do eixo Y com base em 40% de folga
             min_val = df_filtrado[variavel].min()
             max_val = df_filtrado[variavel].max()
+            if pd.isna(min_val) or pd.isna(max_val) or np.isinf(min_val) or np.isinf(max_val):
+                st.warning(f"Valores inválidos encontrados para {variavel} (NaN ou Inf) no eixo Y. Não será possível gerar o gráfico.")
+                return None, None
+
+            # Calculando os limites do eixo Y com base em 40% de folga
             y_folga = 0.4 * (max_val - min_val)  # Folga de 40%
 
             # Calculando os limites do eixo X (datas) com folga
             data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
             data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
+            if pd.isna(data_inicio) or pd.isna(data_fim):
+                st.warning("Valores inválidos encontrados no eixo X (datas). Não será possível gerar o gráfico.")
+                return None, None
             x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
 
             fig, ax = plt.subplots(figsize=(10, 6))
