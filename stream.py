@@ -108,26 +108,17 @@ if st.session_state['acesso_permitido']:
                 (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
             ]
             
-            # # Ajuste de escala para evitar notação científica no eixo Y
+            # Ajuste de escala para evitar notação científica no eixo Y
             # df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
 
             # Calculando os limites do eixo Y com base em 40% de folga
             min_val = df_filtrado[variavel].min()
             max_val = df_filtrado[variavel].max()
-            if pd.isna(min_val) or pd.isna(max_val) or np.isinf(min_val) or np.isinf(max_val):
-                st.warning(f"Valores inválidos encontrados para {variavel} (NaN ou Inf) no eixo Y. Não será possível gerar o gráfico.")
-                st.dataframe(df_filtrado)  
-                return None, None
-
-            # Calculando os limites do eixo Y com base em 40% de folga
             y_folga = 0.4 * (max_val - min_val)  # Folga de 40%
 
             # Calculando os limites do eixo X (datas) com folga
             data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
             data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
-            if pd.isna(data_inicio) or pd.isna(data_fim):
-                st.warning("Valores inválidos encontrados no eixo X (datas). Não será possível gerar o gráfico.")
-                return None, None
             x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
 
             fig, ax = plt.subplots(figsize=(10, 6))
@@ -209,4 +200,4 @@ if st.session_state['acesso_permitido']:
                 st.pyplot(fig)
 
                 # Exibir DataFrame filtrado logo abaixo do gráfico
-                st.dataframe(df_filtrado)  
+                st.dataframe(df_filtrado) 
