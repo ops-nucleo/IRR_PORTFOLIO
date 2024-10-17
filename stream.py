@@ -110,7 +110,7 @@ if st.session_state['acesso_permitido']:
             
             # Ajuste de escala para evitar notação científica no eixo Y
             # df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
-
+            st.dataframe(df_filtrado) 
             # Calculando os limites do eixo Y com base em 40% de folga
             min_val = df_filtrado[variavel].min()
             max_val = df_filtrado[variavel].max()
