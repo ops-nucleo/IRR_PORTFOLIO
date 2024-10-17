@@ -95,8 +95,8 @@ if st.session_state['acesso_permitido']:
             df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
             return df_empresa['Ano Referência'].unique()
         
-        def filtrar_datas(self, empresa, variavel):
-            df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
+        def filtrar_datas(self, empresa, variavel, ano):
+            df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
             datas = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
             return datas
 
