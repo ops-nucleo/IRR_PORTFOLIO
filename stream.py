@@ -107,7 +107,7 @@ if st.session_state['acesso_permitido']:
                 (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
                 (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
             ]
-            df_filtrado = df_filtrado.dropna(subset=[variavel])
+            # df_filtrado = df_filtrado.dropna(subset=[variavel])
 
             # Ajuste de escala para evitar notação científica no eixo Y
             df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
