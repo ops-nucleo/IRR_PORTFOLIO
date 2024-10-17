@@ -176,7 +176,7 @@ if st.session_state['acesso_permitido']:
                 ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
 
             # Filtrar datas disponíveis
-            datas_disponiveis = analysis.filtrar_datas(empresa_selecionada, variavel_selecionada)
+            datas_disponiveis = analysis.filtrar_datas(empresa_selecionada, variavel_selecionada,ano_selecionado)
             # Ordenar as datas em ordem crescente
             datas_disponiveis = np.sort(datas_disponiveis)
 
