@@ -122,7 +122,7 @@ if st.session_state['acesso_permitido']:
             data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
             x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
 
-            fig, ax = plt.subplots(figsize=(10, 4.2))
+            fig, ax = plt.subplots(figsize=(10, 3.2))
             ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
 
             # Ajustar o título e labels
