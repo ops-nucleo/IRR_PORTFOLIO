@@ -142,7 +142,8 @@ if st.session_state['acesso_permitido']:
             if comparacao == "Variável vs CDI":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_filtrado['CDI'] = df_filtrado['CDI'].astype(float)
-                
+                st.dataframe(df_filtrado) 
+
                 # Adicionar o CDI no segundo eixo Y como barras
                 ax2.bar(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'], color='tab:red', alpha=0.6, width=5)
                 ax2.set_ylabel('CDI (%)', fontsize=12)
