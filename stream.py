@@ -125,10 +125,15 @@ if st.session_state['acesso_permitido']:
             fig, ax = plt.subplots(figsize=(10, 3.2))
             ax.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o')
 
-            # Ajustar o título e labels
-            ax.set_title(f"{empresa} - {variavel} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}")
-            ax.set_xlabel("Data")
-            ax.set_ylabel(variavel)
+            # Ajustar o título e labels com tamanhos de fonte reduzidos
+            ax.set_title(f"{empresa} - {variavel} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}",
+                         fontsize=14)  # Tamanho do título menor
+            ax.set_xlabel("Data", fontsize=12)  # Tamanho do rótulo do eixo X
+            ax.set_ylabel(variavel, fontsize=12)  # Tamanho do rótulo do eixo Y
+        
+            # Ajustar os ticks (marcas de escala no gráfico) com fontes menores
+            ax.tick_params(axis='x', labelsize=10)  # Tamanho das datas no eixo X
+            ax.tick_params(axis='y', labelsize=10)  # Tamanho dos valores no eixo Y
 
             # Definir o formato da data no eixo X
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))  # Formato dd/mm/aaaa
