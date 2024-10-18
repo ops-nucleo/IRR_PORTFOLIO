@@ -127,13 +127,13 @@ if st.session_state['acesso_permitido']:
 
             # Ajustar o título e labels com tamanhos de fonte reduzidos
             ax.set_title(f"{empresa} - {variavel} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}",
-                         fontsize=14)  # Tamanho do título menor
-            ax.set_xlabel("Data", fontsize=12)  # Tamanho do rótulo do eixo X
-            ax.set_ylabel(variavel, fontsize=12)  # Tamanho do rótulo do eixo Y
+                         fontsize=10)  # Tamanho do título menor
+            ax.set_xlabel("Data", fontsize=8)  # Tamanho do rótulo do eixo X
+            ax.set_ylabel(variavel, fontsize=8)  # Tamanho do rótulo do eixo Y
         
             # Ajustar os ticks (marcas de escala no gráfico) com fontes menores
-            ax.tick_params(axis='x', labelsize=10)  # Tamanho das datas no eixo X
-            ax.tick_params(axis='y', labelsize=10)  # Tamanho dos valores no eixo Y
+            ax.tick_params(axis='x', labelsize=6)  # Tamanho das datas no eixo X
+            ax.tick_params(axis='y', labelsize=6)  # Tamanho dos valores no eixo Y
 
             # Definir o formato da data no eixo X
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))  # Formato dd/mm/aaaa
