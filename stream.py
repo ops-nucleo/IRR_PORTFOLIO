@@ -143,8 +143,8 @@ if st.session_state['acesso_permitido']:
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_filtrado['CDI'] = df_filtrado['CDI'].astype(float)
                 
-                # Adicionar o CDI no segundo eixo Y e formatar como percentual
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'], color='tab:red')
+                # Adicionar o CDI no segundo eixo Y como barras
+                ax2.bar(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'], color='tab:red', alpha=0.6, width=5)
                 ax2.set_ylabel('CDI (%)', fontsize=12)
                 
                 # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
@@ -162,8 +162,8 @@ if st.session_state['acesso_permitido']:
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_filtrado['P/E'] = df_filtrado['P/E'].astype(float)
                 
-                # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], color='tab:green')
+                # Adicionar o P/E no segundo eixo Y como barras
+                ax2.bar(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], color='tab:green', alpha=0.6, width=5)
                 ax2.set_ylabel('P/E', fontsize=12)
                 
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
@@ -177,6 +177,7 @@ if st.session_state['acesso_permitido']:
                 ax2.tick_params(axis='y', labelsize=10)
         
             return fig, df_filtrado
+
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
     
