@@ -286,7 +286,7 @@ if st.session_state['acesso_permitido']:
                     
                         # Botão de download
                         st.download_button(
-                            label="Baixar dados filtrados como CSV",
+                            label="Baixar dados em CSV",
                             data=csv,
                             file_name='dados_filtrados.csv',
                             mime='text/csv'
