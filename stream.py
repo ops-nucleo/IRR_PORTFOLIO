@@ -286,19 +286,19 @@ if st.session_state['acesso_permitido']:
                     
                         # Botão de download
                         st.download_button(
-                            label="Baixar dados em CSV",
+                            label="Baixar dados filtrados em CSV",
                             data=csv,
                             file_name='dados_filtrados.csv',
                             mime='text/csv'
                         )
                     with col10:
                                                 # Converter o DataFrame para CSV
-                        csv = self.df_mkt.to_csv(index=False)
+                        csv2 = self.df_mkt.to_csv(index=False)
                     
                         # Botão de download
                         st.download_button(
                             label="Baixar base completa em CSV",
-                            data=csv,
+                            data=csv2,
                             file_name='self.df_mkt.csv',
                             mime='text/csv'
                         )
