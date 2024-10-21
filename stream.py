@@ -172,7 +172,7 @@ if st.session_state['acesso_permitido']:
                     st.warning(f"Não possuímos dados de P/E para as datas selecionadas.")
                     return None, None
                 # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], marker='o', color='tab:green', markersize=6)
+                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], marker='o', color='tab:green', markersize=3)
                 ax2.set_ylabel('P/E', fontsize=6)
                 
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
