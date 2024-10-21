@@ -156,7 +156,7 @@ if st.session_state['acesso_permitido']:
                     
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
                 ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=3)
-                ax2.plot(x_data, y2_data, 'g-')
+
                 ax2.set_ylabel('CDI (%)', fontsize=6)
                 ax2.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
                 
