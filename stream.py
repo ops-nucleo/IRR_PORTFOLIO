@@ -250,8 +250,21 @@ if st.session_state['acesso_permitido']:
                 if fig is not None and df_filtrado is not None:
                     # Exibir gráfico
                     st.pyplot(fig)
+                    colunas_exibir = ['DATA ATUALIZACAO', variavel_selecionada]  # Sempre a data e a variável principal
+                
+                    # Adiciona CDI ou P/E dependendo da comparação
+                    if comparacao == 'Variável vs CDI':
+                        colunas_exibir.append('CDI')
+                    elif comparacao == 'Variável vs P/E':
+                        colunas_exibir.append('P/E')
+                
+                    # Filtra o DataFrame para exibir apenas as colunas selecionadas
+                    df_filtrado_para_exibir = df_filtrado[colunas_exibir]
+                
+                    # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
+                    df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
                 
                     # Exibir DataFrame filtrado logo abaixo do gráfico
-                    st.dataframe(df_filtrado)
+                    st.dataframe(df_filtrado_para_exibir)
                 else:
                     pass    
