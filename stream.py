@@ -144,19 +144,20 @@ if st.session_state['acesso_permitido']:
             # Se for selecionado "Variável vs CDI"
             if comparacao == "Variável vs CDI":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
-                df_filtrado['CDI'] = df_filtrado['CDI'].astype(float)
-                df_filtrado = df_filtrado.dropna(subset=['CDI'])
-                if df_filtrado['CDI'].isna().all():
+                df_comp = df_filtrado.copy()
+                df_comp['CDI'] = df_comp['CDI'].astype(float)
+                df_comp = df_comp.dropna(subset=['CDI'])
+                if df_comp['CDI'].isna().all():
                     st.warning(f"Não possuímos dados de CDI para as datas selecionadas.")
                     return None, None
                     
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'],marker='o', color='tab:red', markersize=6)
+                ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=6)
                 ax2.set_ylabel('CDI (%)', fontsize=6)
                 
                 # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
-                min_cdi = df_filtrado['CDI'].min()
-                max_cdi = df_filtrado['CDI'].max()
+                min_cdi = df_comp['CDI'].min()
+                max_cdi = df_comp['CDI'].max()
                 y_folga_cdi = 0.4 * (max_cdi - min_cdi)
                 ax2.set_ylim([min_cdi - y_folga_cdi, max_cdi + y_folga_cdi])
                 
@@ -167,18 +168,19 @@ if st.session_state['acesso_permitido']:
             # Se for selecionado "Variável vs P/E"
             elif comparacao == "Variável vs P/E":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
-                df_filtrado['P/E'] = df_filtrado['P/E'].astype(float)
-                df_filtrado = df_filtrado.dropna(subset=['P/E'])
-                if df_filtrado['CDI'].isna().all():
+                df_comp2 = df_filtrado.copy()
+                df_comp2['P/E'] = df_comp2['P/E'].astype(float)
+                df_comp2 = df_comp2.dropna(subset=['P/E'])
+                if df_comp2['P/E'].isna().all():
                     st.warning(f"Não possuímos dados de P/E para as datas selecionadas.")
                     return None, None
                 # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], marker='o', color='tab:green', markersize=3)
+                ax2.plot(pd.to_datetime(df_comp2['DATA ATUALIZACAO']), df_comp2['P/E'], marker='o', color='tab:green', markersize=3)
                 ax2.set_ylabel('P/E', fontsize=6)
                 
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
-                min_pe = df_filtrado['P/E'].min()
-                max_pe = df_filtrado['P/E'].max()
+                min_pe = df_comp2['P/E'].min()
+                max_pe = df_comp2['P/E'].max()
                 y_folga_pe = 0.4 * (max_pe - min_pe)
                 ax2.set_ylim([min_pe - y_folga_pe, max_pe + y_folga_pe])
                 
