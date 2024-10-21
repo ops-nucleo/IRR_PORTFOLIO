@@ -1,4 +1,5 @@
 streamlit==1.10.0
+streamlit-aggrid==0.3.3  # ou a versão mais recente do st_aggrid
 pandas==1.4.2
 matplotlib==3.5.1
 plotly==5.8.0
