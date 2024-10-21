@@ -142,32 +142,39 @@ if st.session_state['acesso_permitido']:
             ax1.grid(True)
             
             def formatar_percentual(x, pos):
-                return f'{x * 100:.2f}%'
+                return f'{x * 100:.2f}%'  # Multiplica por 100 para mostrar como percentual corretamente
             
             # Se for selecionado "Variável vs CDI"
             if comparacao == "Variável vs CDI":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
-                df_comp = df_filtrado.copy()
-                df_comp['CDI'] = df_comp['CDI'].astype(float)
-                df_comp = df_comp.dropna(subset=['CDI'])
+                df_comp = df_filtrado.copy()  # Copia o DataFrame original para evitar alterações no original
+                df_comp['CDI'] = df_comp['CDI'].astype(float)  # Garante que a coluna CDI é do tipo float
+                df_comp = df_comp.dropna(subset=['CDI'])  # Remove linhas onde CDI é NaN
+                
+                # Checa se todas as linhas do CDI estão vazias
                 if df_comp['CDI'].isna().all():
                     st.warning(f"Não possuímos dados de CDI para as datas selecionadas.")
                     return None, None, None
-                    
-                # Adicionar o CDI no segundo eixo Y e formatar como percentual
-                ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=3)
-
+                
+                # Plota o CDI no segundo eixo Y com marcadores
+                ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'], marker='o', color='tab:red', markersize=3)
+            
+                # Define o label para o segundo eixo Y
                 ax2.set_ylabel('CDI (%)', fontsize=6)
+            
+                # Aplica o formatter que multiplica por 100 e mostra o CDI como percentual
                 ax2.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
                 
-                # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
+                # Ajusta os limites do eixo Y do CDI com folga de 40%
                 min_cdi = df_comp['CDI'].min()
                 max_cdi = df_comp['CDI'].max()
                 y_folga_cdi = 0.4 * (max_cdi - min_cdi)
                 ax2.set_ylim([min_cdi - y_folga_cdi, max_cdi + y_folga_cdi])
                 
-                # Formatar o CDI como percentual
-                ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}%'))
+                # Aplica o formatter para percentual com 2 casas decimais no eixo Y
+                ax2.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x * 100:.2f}%'))
+                
+                # Ajusta o tamanho das labels do eixo Y
                 ax2.tick_params(axis='y', labelsize=5)
         
             # Se for selecionado "Variável vs P/E"
