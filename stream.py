@@ -112,7 +112,7 @@ if st.session_state['acesso_permitido']:
             df_filtrado = df_filtrado.dropna(subset=[variavel])
             if df_filtrado.empty:
                 st.warning(f"Não possuímos dados de {variavel} nessas datas.")
-                return None, None
+                return None, None, None
             # Ajuste de escala para evitar notação científica no eixo Y
             df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
             df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
@@ -149,7 +149,7 @@ if st.session_state['acesso_permitido']:
                 df_comp = df_comp.dropna(subset=['CDI'])
                 if df_comp['CDI'].isna().all():
                     st.warning(f"Não possuímos dados de CDI para as datas selecionadas.")
-                    return None, None
+                    return None, None, None
                     
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
                 ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=6)
@@ -173,7 +173,7 @@ if st.session_state['acesso_permitido']:
                 df_comp2 = df_comp2.dropna(subset=['P/E'])
                 if df_comp2['P/E'].isna().all():
                     st.warning(f"Não possuímos dados de P/E para as datas selecionadas.")
-                    return None, None
+                    return None, None, None
                 # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
                 ax2.plot(pd.to_datetime(df_comp2['DATA ATUALIZACAO']), df_comp2['P/E'], marker='o', color='tab:green', markersize=3)
                 ax2.set_ylabel('P/E', fontsize=6)
