@@ -267,16 +267,30 @@ if st.session_state['acesso_permitido']:
                     # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                     df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
-                    gb = GridOptionsBuilder.from_dataframe(df_filtrado_para_exibir)
-                    gb.configure_pagination(paginationAutoPageSize=True)  # Habilitar paginação
-                    gb.configure_side_bar()  # Adicionar barra lateral para filtros
-                    gb.configure_selection('multiple', use_checkbox=True)  # Habilitar múltiplas seleções
+                    col8, col9 = st.columns([2, 1])  # 2/3 da tela para o AgGrid, 1/3 para o botão
                     
-                    grid_options = gb.build()
-                    AgGrid(df_filtrado_para_exibir, gridOptions=grid_options, enable_enterprise_modules=True,)
+                    with col8:
+                        # Configurar AgGrid
+                        gb = GridOptionsBuilder.from_dataframe(df_filtrado_para_exibir)
+                        gb.configure_pagination(paginationAutoPageSize=True)  # Habilitar paginação
+                        gb.configure_side_bar()  # Adicionar barra lateral para filtros
+                        gb.configure_selection('multiple', use_checkbox=True)  # Habilitar múltiplas seleções
+                        grid_options = gb.build()
+                        
+                        # Exibir a tabela
+                        AgGrid(df_filtrado_para_exibir, gridOptions=grid_options, enable_enterprise_modules=True)
                     
-                    # # Exibir DataFrame filtrado logo abaixo do gráfico
-                    # st.table(df_filtrado_para_exibir)
-                
+                    with col9:
+                        # Converter o DataFrame para CSV
+                        csv = df_filtrado_para_exibir.to_csv(index=False)
+                    
+                        # Botão de download
+                        st.download_button(
+                            label="Baixar dados filtrados como CSV",
+                            data=csv,
+                            file_name='dados_filtrados.csv',
+                            mime='text/csv'
+                        )
+                                    
                 else:
                     pass    
