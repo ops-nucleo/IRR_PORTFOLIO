@@ -142,9 +142,7 @@ if st.session_state['acesso_permitido']:
             ax1.grid(True)
             
             
-            # Função para formatar os números com 3 casas decimais
-            def formatar_tres_decimais(x, pos):
-                return f'{x:.3f}'
+
             
             
             # Se for selecionado "Variável vs CDI"
@@ -160,7 +158,7 @@ if st.session_state['acesso_permitido']:
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
                 ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=3)
                 ax2.set_ylabel('CDI (%)', fontsize=6)
-                ax2.yaxis.set_major_formatter(FuncFormatter(formatar_tres_decimais))
+
                 # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
                 min_cdi = df_comp['CDI'].min()
                 max_cdi = df_comp['CDI'].max()
