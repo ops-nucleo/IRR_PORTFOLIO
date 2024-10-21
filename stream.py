@@ -152,7 +152,7 @@ if st.session_state['acesso_permitido']:
                     return None, None, None
                     
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
-                ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=6)
+                ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'],marker='o', color='tab:red', markersize=3)
                 ax2.set_ylabel('CDI (%)', fontsize=6)
                 
                 # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
