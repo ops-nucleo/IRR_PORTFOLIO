@@ -109,7 +109,9 @@ if st.session_state['acesso_permitido']:
             ]
             
             df_filtrado = df_filtrado.dropna(subset=[variavel])
-            
+            if df_filtrado.empty:
+                st.warning(f"Não possuímos dados de {variavel} nessas datas.")
+                return None, None
             # Ajuste de escala para evitar notação científica no eixo Y
             df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
             df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
@@ -126,7 +128,7 @@ if st.session_state['acesso_permitido']:
         
             # Cria o gráfico com o primeiro eixo Y (a variável principal)
             fig, ax1 = plt.subplots(figsize=(10, 4.2))
-            ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue')
+            ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
             ax1.set_title(f"{empresa} - {variavel} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}", fontsize=14)
             ax1.set_xlabel("Data", fontsize=12)
             ax1.set_ylabel(variavel, fontsize=12)
@@ -143,10 +145,12 @@ if st.session_state['acesso_permitido']:
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_filtrado['CDI'] = df_filtrado['CDI'].astype(float)
                 df_filtrado = df_filtrado.dropna(subset=['CDI'])
-                st.dataframe(df_filtrado) 
-
+                if df_filtrado['CDI'].isna().all():
+                    st.warning(f"Não possuímos dados de CDI para as datas selecionadas.")
+                    return None, None
+                    
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'], color='tab:red')
+                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'],marker='o', color='tab:red', markersize=6)
                 ax2.set_ylabel('CDI (%)', fontsize=12)
                 
                 # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
@@ -164,9 +168,11 @@ if st.session_state['acesso_permitido']:
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_filtrado['P/E'] = df_filtrado['P/E'].astype(float)
                 df_filtrado = df_filtrado.dropna(subset=['P/E'])
-                    
+                if df_filtrado['CDI'].isna().all():
+                    st.warning(f"Não possuímos dados de P/E para as datas selecionadas.")
+                    return None, None
                 # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
-                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], color='tab:green')
+                ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], marker='o', color='tab:green', markersize=6)
                 ax2.set_ylabel('P/E', fontsize=12)
                 
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
