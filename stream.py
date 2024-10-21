@@ -130,10 +130,10 @@ if st.session_state['acesso_permitido']:
             fig, ax1 = plt.subplots(figsize=(10, 4.2))
             ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
             ax1.set_title(f"{empresa} - {variavel} de {data_de.strftime('%d/%m/%Y')} até {data_ate.strftime('%d/%m/%Y')}", fontsize=8)
-            ax1.set_xlabel("Data", fontsize=7)
-            ax1.set_ylabel(variavel, fontsize=7)
-            ax1.tick_params(axis='x', labelsize=6)
-            ax1.tick_params(axis='y', labelsize=6)
+            ax1.set_xlabel("Data", fontsize=6)
+            ax1.set_ylabel(variavel, fontsize=6)
+            ax1.tick_params(axis='x', labelsize=5)
+            ax1.tick_params(axis='y', labelsize=5)
             ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
             ax1.set_ylim([min_val - y_folga, max_val + y_folga])
             ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
@@ -151,7 +151,7 @@ if st.session_state['acesso_permitido']:
                     
                 # Adicionar o CDI no segundo eixo Y e formatar como percentual
                 ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['CDI'],marker='o', color='tab:red', markersize=6)
-                ax2.set_ylabel('CDI (%)', fontsize=7)
+                ax2.set_ylabel('CDI (%)', fontsize=6)
                 
                 # Ajusta o limite do segundo eixo Y (CDI) com folga de 40%
                 min_cdi = df_filtrado['CDI'].min()
@@ -161,7 +161,7 @@ if st.session_state['acesso_permitido']:
                 
                 # Formatar o CDI como percentual
                 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}%'))
-                ax2.tick_params(axis='y', labelsize=6)
+                ax2.tick_params(axis='y', labelsize=5)
         
             # Se for selecionado "Variável vs P/E"
             elif comparacao == "Variável vs P/E":
@@ -173,7 +173,7 @@ if st.session_state['acesso_permitido']:
                     return None, None
                 # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
                 ax2.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado['P/E'], marker='o', color='tab:green', markersize=6)
-                ax2.set_ylabel('P/E', fontsize=7)
+                ax2.set_ylabel('P/E', fontsize=6)
                 
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
                 min_pe = df_filtrado['P/E'].min()
@@ -183,7 +183,7 @@ if st.session_state['acesso_permitido']:
                 
                 # Formatar o P/E com uma casa decimal
                 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.1f}'))
-                ax2.tick_params(axis='y', labelsize=6)
+                ax2.tick_params(axis='y', labelsize=5)
         
             return fig, df_filtrado
 
