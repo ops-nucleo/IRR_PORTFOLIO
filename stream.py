@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from st_aggrid import AgGrid, GridOptionsBuilder
-
+from matplotlib.ticker import FuncFormatter
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
 
