@@ -84,7 +84,7 @@ if st.session_state['acesso_permitido']:
             self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
                             "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
                             "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
-                            "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "P/E"]
+                            "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro"]
             self.empresas = np.sort(self.df_mkt['Ticker'].unique())
 
         def filtrar_variaveis(self, empresa):
