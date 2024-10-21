@@ -265,6 +265,6 @@ if st.session_state['acesso_permitido']:
                     df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
                 
                     # Exibir DataFrame filtrado logo abaixo do gráfico
-                    st.dataframe(df_filtrado_para_exibir)
+                    st.table(df_filtrado_para_exibir)
                 else:
                     pass    
