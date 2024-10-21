@@ -274,7 +274,7 @@ if st.session_state['acesso_permitido']:
                     gb.configure_selection('multiple', use_checkbox=True)  # Habilitar múltiplas seleções
                     
                     grid_options = gb.build()
-                    AgGrid(df_filtrado_para_exibir, gridOptions=grid_options, enable_enterprise_modules=True, height=150, width='50%')
+                    AgGrid(df_filtrado_para_exibir, gridOptions=grid_options, enable_enterprise_modules=True,)
                     
                     # # Exibir DataFrame filtrado logo abaixo do gráfico
                     # st.table(df_filtrado_para_exibir)
