@@ -247,9 +247,12 @@ if st.session_state['acesso_permitido']:
                 # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
                 fig, df_filtrado = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate, comparacao)
 
-
-                # Exibir gráfico
-                st.pyplot(fig)
-
-                # Exibir DataFrame filtrado logo abaixo do gráfico
-                st.dataframe(df_filtrado) 
+                # Verifica se fig e df_filtrado não são None antes de exibir
+                if fig is not None and df_filtrado is not None:
+                    # Exibir gráfico
+                    st.pyplot(fig)
+                
+                    # Exibir DataFrame filtrado logo abaixo do gráfico
+                    st.dataframe(df_filtrado)
+                else:
+                    pass    
