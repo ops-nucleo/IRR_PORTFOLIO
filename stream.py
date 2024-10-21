@@ -197,7 +197,7 @@ if st.session_state['acesso_permitido']:
                 ax2.set_ylim([min_pe - y_folga_pe, max_pe + y_folga_pe])
                 
                 # Formatar o P/E com uma casa decimal
-                ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.1f}'))
+                ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}'))
                 ax2.tick_params(axis='y', labelsize=5)
         
             return fig, df_filtrado, self.df_mkt
