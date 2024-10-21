@@ -191,7 +191,7 @@ if st.session_state['acesso_permitido']:
     analysis = EmpresaAnalysis()
     
     # Layout das seleções usando colunas para alinhamento
-    col1, col2, col6 = st.columns([2, 1, 1])  # Adicionando col6 para os radio buttons
+    col1, col3, col2, col6 = st.columns([1, 1, 1, 1])  # Adicionando col6 para os radio buttons
     
     # Dropdown para selecionar empresa (Ticker) no lado esquerdo
     with col1:
@@ -208,7 +208,7 @@ if st.session_state['acesso_permitido']:
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
             anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
-            col3, col4, col5 = st.columns([2, 1, 1])  # Adicionando col6 para os radio buttons
+            col4, col5 = st.columns([1, 1])  # Adicionando col6 para os radio buttons
     
             with col3:
                 ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
