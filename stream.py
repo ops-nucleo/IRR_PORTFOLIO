@@ -178,7 +178,7 @@ if st.session_state['acesso_permitido']:
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
                 min_pe = df_filtrado['P/E'].min()
                 max_pe = df_filtrado['P/E'].max()
-                y_folga_pe = 0.6 * (max_pe - min_pe)
+                y_folga_pe = 0.4 * (max_pe - min_pe)
                 ax2.set_ylim([min_pe - y_folga_pe, max_pe + y_folga_pe])
                 
                 # Formatar o P/E com uma casa decimal
