@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
@@ -263,8 +264,16 @@ if st.session_state['acesso_permitido']:
                 
                     # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                     df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
+
+                    gb = GridOptionsBuilder.from_dataframe(df_filtrado_para_exibir)
+                    gb.configure_pagination(paginationAutoPageSize=True)  # Habilitar paginação
+                    gb.configure_side_bar()  # Adicionar barra lateral para filtros
+                    gb.configure_selection('multiple', use_checkbox=True)  # Habilitar múltiplas seleções
+                    
+                    grid_options = gb.build()
+                    AgGrid(df_filtrado_para_exibir, gridOptions=grid_options, enable_enterprise_modules=True)"
+                    # # Exibir DataFrame filtrado logo abaixo do gráfico
+                    # st.table(df_filtrado_para_exibir)
                 
-                    # Exibir DataFrame filtrado logo abaixo do gráfico
-                    st.table(df_filtrado_para_exibir)
                 else:
                     pass    
