@@ -251,7 +251,7 @@ if st.session_state['acesso_permitido']:
                 if fig is not None and df_filtrado is not None:
                     # Exibir gráfico
                     st.pyplot(fig)
-                    colunas_exibir = ['DATA ATUALIZACAO', variavel_selecionada]  # Sempre a data e a variável principal
+                    colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
                 
                     # Adiciona CDI ou P/E dependendo da comparação
                     if comparacao == 'Variável vs CDI':
