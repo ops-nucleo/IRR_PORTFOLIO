@@ -188,7 +188,7 @@ if st.session_state['acesso_permitido']:
                 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.1f}'))
                 ax2.tick_params(axis='y', labelsize=5)
         
-            return fig, df_filtrado
+            return fig, df_filtrado, self.df_mkt
 
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
@@ -247,7 +247,7 @@ if st.session_state['acesso_permitido']:
                 data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
     
                 # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
-                fig, df_filtrado = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate, comparacao)
+                fig, df_filtrado, df_completa = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate, comparacao)
 
                 # Verifica se fig e df_filtrado não são None antes de exibir
                 if fig is not None and df_filtrado is not None:
@@ -293,13 +293,13 @@ if st.session_state['acesso_permitido']:
                         )
                     with col10:
                                                 # Converter o DataFrame para CSV
-                        csv2 = self.df_mkt.to_csv(index=False)
+                        csv2 = df_completa.to_csv(index=False)
                     
                         # Botão de download
                         st.download_button(
                             label="Baixar base completa em CSV",
                             data=csv2,
-                            file_name='self.df_mkt.csv',
+                            file_name='df_completa.csv',
                             mime='text/csv'
                         )
                         
