@@ -114,7 +114,8 @@ if st.session_state['acesso_permitido']:
     
         def mostrar_tabelas(self):
             st.title("Tabela de Portfólio e Lucro")
-            
+                # Ajustando as select boxes e espaçamento dos gráficos
+            st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
             # Filtro para selecionar a data
             col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
             
@@ -143,7 +144,6 @@ if st.session_state['acesso_permitido']:
     tabela = TabelaPortfolioLucro(df_empresa)
     tabela.mostrar_tabelas()
     
-    # Ajustando as select boxes e espaçamento dos gráficos
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
     
