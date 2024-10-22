@@ -116,7 +116,7 @@ if st.session_state['acesso_permitido']:
             st.title("Tabela de Portfólio e Lucro")
             
             # Filtro para selecionar a data
-            col1, col2, col3 = st.columns([1, 1, 1])  # Layout horizontal
+            col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
             
             with col1:
                 data_selecionada = st.selectbox('Selecione a data de atualização:', self.data_options)
