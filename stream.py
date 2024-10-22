@@ -127,7 +127,8 @@ if st.session_state['acesso_permitido']:
                 # Criando e exibindo a tabela Portfolio
                 st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                df_portfolio = df_portfolio[["Empresa", "% Portfólio", "Mkt Cap"]]
+                # df_portfolio = df_portfolio[["Empresa", "% Portfólio", "Mkt Cap"]]
+                
                 st.table(df_portfolio)  # Removendo os índices
     
             with col3:
