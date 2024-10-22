@@ -142,6 +142,9 @@ if st.session_state['acesso_permitido']:
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
     tabela.mostrar_tabelas()
+    
+    # Ajustando as select boxes e espaçamento dos gráficos
+    st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
     
     class EmpresaAnalysis:
