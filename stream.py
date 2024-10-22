@@ -127,13 +127,13 @@ if st.session_state['acesso_permitido']:
                 # Criando e exibindo a tabela Portfolio
                 st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                st.dataframe(df_portfolio, hide_index=True)  # Usando hide_index=True corretamente
+                st.dataframe(df_portfolio.reset_index(drop=True))  # Resetando o índice antes de exibir
     
             with col3:
                 # Criando e exibindo a tabela Lucro
                 st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                st.dataframe(df_lucro, hide_index=True)  # Usando hide_index=True corretamente
+                st.dataframe(df_lucro.reset_index(drop=True))  # Resetando o índice antes de exibir
 
                 
 
