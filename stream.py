@@ -47,7 +47,7 @@ if not st.session_state['acesso_permitido']:
         if senha_usuario == st.secrets["access_token"]:
             st.session_state['acesso_permitido'] = True
             st.success('Acesso permitido.')
-            st.experimental_rerun() 
+            
         else:
             st.error("Senha incorreta. Você não tem permissão para acessar este aplicativo.")
             st.stop()  # Impede que o resto do aplicativo seja executado
