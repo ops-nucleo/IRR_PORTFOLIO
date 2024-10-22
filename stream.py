@@ -91,7 +91,7 @@ if st.session_state['acesso_permitido']:
     
         def criar_tabela_portfolio(self, df_filtrado):
             # Primeira tabela: "Portfolio"
-            df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates()
+            df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
             df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
             return df_portfolio
     
@@ -127,13 +127,13 @@ if st.session_state['acesso_permitido']:
                 # Criando e exibindo a tabela Portfolio
                 st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                st.table(df_portfolio)  # Usando st.table() para remover o índice
+                st.table(df_portfolio)  # Removendo os índices
     
             with col3:
                 # Criando e exibindo a tabela Lucro
                 st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                st.table(df_lucro)  # Usando st.table() para remover o índice
+                st.table(df_lucro)  # Removendo os índices
 
     # Uso da classe no Streamlit
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
