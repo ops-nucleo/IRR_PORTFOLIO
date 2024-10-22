@@ -127,13 +127,14 @@ if st.session_state['acesso_permitido']:
                 # Criando e exibindo a tabela Portfolio
                 st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                st.write(df_portfolio)  # Usando st.write() para esconder os índices
+                st.dataframe(df_portfolio, hide_index=True)  # Usando hide_index=True corretamente
     
             with col3:
                 # Criando e exibindo a tabela Lucro
                 st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                st.dataframe(df_lucro, hide_index=True)  # Usando st.write() para esconder os índices
+                st.dataframe(df_lucro, hide_index=True)  # Usando hide_index=True corretamente
+
                 
 
     # Uso da classe no Streamlit
