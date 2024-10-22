@@ -133,7 +133,8 @@ if st.session_state['acesso_permitido']:
                 # Criando e exibindo a tabela Lucro
                 st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                st.write(df_lucro)  # Usando st.write() para esconder os índices
+                st.dataframe(df_lucro, hide_index=True)  # Usando st.write() para esconder os índices
+                
 
     # Uso da classe no Streamlit
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
