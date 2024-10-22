@@ -130,7 +130,7 @@ if st.session_state['acesso_permitido']:
             st.dataframe(df_lucro)
 
     # Uso da classe no Streamlit
-    df_empresa = pd.read_csv('base_semanal_2024-10-22.csv')  # Substitua com o caminho correto no seu ambiente
+    df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
     tabela.mostrar_tabelas()
 
