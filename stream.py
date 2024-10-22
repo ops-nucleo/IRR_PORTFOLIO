@@ -78,6 +78,62 @@ if st.session_state['acesso_permitido']:
     # Caminho para o arquivo da logo
     logo_path = 'nucleo.png'
     set_background(get_image_as_base64(logo_path))
+
+    class TabelaPortfolioLucro:
+        def __init__(self, df_empresa):
+            self.df_empresa = df_empresa
+            self.data_options = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
+    
+        def filtrar_por_data(self, data_selecionada):
+            # Filtra a base de dados pela data selecionada
+            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
+            return df_filtrado
+    
+        def criar_tabela_portfolio(self, df_filtrado):
+            # Primeira tabela: "Portfolio"
+            df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates()
+            df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
+            return df_portfolio
+    
+        def criar_tabela_lucro(self, df_filtrado, data_selecionada):
+            # Segunda tabela: "Lucro" (mostra os 4 anos a partir da data filtrada)
+            ano_inicial = pd.to_datetime(data_selecionada).year
+            anos = [ano_inicial + i for i in range(4)]
+            
+            df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+            empresas = df_filtrado['Ticker'].unique()
+    
+            for empresa in empresas:
+                linha = {'Empresa': empresa}
+                for i, ano in enumerate(anos):
+                    lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro líquido ajustado']
+                    linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
+                df_lucro = df_lucro.append(linha, ignore_index=True)
+    
+            return df_lucro
+    
+        def mostrar_tabelas(self):
+            st.title("Tabela de Portfólio e Lucro")
+            
+            # Filtro para selecionar a data
+            data_selecionada = st.selectbox('Selecione a data de atualização:', self.data_options)
+            df_filtrado = self.filtrar_por_data(data_selecionada)
+            
+            # Criando e exibindo a tabela Portfolio
+            st.subheader("Portfolio")
+            df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+            st.dataframe(df_portfolio)
+    
+            # Criando e exibindo a tabela Lucro
+            st.subheader("Lucro")
+            df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
+            st.dataframe(df_lucro)
+
+    # Uso da classe no Streamlit
+    df_empresa = pd.read_csv('base_semanal_2024-10-22.csv')  # Substitua com o caminho correto no seu ambiente
+    tabela = TabelaPortfolioLucro(df_empresa)
+    tabela.mostrar_tabelas()
+
     
     class EmpresaAnalysis:
         def __init__(self):
