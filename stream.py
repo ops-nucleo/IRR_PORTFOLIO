@@ -112,28 +112,28 @@ if st.session_state['acesso_permitido']:
     
             return df_lucro
 
-    def mostrar_tabelas(self):
-        st.title("Tabela de Portfólio e Lucro")
-        
-        # Filtro para selecionar a data
-        col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
-        
-        with col1:
-            data_selecionada = st.selectbox('Selecione a data de atualização:', self.data_options)
-
-        df_filtrado = self.filtrar_por_data(data_selecionada)
-        
-        with col2:
-            # Criando e exibindo a tabela Portfolio
-            st.subheader("Portfolio")
-            df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-            st.dataframe(df_portfolio.style.hide_index())  # Removendo os índices
-
-        with col3:
-            # Criando e exibindo a tabela Lucro
-            st.subheader("Lucro")
-            df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-            st.dataframe(df_lucro.style.hide_index())  # Removendo os índices
+        def mostrar_tabelas(self):
+            st.title("Tabela de Portfólio e Lucro")
+            
+            # Filtro para selecionar a data
+            col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
+            
+            with col1:
+                data_selecionada = st.selectbox('Selecione a data de atualização:', self.data_options)
+    
+            df_filtrado = self.filtrar_por_data(data_selecionada)
+            
+            with col2:
+                # Criando e exibindo a tabela Portfolio
+                st.subheader("Portfolio")
+                df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+                st.dataframe(df_portfolio.style.hide_index())  # Removendo os índices
+    
+            with col3:
+                # Criando e exibindo a tabela Lucro
+                st.subheader("Lucro")
+                df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
+                st.dataframe(df_lucro.style.hide_index())  # Removendo os índices
 
 
     # Uso da classe no Streamlit
