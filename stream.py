@@ -121,6 +121,27 @@ if st.session_state['acesso_permitido']:
     
             return df_lucro
     
+        def gerar_html_tabela(self, df, titulo):
+            # Gera o código HTML da tabela
+            html = f"<h3>{titulo}</h3>"
+            html += '<table style="width:100%; border-collapse: collapse;">'
+            html += '<thead><tr style="background-color: #f2f2f2;">'
+    
+            # Cabeçalhos da tabela
+            for col in df.columns:
+                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">{col}</th>'
+            html += '</tr></thead><tbody>'
+    
+            # Linhas da tabela
+            for i, row in df.iterrows():
+                html += '<tr>'
+                for col in df.columns:
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{row[col]}</td>'
+                html += '</tr>'
+    
+            html += '</tbody></table>'
+            return html
+    
         def mostrar_tabelas(self):
             # Título ajustado
             st.markdown("<h1 style='text-align: center; margin-top: -50px;'>Tabela de Portfólio e Lucro</h1>", unsafe_allow_html=True)
@@ -136,16 +157,21 @@ if st.session_state['acesso_permitido']:
             df_filtrado = self.filtrar_por_data(data_selecionada)
             
             with col2:
-                # Criando e exibindo a tabela Portfolio
+                # Criando a tabela Portfolio
                 st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                st.dataframe(df_portfolio)
+                # Exibir a tabela em HTML
+                html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
+                st.markdown(html_portfolio, unsafe_allow_html=True)
     
             with col3:
-                # Criando e exibindo a tabela Lucro
+                # Criando a tabela Lucro
                 st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                st.dataframe(df_lucro)
+                # Exibir a tabela em HTML
+                html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
+                st.markdown(html_lucro, unsafe_allow_html=True)
+
                     
 
                 
