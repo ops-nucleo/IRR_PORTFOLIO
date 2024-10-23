@@ -142,7 +142,7 @@ if st.session_state['acesso_permitido']:
             for empresa in empresas:
                 linha = {'Empresa': empresa}
                 for i, ano in enumerate(anos):
-                    dividendo_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendo']
+                    dividendo_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos']
                     linha[ano] = dividendo_ano.values[0] if not dividendo_ano.empty else np.nan
                 df_dividendos = df_dividendos.append(linha, ignore_index=True)
     
