@@ -154,6 +154,7 @@ if st.session_state['acesso_permitido']:
                 df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_dividendos
     
+
         def calcular_tir(self, df_filtrado, data_selecionada):
             empresas = df_filtrado['Ticker'].unique()
             pe_coluna = 'P/E'
@@ -178,6 +179,8 @@ if st.session_state['acesso_permitido']:
                 try:
                     # Calculando os fluxos financeiros
                     fluxos = [-market_cap]
+                    print(f"Empresa: {empresa}, Market Cap: {market_cap}")  # Verificando o Market Cap
+                    
                     for i, ano in enumerate(anos):
                         dividendos = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos']
                         dividendos = dividendos.values[0] if not dividendos.empty else 0
@@ -191,12 +194,14 @@ if st.session_state['acesso_permitido']:
                             fluxo = dividendos
                         
                         fluxos.append(fluxo)
-                    
+                        print(f"Ano: {ano}, Dividendos: {dividendos}, Fluxo: {fluxo}")  # Verificando dividendos e fluxos
+        
                     # Último fluxo: (dividendo de 2027 + lucro líquido ajustado) * P/E
                     lucro_liquido = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == anos[-1])]['Lucro líquido ajustado']
                     lucro_liquido = lucro_liquido.values[0] if not lucro_liquido.empty else 0
                     ultimo_fluxo = (dividendos + lucro_liquido) * pe
                     fluxos.append(ultimo_fluxo)
+                    print(f"Último Fluxo (Dividendos + Lucro): {ultimo_fluxo}, P/E: {pe}, Lucro Líquido: {lucro_liquido}")  # Verificando último fluxo
                     
                     # Calculando a TIR
                     tir = npf.irr(fluxos)
@@ -205,7 +210,8 @@ if st.session_state['acesso_permitido']:
                 except Exception as e:
                     # Caso ocorra qualquer erro no cálculo, vamos registrar 'faltando dados'
                     linha['TIR'] = 'faltando dados'
-                
+                    print(f"Erro ao calcular TIR para {empresa}: {str(e)}")  # Mensagem de erro
+        
                 df_tir = df_tir.append(linha, ignore_index=True)
             
             return df_tir
