@@ -263,9 +263,12 @@ if st.session_state['acesso_permitido']:
             with col5:
                 datas_disponiveis = self.filtrar_datas()
                 data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
-    
             # Filtra os dados pela data selecionada
             df_filtrado = self.filtrar_por_data(data_selecionada)
+   
+            with col8:
+                display(df_filtrado)
+    
     
             # Exibir tabelas lado a lado
             col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
