@@ -195,7 +195,7 @@ if st.session_state['acesso_permitido']:
             data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
     
             # Exibir tabelas lado a lado, à esquerda
-            col1, col2 = st.columns([1, 1])  # Usei 1:1 para manter as duas tabelas na metade da tela
+            col1, col2 = st.columns([1, 1, 1, 1]) 
     
             with col1:
                 # Criando a tabela Portfolio
@@ -209,8 +209,6 @@ if st.session_state['acesso_permitido']:
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
                 st.markdown(html_lucro, unsafe_allow_html=True)
     
-            # Reservar espaço para mais duas tabelas na segunda metade
-            col3, col4 = st.columns([1, 1])
             with col3:
                 # Criando a tabela de Dividendos
                 df_dividendos = self.criar_tabela_dividendos(self.filtrar_por_data(data_selecionada), data_selecionada)
