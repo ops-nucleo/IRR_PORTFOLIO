@@ -233,7 +233,6 @@ if st.session_state['acesso_permitido']:
     tabela.mostrar_tabelas()
     
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-    st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
     
     class EmpresaAnalysis:
