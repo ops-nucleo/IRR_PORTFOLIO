@@ -102,6 +102,9 @@ if st.session_state['acesso_permitido']:
             # Primeira tabela: "Portfolio"
             df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
             df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
+            # Formatando os números
+            df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.2f}%")
+            df_portfolio['Mkt cap'] = df_portfolio['Mkt cap'].apply(lambda x: f"{x:,.2f}")
             return df_portfolio
     
         def criar_tabela_lucro(self, df_filtrado, data_selecionada):
@@ -119,12 +122,15 @@ if st.session_state['acesso_permitido']:
                     linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                 df_lucro = df_lucro.append(linha, ignore_index=True)
     
+            # Formatando os números no estilo americano
+            for ano in anos:
+                df_lucro[ano] = df_lucro[ano].apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_lucro
     
         def gerar_html_tabela(self, df, titulo):
-            # Gera o código HTML da tabela
+            # Gera o código HTML da tabela com formatação e ajuste de largura
             html = f"<h3>{titulo}</h3>"
-            html += '<table style="width:100%; border-collapse: collapse;">'
+            html += '<table style="width:50%; border-collapse: collapse; margin: auto;">'  # Define a largura da tabela para 50%
             html += '<thead><tr style="background-color: #f2f2f2;">'
     
             # Cabeçalhos da tabela
