@@ -267,7 +267,7 @@ if st.session_state['acesso_permitido']:
             df_filtrado = self.filtrar_por_data(data_selecionada)
    
             with col8:
-                display(df_filtrado)
+                st.dataframe(df_filtrado)
     
     
             # Exibir tabelas lado a lado
