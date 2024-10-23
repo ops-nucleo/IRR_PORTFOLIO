@@ -189,10 +189,20 @@ if st.session_state['acesso_permitido']:
                 }
                 </style>
             """, unsafe_allow_html=True)
-    
-            # Selectbox sozinho no topo
-            datas_disponiveis = self.filtrar_datas()
-            data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
+            col5, col6, col7, col8, col9 = st.columns([1, 1, 1, 1, 1]) 
+            with col5:
+                # Selectbox sozinho no topo
+                datas_disponiveis = self.filtrar_datas()
+                data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
+
+            with col6:
+                pass
+            with col7:
+                pass
+            with col8:
+                pass
+            with col9:
+                pass
     
             # Exibir tabelas lado a lado, à esquerda
             col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
