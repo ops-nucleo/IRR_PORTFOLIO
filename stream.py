@@ -154,59 +154,59 @@ if st.session_state['acesso_permitido']:
                 df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_dividendos
     
-    def calcular_tir(self, df_filtrado, data_selecionada):
-        # Calcula a TIR para as empresas com base nos fluxos financeiros
-        ano_atual = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-        empresas = df_filtrado['Ticker'].unique()
-    
-        df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
-    
-        for empresa in empresas:
-            linha = {'Empresa': empresa}
-            
-            # Verificando se P/E, Market Cap e Dividendos estão presentes
-            try:
-                pe = pd.to_numeric(df_filtrado[df_filtrado['Ticker'] == empresa]['P/E'].values[0], errors='coerce')
-                market_cap = pd.to_numeric(df_filtrado[df_filtrado['Ticker'] == empresa]['Mkt Cap'].values[0], errors='coerce')
-                dividendos = pd.to_numeric(df_filtrado[df_filtrado['Ticker'] == empresa]['Dividendos'].values, errors='coerce')
-                lucro_liquido = pd.to_numeric(df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano_atual + 3)]['Lucro líquido ajustado'].values[0], errors='coerce')
-    
-                # Verifica se os dados são válidos
-                if pd.isna(pe) or pd.isna(market_cap) or len(dividendos) < 4 or pd.isna(lucro_liquido):
+        def calcular_tir(self, df_filtrado, data_selecionada):
+            # Calcula a TIR para as empresas com base nos fluxos financeiros
+            ano_atual = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
+            empresas = df_filtrado['Ticker'].unique()
+        
+            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
+        
+            for empresa in empresas:
+                linha = {'Empresa': empresa}
+                
+                # Verificando se P/E, Market Cap e Dividendos estão presentes
+                try:
+                    pe = pd.to_numeric(df_filtrado[df_filtrado['Ticker'] == empresa]['P/E'].values[0], errors='coerce')
+                    market_cap = pd.to_numeric(df_filtrado[df_filtrado['Ticker'] == empresa]['Mkt Cap'].values[0], errors='coerce')
+                    dividendos = pd.to_numeric(df_filtrado[df_filtrado['Ticker'] == empresa]['Dividendos'].values, errors='coerce')
+                    lucro_liquido = pd.to_numeric(df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano_atual + 3)]['Lucro líquido ajustado'].values[0], errors='coerce')
+        
+                    # Verifica se os dados são válidos
+                    if pd.isna(pe) or pd.isna(market_cap) or len(dividendos) < 4 or pd.isna(lucro_liquido):
+                        linha['P/E'] = "faltando dados"
+                        linha['TIR'] = "faltando dados"
+                        df_tir = df_tir.append(linha, ignore_index=True)
+                        continue
+        
+                    # Fluxos financeiros
+                    fluxos = [-market_cap]  # Iniciando com o valor negativo do Market Cap
+                    for i in range(4):  # Para os próximos 4 anos
+                        ano = ano_atual + i
+                        if i == 0:
+                            dias_restantes = (pd.Timestamp(f'{ano}-12-31') - pd.Timestamp(data_selecionada)).days
+                            perc_ano = dias_restantes / 365
+                            fluxo = dividendos[0] * perc_ano if len(dividendos) > 0 else 0
+                        else:
+                            fluxo = dividendos[i] if len(dividendos) > i else 0
+                        fluxos.append(fluxo)
+        
+                    # Último fluxo com P/E e lucro líquido
+                    ultimo_fluxo = (dividendos[3] + lucro_liquido) * pe
+                    fluxos.append(ultimo_fluxo)
+        
+                    # Calcula a TIR
+                    tir = np.irr(fluxos)
+                    linha['P/E'] = pe
+                    linha['TIR'] = tir
+        
+                except Exception as e:
+                    # Marcar empresas com dados faltantes
                     linha['P/E'] = "faltando dados"
                     linha['TIR'] = "faltando dados"
-                    df_tir = df_tir.append(linha, ignore_index=True)
-                    continue
-    
-                # Fluxos financeiros
-                fluxos = [-market_cap]  # Iniciando com o valor negativo do Market Cap
-                for i in range(4):  # Para os próximos 4 anos
-                    ano = ano_atual + i
-                    if i == 0:
-                        dias_restantes = (pd.Timestamp(f'{ano}-12-31') - pd.Timestamp(data_selecionada)).days
-                        perc_ano = dias_restantes / 365
-                        fluxo = dividendos[0] * perc_ano if len(dividendos) > 0 else 0
-                    else:
-                        fluxo = dividendos[i] if len(dividendos) > i else 0
-                    fluxos.append(fluxo)
-    
-                # Último fluxo com P/E e lucro líquido
-                ultimo_fluxo = (dividendos[3] + lucro_liquido) * pe
-                fluxos.append(ultimo_fluxo)
-    
-                # Calcula a TIR
-                tir = np.irr(fluxos)
-                linha['P/E'] = pe
-                linha['TIR'] = tir
-    
-            except Exception as e:
-                # Marcar empresas com dados faltantes
-                linha['P/E'] = "faltando dados"
-                linha['TIR'] = "faltando dados"
-            
-            df_tir = df_tir.append(linha, ignore_index=True)
-    
-        return df_tir
+                
+                df_tir = df_tir.append(linha, ignore_index=True)
+        
+            return df_tir
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
