@@ -159,27 +159,40 @@ if st.session_state['acesso_permitido']:
             # Espaçamento negativo para mover o select box mais para cima
             st.markdown("<div style='margin-top: -60px;'></div>", unsafe_allow_html=True)
     
-            # Filtro para selecionar a data no formato brasileiro
-            col1, col2 = st.columns([1, 1])  # Dividindo a tela em duas metades
-            
+            # Filtro para selecionar a data no formato brasileiro (ajustando tamanho do botão)
+            st.markdown("""
+                <style>
+                div[data-baseweb="select"] {
+                    width: 66%;  /* Reduz o tamanho do selectbox para 2/3 */
+                }
+                </style>
+            """, unsafe_allow_html=True)
+    
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])  # Dividindo em 4 colunas para manter equilíbrio
+    
             with col1:
                 # Exibe as datas formatadas corretamente no selectbox
                 datas_disponiveis = self.filtrar_datas()
                 data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
     
-            df_filtrado = self.filtrar_por_data(data_selecionada)
-    
-            # Exibir tabelas na metade esquerda da tela
-            with col1:
+            # Exibir tabelas lado a lado
+            with col2:
                 # Criando a tabela Portfolio
-                df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+                df_portfolio = self.criar_tabela_portfolio(self.filtrar_por_data(data_selecionada))
                 html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
                 st.markdown(html_portfolio, unsafe_allow_html=True)
     
+            with col3:
                 # Criando a tabela Lucro
-                df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
+                df_lucro = self.criar_tabela_lucro(self.filtrar_por_data(data_selecionada), data_selecionada)
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
                 st.markdown(html_lucro, unsafe_allow_html=True)
+    
+            # Preparar para as novas tabelas na metade direita da tela
+            with col4:
+                # Espaço reservado para as novas tabelas, como dividendos e P/E com cálculo de TIR
+                pass
+
 
                     
 
