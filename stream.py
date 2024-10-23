@@ -82,7 +82,7 @@ if st.session_state['acesso_permitido']:
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
             self.df_empresa = df_empresa
-            self.data_options = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
+            self.data_options = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())
             self.data_options = [date.strftime('%d/%m/%Y') for date in self.data_options]
     
         def filtrar_por_data(self, data_selecionada):
