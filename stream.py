@@ -179,6 +179,7 @@ if st.session_state['acesso_permitido']:
                 # Criando a tabela Lucro
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
+                st.markdown(html_lucro, unsafe_allow_html=True)
 
                     
 
