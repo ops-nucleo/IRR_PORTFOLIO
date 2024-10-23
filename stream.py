@@ -183,9 +183,7 @@ if st.session_state['acesso_permitido']:
             st.markdown("""
                 <style>
                 div[data-baseweb="select"] {
-                    width: 50%;  /* Reduz o tamanho do selectbox para 50% */
-                    margin: auto;  /* Centraliza o selectbox */
-                    display: block;
+                    width: 66%;  /* Reduz o tamanho do selectbox para 2/3 */
                 }
                 </style>
             """, unsafe_allow_html=True)
