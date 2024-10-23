@@ -195,7 +195,7 @@ if st.session_state['acesso_permitido']:
             data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
     
             # Exibir tabelas lado a lado, à esquerda
-            col1, col2 = st.columns([1, 1, 1, 1]) 
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
     
             with col1:
                 # Criando a tabela Portfolio
