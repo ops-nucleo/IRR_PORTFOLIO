@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from st_aggrid import AgGrid, GridOptionsBuilder
 from matplotlib.ticker import FuncFormatter
+import datetime
+from io import BytesIO
 
 st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
@@ -79,6 +81,7 @@ if st.session_state['acesso_permitido']:
     logo_path = 'nucleo.png'
     set_background(get_image_as_base64(logo_path))
 
+
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
             # Converte a coluna 'DATA ATUALIZACAO' para datetime
@@ -151,6 +154,55 @@ if st.session_state['acesso_permitido']:
                 df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_dividendos
     
+        def calcular_tir(self, df_filtrado, data_selecionada):
+            # Calcular TIR com base nos fluxos financeiros
+            ano_atual = pd.to_datetime(data_selecionada).year
+            data_atual = pd.to_datetime(data_selecionada)
+            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
+    
+            for empresa in df_filtrado['Ticker'].unique():
+                linha = {}
+                linha['Empresa'] = empresa
+    
+                # Pega o P/E da empresa
+                pe = df_filtrado[df_filtrado['Ticker'] == empresa]['P/E'].values[0] if not df_filtrado[df_filtrado['Ticker'] == empresa]['P/E'].empty else np.nan
+                linha['P/E'] = pe
+    
+                # Market Cap negativado como primeiro fluxo
+                market_cap = df_filtrado[df_filtrado['Ticker'] == empresa]['Mkt Cap'].values[0]
+                fluxos = [-market_cap]
+    
+                # Adicionar fluxos futuros com base nos dividendos ajustados pelo percentual de dias restantes no ano
+                for ano in range(ano_atual, ano_atual + 4):
+                    if ano == ano_atual:
+                        # Para o ano corrente, ajustar pelo percentual de dias restantes
+                        dias_restantes = (datetime.date(ano, 12, 31) - data_atual.date()).days
+                        percentual_restante = dias_restantes / 365
+                        dividendo = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos'].values[0]
+                        fluxo = percentual_restante * dividendo
+                    else:
+                        # Para os próximos anos, pegar o dividendo completo
+                        dividendo = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos'].values[0]
+                        fluxo = dividendo
+    
+                    fluxos.append(fluxo)
+    
+                # Último fluxo: (dividendos 2027 + lucro 2027) * P/E
+                dividendo_2027 = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano_atual + 3)]['Dividendos'].values[0]
+                lucro_2027 = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano_atual + 3)]['Lucro líquido ajustado'].values[0]
+                ultimo_fluxo = (dividendo_2027 + lucro_2027) * pe
+                fluxos.append(ultimo_fluxo)
+    
+                # Calcular TIR
+                tir = np.irr(fluxos)
+                linha['TIR'] = tir * 100 if tir is not None else np.nan
+    
+                # Adicionar à DataFrame
+                df_tir = df_tir.append(linha, ignore_index=True)
+    
+            return df_tir
+
+    
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
             html = f"<h3>{titulo}</h3>"
@@ -165,16 +217,33 @@ if st.session_state['acesso_permitido']:
             # Linhas da tabela
             for i, row in df.iterrows():
                 html += '<tr>'
-                for col in df.columns:
-                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{row[col]}</td>'
-                html += '</tr>'
+                 for col in df.columns:
+                html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{row[col]}</td>'
+            html += '</tr>'
+
+        html += '</tbody></table>'
+        return html
+
+        def download_excel(self, dfs_dict):
+            # Função para baixar todas as DataFrames em um único arquivo Excel com abas separadas
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                for sheet_name, df in dfs_dict.items():
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+                writer.save()
     
-            html += '</tbody></table>'
-            return html
+            # Download do arquivo
+            st.download_button(
+                label="Baixar todas as tabelas em Excel",
+                data=output.getvalue(),
+                file_name="tabelas_IRR_portfolio_lucro.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
     
         def mostrar_tabelas(self):
             # Título ajustado
             st.markdown("<h1 style='text-align: center; margin-top: -50px;'>IRR Portfólio e Lucro</h1>", unsafe_allow_html=True)
+
     
             # Espaçamento negativo para mover o select box mais para cima
             st.markdown("<div style='margin-top: -60px;'></div>", unsafe_allow_html=True)
@@ -204,25 +273,36 @@ if st.session_state['acesso_permitido']:
             col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
     
             with col1:
-                # Criando a tabela Portfolio
-                df_portfolio = self.criar_tabela_portfolio(self.filtrar_por_data(data_selecionada))
+                df_portfolio = self.criar_tabela_portfolio(df_filtrado)
                 html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
                 st.markdown(html_portfolio, unsafe_allow_html=True)
     
+            # Tabela de Lucro
             with col2:
-                # Criando a tabela Lucro
-                df_lucro = self.criar_tabela_lucro(self.filtrar_por_data(data_selecionada), data_selecionada)
+                df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
                 st.markdown(html_lucro, unsafe_allow_html=True)
     
+            # Tabela de Dividendos
             with col3:
-                # Criando a tabela de Dividendos
-                df_dividendos = self.criar_tabela_dividendos(self.filtrar_por_data(data_selecionada), data_selecionada)
+                df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada)
                 html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividendos")
                 st.markdown(html_dividendos, unsafe_allow_html=True)
     
+            # Tabela de P/E e TIR
             with col4:
-                st.write("Aqui entra a tabela de P/E e TIR")  # Placeholder para a tabela de P/E e TIR
+                df_tir = self.calcular_tir(df_filtrado, data_selecionada)
+                html_tir = self.gerar_html_tabela(df_tir, "P/E e TIR")
+                st.markdown(html_tir, unsafe_allow_html=True)
+    
+            # Exportar todas as tabelas em um arquivo Excel com abas
+            dfs_dict = {
+                "Portfolio": df_portfolio,
+                "Lucro": df_lucro,
+                "Dividendos": df_dividendos,
+                "P/E e TIR": df_tir
+            }
+            self.download_excel(dfs_dict)
 
 
                 
