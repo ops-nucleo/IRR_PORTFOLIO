@@ -81,15 +81,20 @@ if st.session_state['acesso_permitido']:
 
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
+            # Converte a coluna 'DATA ATUALIZACAO' para datetime
             self.df_empresa = df_empresa
-            self.data_options = None
-            
+            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+    
         def filtrar_datas(self):
-            datas = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
-            return datas
+            # Obtém datas únicas e ordena do menor para o maior
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())
+            # Formata as datas para o formato brasileiro
+            datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
+            return datas_formatadas
     
         def filtrar_por_data(self, data_selecionada):
-            # Filtra a base de dados pela data selecionada
+            # Converte a data do formato brasileiro para datetime antes de filtrar
+            data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
             df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
             return df_filtrado
     
@@ -101,7 +106,7 @@ if st.session_state['acesso_permitido']:
     
         def criar_tabela_lucro(self, df_filtrado, data_selecionada):
             # Segunda tabela: "Lucro" (mostra os 4 anos a partir da data filtrada)
-            ano_inicial = pd.to_datetime(data_selecionada).year
+            ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
             anos = [ano_inicial + i for i in range(4)]
             
             df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
@@ -117,17 +122,16 @@ if st.session_state['acesso_permitido']:
             return df_lucro
     
         def mostrar_tabelas(self):
-            st.title("Tabela de Portfólio e Lucro")
-                # Ajustando as select boxes e espaçamento dos gráficos
-            st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-            # Filtro para selecionar a data
+            # Título ajustado
+            st.markdown("<h1 style='text-align: center; margin-top: -50px;'>Tabela de Portfólio e Lucro</h1>", unsafe_allow_html=True)
+    
+            # Filtro para selecionar a data no formato brasileiro
             col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
             
             with col1:
-                self.data_options = self.filtrar_data()
-                self.data_options = np.sort(self.data_options)
-                self.data_options = pd.to_datetime(self.data_options).strftime('%d/%m/%Y')
-                data_selecionada = st.selectbox('Selecione a data de atualização:', self.data_options)
+                # Exibe as datas formatadas corretamente no selectbox
+                datas_disponiveis = self.filtrar_datas()
+                data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
     
             df_filtrado = self.filtrar_por_data(data_selecionada)
             
@@ -135,14 +139,14 @@ if st.session_state['acesso_permitido']:
                 # Criando e exibindo a tabela Portfolio
                 st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                st.dataframe(df_portfolio.reset_index(drop=True),hide_index=True)   # Resetando o índice antes de exibir
+                st.dataframe(df_portfolio)
     
             with col3:
                 # Criando e exibindo a tabela Lucro
                 st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                st.dataframe(df_lucro.reset_index(drop=True),hide_index=True)  # Resetando o índice antes de exibir
-                
+                st.dataframe(df_lucro)
+                    
 
                 
 
