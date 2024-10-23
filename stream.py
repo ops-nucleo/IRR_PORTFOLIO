@@ -134,7 +134,7 @@ if st.session_state['acesso_permitido']:
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
             html = f"<h3>{titulo}</h3>"
-            html += '<table style="width:50%; border-collapse: collapse; margin: auto;">'  # Define a largura da tabela para 50%
+            html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'  # Ajustando largura para 100% da coluna
             html += '<thead><tr style="background-color: #f2f2f2;">'
     
             # Cabeçalhos da tabela
@@ -156,8 +156,11 @@ if st.session_state['acesso_permitido']:
             # Título ajustado
             st.markdown("<h1 style='text-align: center; margin-top: -50px;'>IRR Portfólio e Lucro</h1>", unsafe_allow_html=True)
     
+            # Espaçamento negativo para mover o select box mais para cima
+            st.markdown("<div style='margin-top: -60px;'></div>", unsafe_allow_html=True)
+    
             # Filtro para selecionar a data no formato brasileiro
-            col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
+            col1, col2 = st.columns([1, 1])  # Dividindo a tela em duas metades
             
             with col1:
                 # Exibe as datas formatadas corretamente no selectbox
@@ -165,21 +168,17 @@ if st.session_state['acesso_permitido']:
                 data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
     
             df_filtrado = self.filtrar_por_data(data_selecionada)
-            
-            with col2:
+    
+            # Exibir tabelas na metade esquerda da tela
+            with col1:
                 # Criando a tabela Portfolio
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                # Exibir a tabela em HTML
                 html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
                 st.markdown(html_portfolio, unsafe_allow_html=True)
     
-            with col3:
                 # Criando a tabela Lucro
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
-                # Exibir a tabela em HTML
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
-                st.markdown(html_lucro, unsafe_allow_html=True)
-
 
                     
 
