@@ -189,7 +189,7 @@ if st.session_state['acesso_permitido']:
                 }
                 </style>
             """, unsafe_allow_html=True)
-            col5, col6, col7, col8, col9, col10 = st.columns([1, 1, 1, 1, 1, 1]) 
+            col5, col6, col7, col8, col9, col10 = st.columns([0.5, 1.5, 1, 1, 1, 1]) 
             with col5:
                 # Selectbox sozinho no topo
                 datas_disponiveis = self.filtrar_datas()
