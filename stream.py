@@ -205,24 +205,26 @@ if st.session_state['acesso_permitido']:
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
-            html = f"<h3>{titulo}</h3>"
-            html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'  # Ajustando largura para 100% da coluna
-            html += '<thead><tr style="background-color: #f2f2f2;">'
-    
+            html = f"""
+            <h3 style="text-align:center; margin-bottom: 10px;">{titulo}</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: auto; text-align: left;">
+            <thead>
+            <tr style="background-color: #f2f2f2;">"""
+        
             # Cabeçalhos da tabela
             for col in df.columns:
-                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">{col}</th>'
+                html += f'<th style="border: 1px solid #ddd; padding: 8px;">{col}</th>'
             html += '</tr></thead><tbody>'
-    
+        
             # Linhas da tabela
-            for i, row in df.iterrows():
+            for _, row in df.iterrows():
                 html += '<tr>'
-                 for col in df.columns:
-                html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{row[col]}</td>'
-            html += '</tr>'
-
-        html += '</tbody></table>'
-        return html
+                for col in df.columns:
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px;">{row[col]}</td>'
+                html += '</tr>'
+        
+            html += '</tbody></table>'
+            return html
 
         def download_excel(self, dfs_dict):
             # Função para baixar todas as DataFrames em um único arquivo Excel com abas separadas
