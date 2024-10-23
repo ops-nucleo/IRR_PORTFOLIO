@@ -102,9 +102,13 @@ if st.session_state['acesso_permitido']:
             # Primeira tabela: "Portfolio"
             df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
             df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
+    
+            # Certificando-se de que os valores são numéricos e tratando NaN
+            df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
+            
             # Formatando os números
             df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.2f}%")
-            df_portfolio['Mkt cap'] = df_portfolio['Mkt cap'].apply(lambda x: f"{x:,.2f}")
+            df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}")
             return df_portfolio
     
         def criar_tabela_lucro(self, df_filtrado, data_selecionada):
@@ -124,7 +128,7 @@ if st.session_state['acesso_permitido']:
     
             # Formatando os números no estilo americano
             for ano in anos:
-                df_lucro[ano] = df_lucro[ano].apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+                df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_lucro
     
         def gerar_html_tabela(self, df, titulo):
@@ -175,6 +179,7 @@ if st.session_state['acesso_permitido']:
                 # Exibir a tabela em HTML
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
                 st.markdown(html_lucro, unsafe_allow_html=True)
+
 
                     
 
