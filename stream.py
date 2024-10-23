@@ -158,17 +158,25 @@ if st.session_state['acesso_permitido']:
             # Calcula a TIR para as empresas com base nos fluxos financeiros
             ano_atual = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
             empresas = df_filtrado['Ticker'].unique()
-    
+        
             df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
-    
+        
             for empresa in empresas:
                 linha = {'Empresa': empresa}
                 pe = df_filtrado[df_filtrado['Ticker'] == empresa]['P/E'].values[0]
                 market_cap = df_filtrado[df_filtrado['Ticker'] == empresa]['Mkt Cap'].values[0]
                 dividendos = df_filtrado[df_filtrado['Ticker'] == empresa]['Dividendos'].values
-    
+        
+                # Converter market_cap para valor numérico
+                market_cap = pd.to_numeric(market_cap, errors='coerce')
+        
+                # Verificar se market_cap é um número válido
+                if pd.isna(market_cap):
+                    st.warning(f"Valor inválido de Market Cap para {empresa}. Ignorando cálculo.")
+                    continue
+        
                 # Fluxos financeiros
-                fluxos = [-market_cap]
+                fluxos = [-market_cap]  # Iniciando com o valor negativo do Market Cap
                 for i in range(4):  # Para os próximos 4 anos
                     ano = ano_atual + i
                     if i == 0:
@@ -178,18 +186,18 @@ if st.session_state['acesso_permitido']:
                     else:
                         fluxo = dividendos[i]
                     fluxos.append(fluxo)
-    
+        
                 # Último fluxo com P/E e lucro líquido
                 lucro_liquido = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano_atual + 3)]['Lucro líquido ajustado'].values[0]
                 ultimo_fluxo = (dividendos[3] + lucro_liquido) * pe
                 fluxos.append(ultimo_fluxo)
-    
+        
                 # Calcula a TIR
                 tir = np.irr(fluxos)
                 linha['P/E'] = pe
                 linha['TIR'] = tir
                 df_tir = df_tir.append(linha, ignore_index=True)
-    
+        
             return df_tir
     
         def gerar_html_tabela(self, df, titulo):
