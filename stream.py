@@ -274,29 +274,30 @@ if st.session_state['acesso_permitido']:
             # Exibir tabelas lado a lado, à esquerda
             col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
     
+            # Tabela de Portfolio
             with col1:
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
                 html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
                 st.markdown(html_portfolio, unsafe_allow_html=True)
-    
+        
             # Tabela de Lucro
             with col2:
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
                 st.markdown(html_lucro, unsafe_allow_html=True)
-    
+        
             # Tabela de Dividendos
             with col3:
                 df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada)
                 html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividendos")
                 st.markdown(html_dividendos, unsafe_allow_html=True)
-    
+        
             # Tabela de P/E e TIR
             with col4:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada)
                 html_tir = self.gerar_html_tabela(df_tir, "P/E e TIR")
                 st.markdown(html_tir, unsafe_allow_html=True)
-    
+        
             # Exportar todas as tabelas em um arquivo Excel com abas
             dfs_dict = {
                 "Portfolio": df_portfolio,
@@ -305,7 +306,6 @@ if st.session_state['acesso_permitido']:
                 "P/E e TIR": df_tir
             }
             self.download_excel(dfs_dict)
-
 
                 
 
