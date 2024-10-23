@@ -232,11 +232,20 @@ if st.session_state['acesso_permitido']:
         def download_excel(self, dfs_dict):
             # Função para baixar todas as DataFrames em um único arquivo Excel com abas separadas
             output = BytesIO()
+            
+            # Substituir caracteres inválidos no nome da aba
+            safe_sheet_names = {
+                sheet_name: sheet_name.replace('/', '').replace('\\', '').replace('*', '').replace('[', '').replace(']', '').replace(':', '').replace('?', '') 
+                for sheet_name in dfs_dict.keys()
+            }
+            
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
                 for sheet_name, df in dfs_dict.items():
-                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+                    # Usa o nome corrigido para evitar erros
+                    safe_name = safe_sheet_names[sheet_name]
+                    df.to_excel(writer, sheet_name=safe_name, index=False)
                 writer.save()
-    
+        
             # Download do arquivo
             st.download_button(
                 label="Baixar todas as tabelas em Excel",
