@@ -82,10 +82,11 @@ if st.session_state['acesso_permitido']:
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
             self.df_empresa = df_empresa
-            self.data_options = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())
-           
-            # Formata as datas para exibição no formato brasileiro
-            self.datas_formatadas = pd.to_datetime(self.data_options).strftime('%d/%m/%Y')
+            self.data_options = None
+            
+        def filtrar_datas(self):
+            datas = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
+            return datas
     
         def filtrar_por_data(self, data_selecionada):
             # Filtra a base de dados pela data selecionada
@@ -123,6 +124,9 @@ if st.session_state['acesso_permitido']:
             col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
             
             with col1:
+                self.data_options = self.filtrar_data()
+                self.data_options = np.sort(self.data_options)
+                self.data_options = pd.to_datetime(self.data_options).strftime('%d/%m/%Y')
                 data_selecionada = st.selectbox('Selecione a data de atualização:', self.data_options)
     
             df_filtrado = self.filtrar_por_data(data_selecionada)
