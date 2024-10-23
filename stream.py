@@ -144,7 +144,7 @@ if st.session_state['acesso_permitido']:
     
         def mostrar_tabelas(self):
             # Título ajustado
-            st.markdown("<h1 style='text-align: center; margin-top: -50px;'>Tabela de Portfólio e Lucro</h1>", unsafe_allow_html=True)
+            st.markdown("<h1 style='text-align: center; margin-top: -50px;'>IRR Portfólio e Lucro</h1>", unsafe_allow_html=True)
     
             # Filtro para selecionar a data no formato brasileiro
             col1, col2, col3 = st.columns([1, 3, 3])  # Layout horizontal
@@ -158,7 +158,6 @@ if st.session_state['acesso_permitido']:
             
             with col2:
                 # Criando a tabela Portfolio
-                st.subheader("Portfolio")
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
                 # Exibir a tabela em HTML
                 html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
@@ -166,7 +165,6 @@ if st.session_state['acesso_permitido']:
     
             with col3:
                 # Criando a tabela Lucro
-                st.subheader("Lucro")
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada)
                 # Exibir a tabela em HTML
                 html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
