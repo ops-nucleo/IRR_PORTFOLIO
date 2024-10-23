@@ -167,8 +167,8 @@ if st.session_state['acesso_permitido']:
                 }
                 </style>
             """, unsafe_allow_html=True)
-    
-            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])  # Dividindo em 4 colunas para manter equilíbrio
+             col1 = st.columns([1, 1, 1, 1]) 
+          col2, col3, col4 = st.columns([1, 1, 1])  # Dividindo em 4 colunas para manter equilíbrio
     
             with col1:
                 # Exibe as datas formatadas corretamente no selectbox
