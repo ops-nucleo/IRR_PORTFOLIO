@@ -155,32 +155,32 @@ if st.session_state['acesso_permitido']:
             return df_dividendos
     
 
-    def calcular_tir(self, df_filtrado, data_selecionada):
-        empresas = df_filtrado['Ticker'].unique()
-        pe_coluna = 'P/E'
-        tir_coluna = 'TIR'  # Coluna de onde vamos buscar os valores de TIR
-        df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
+        def calcular_tir(self, df_filtrado, data_selecionada):
+            empresas = df_filtrado['Ticker'].unique()
+            pe_coluna = 'P/E'
+            tir_coluna = 'TIR'  # Coluna de onde vamos buscar os valores de TIR
+            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
+            
+            for empresa in empresas:
+                linha = {'Empresa': empresa}
+                
+                # Obtendo o P/E e tratando valores NaN
+                pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
+                linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
+                
+                # Obtendo a TIR da coluna 'TIR'
+                tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].values[0]
+                
+                # Se a TIR for NaN ou 0, retornamos 'faltando dados', caso contrário, formatamos como percentual
+                if pd.isna(tir) or tir == 0:
+                    linha['TIR'] = 'faltando dados'
+                else:
+                    linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
+                
+                # Adicionando a linha no DataFrame
+                df_tir = df_tir.append(linha, ignore_index=True)
         
-        for empresa in empresas:
-            linha = {'Empresa': empresa}
-            
-            # Obtendo o P/E e tratando valores NaN
-            pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
-            linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
-            
-            # Obtendo a TIR da coluna 'TIR'
-            tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].values[0]
-            
-            # Se a TIR for NaN ou 0, retornamos 'faltando dados', caso contrário, formatamos como percentual
-            if pd.isna(tir) or tir == 0:
-                linha['TIR'] = 'faltando dados'
-            else:
-                linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
-            
-            # Adicionando a linha no DataFrame
-            df_tir = df_tir.append(linha, ignore_index=True)
-    
-        return df_tir
+            return df_tir
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
