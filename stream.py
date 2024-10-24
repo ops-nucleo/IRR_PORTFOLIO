@@ -160,23 +160,23 @@ if st.session_state['acesso_permitido']:
             pe_coluna = 'P/E'
             tir_coluna = 'TIR'  # Coluna de onde vamos buscar os valores de TIR
             df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
-            
+        
             for empresa in empresas:
                 linha = {'Empresa': empresa}
-                
+        
                 # Obtendo o P/E e tratando valores NaN
                 pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
                 linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
-                
+        
                 # Obtendo a TIR da coluna 'TIR'
                 tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].values[0]
-                
-                # Verificar se a TIR é um número, e formatar como percentual, caso contrário, manter como string
+        
+                # Verificar se a TIR é numérica e não é NaN
                 if isinstance(tir, (int, float)) and not pd.isna(tir) and tir != 0:
                     linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
                 else:
                     linha['TIR'] = 'faltando dados'
-                
+        
                 # Adicionando a linha no DataFrame
                 df_tir = df_tir.append(linha, ignore_index=True)
         
