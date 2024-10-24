@@ -424,11 +424,11 @@ if st.session_state['acesso_permitido']:
                 # Adicionar o TIR no segundo eixo Y e formatar como percentual
                 ax2.plot(pd.to_datetime(df_comp3['DATA ATUALIZACAO']), df_comp3['TIR'], marker='o', color='tab:orange', markersize=3)
                 ax2.set_ylabel('TIR (%)', fontsize=6)
-                
+               
                 # Ajusta o limite do segundo eixo Y (TIR) com folga de 40%
                 min_tir = df_comp3['TIR'].min()
                 max_tir = df_comp3['TIR'].max()
-                y_folga_tir = 0.4 * (min_tir - max_tir)
+                y_folga_tir = 0.4 * (max_tir - min_tir)
                 ax2.set_ylim([min_tir - y_folga_tir, max_tir + y_folga_tir])
                 
                 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x * 100:.2f}%'))
