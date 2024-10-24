@@ -186,20 +186,26 @@ if st.session_state['acesso_permitido']:
             # Gera o código HTML da tabela com formatação e ajuste de largura
             html = f"<h3>{titulo}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
-            html += '<thead><tr style="background-color: #f2f2f2;">'
-    
-            # Cabeçalhos da tabela
+            
+            # Adicionando os cabeçalhos da tabela com cor personalizada (R: 0, G: 32, B: 96)
+            html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
             for col in df.columns:
                 html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">{col}</th>'
             html += '</tr></thead><tbody>'
-    
-            # Linhas da tabela
-            for _, row in df.iterrows():
-                html += '<tr>'
+            
+            # Linhas alternadas (cinza e branco)
+            for i, row in df.iterrows():
+                # Alterna as cores de fundo entre cinza e branco
+                if i % 2 == 0:
+                    bg_color = 'rgb(242, 242, 242)'  # Cinza
+                else:
+                    bg_color = 'white'  # Branco
+        
+                html += f'<tr style="background-color: {bg_color};">'
                 for col in df.columns:
                     html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: left;">{row[col]}</td>'
                 html += '</tr>'
-    
+        
             html += '</tbody></table>'
             return html
     
