@@ -273,7 +273,7 @@ if st.session_state['acesso_permitido']:
                 html_tir = self.gerar_html_tabela(df_tir, "P/E e TIR")
                 st.markdown(html_tir, unsafe_allow_html=True)
 
-            st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
+            st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
     
             # Exportar todas as tabelas em um arquivo Excel com abas separadas
