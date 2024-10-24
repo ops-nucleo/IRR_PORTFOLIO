@@ -477,7 +477,16 @@ if st.session_state['acesso_permitido']:
                 # Caixa de seleção "Até" (remover a primeira data)
                 data_ate = st.selectbox('Até', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
     
-            # Adicionando Radio Buttons na coluna col6 para seleção de comparação
+            # Adicionando um estilo para ajustar a posição do botão de comparação
+            st.markdown("""
+                <style>
+                div[data-baseweb="radio"] {
+                    margin-top: -20px;
+                    text-align: center;
+                }
+                </style>
+                """, unsafe_allow_html=True)
+            
             with col6:
                 comparacao = st.radio(
                     "Comparação",
