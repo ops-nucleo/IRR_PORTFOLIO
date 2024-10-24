@@ -505,6 +505,9 @@ if st.session_state['acesso_permitido']:
                         colunas_exibir.append('CDI')
                     elif comparacao == 'Variável vs P/E':
                         colunas_exibir.append('P/E')
+                    elif comparacao == 'Variável vs TIR':
+                        colunas_exibir.append('TIR')
+                
                 
                     # Filtra o DataFrame para exibir apenas as colunas selecionadas
                     df_filtrado_para_exibir = df_filtrado[colunas_exibir]
