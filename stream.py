@@ -387,9 +387,6 @@ if st.session_state['acesso_permitido']:
                 y_folga_cdi = 0.4 * (max_cdi - min_cdi)
                 ax2.set_ylim([min_cdi - y_folga_cdi, max_cdi + y_folga_cdi])
                 
-                # Aplica o formatter para percentual com 2 casas decimais no eixo Y
-                ax2.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{x * 100:.2f}%'))
-                
                 # Ajusta o tamanho das labels do eixo Y
                 ax2.tick_params(axis='y', labelsize=5)
         
@@ -409,15 +406,35 @@ if st.session_state['acesso_permitido']:
                 # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
                 min_pe = df_comp2['P/E'].min()
                 max_pe = df_comp2['P/E'].max()
-                y_folga_pe = 0.4 * (max_pe - min_pe)
+                y_folga_pe = 0.4 * (min_pe - max_pe)
                 ax2.set_ylim([min_pe - y_folga_pe, max_pe + y_folga_pe])
                 
-                # Formatar o P/E com uma casa decimal
                 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}'))
                 ax2.tick_params(axis='y', labelsize=5)
         
+            # Se for selecionado "Variável vs TIR"
+            elif comparacao == "Variável vs TIR":
+                ax2 = ax1.twinx()  # Cria um segundo eixo Y
+                df_comp3 = df_filtrado.copy()
+                df_comp3['TIR'] = df_comp3['TIR'].astype(float)
+                df_comp3 = df_comp3.dropna(subset=['TIR'])
+                if df_comp3['TIR'].isna().all():
+                    st.warning(f"Não possuímos dados de TIR para as datas selecionadas.")
+                    return None, None, None
+                # Adicionar o TIR no segundo eixo Y e formatar como percentual
+                ax2.plot(pd.to_datetime(df_comp3['DATA ATUALIZACAO']), df_comp3['TIR'], marker='o', color='tab:orange', markersize=3)
+                ax2.set_ylabel('TIR (%)', fontsize=6)
+                
+                # Ajusta o limite do segundo eixo Y (TIR) com folga de 40%
+                min_tir = df_comp3['TIR'].min()
+                max_tir = df_comp3['TIR'].max()
+                y_folga_tir = 0.4 * (min_tir - max_tir)
+                ax2.set_ylim([min_tir - y_folga_tir, max_tir + y_folga_tir])
+                
+                ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x * 100:.2f}%'))
+                ax2.tick_params(axis='y', labelsize=5)
+        
             return fig, df_filtrado, self.df_mkt
-
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
     
@@ -464,7 +481,7 @@ if st.session_state['acesso_permitido']:
             with col6:
                 comparacao = st.radio(
                     "Comparação",
-                    ('Sem comparação', 'Variável vs CDI', 'Variável vs P/E'),
+                    ('Sem comparação', 'Variável vs CDI', 'Variável vs P/E', 'Variável vs TIR'),
                     index=0  # "Sem comparação" como padrão
                 )
     
