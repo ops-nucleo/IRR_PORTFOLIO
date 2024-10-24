@@ -236,7 +236,7 @@ if st.session_state['acesso_permitido']:
     
         def mostrar_tabelas(self):
             # Título ajustado
-            st.markdown("<h1 style='text-align: center; margin-top: -50px;'>IRR Portfólio e Lucro</h1>", unsafe_allow_html=True)
+            st.markdown("<h1 style='text-align: center; margin-top: -50px;'>IRR Portfólio</h1>", unsafe_allow_html=True)
     
             # Seção do Selectbox para a data (com a formatação que você mencionou)
             col5, col6, col7, col8 = st.columns([0.5, 1.5, 1, 1]) 
