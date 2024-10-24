@@ -478,16 +478,22 @@ if st.session_state['acesso_permitido']:
                 data_ate = st.selectbox('Até', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
     
             # Adicionando um estilo para ajustar a posição do botão de comparação
-            st.markdown("""
-                <style>
-                div[data-baseweb="radio"] {
-                    margin-top: -20px;
-                    text-align: center;
-                }
-                </style>
-                """, unsafe_allow_html=True)
-            
             with col6:
+                # Aplicando o CSS antes do botão de rádio para garantir que funcione corretamente
+                st.markdown("""
+                    <style>
+                    div[data-baseweb="radio"] {
+                        margin-top: -40px; /* Ajustar conforme necessário */
+                        display: flex;
+                        justify-content: center;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                
+                # Colocando o radio button de forma centralizada e ajustada para cima
+                st.markdown("<div style='text-align: center; margin-top: -30px;'></div>", unsafe_allow_html=True)
+                
+                # Adicionando o botão de comparação
                 comparacao = st.radio(
                     "Comparação",
                     ('Sem comparação', 'Variável vs CDI', 'Variável vs P/E', 'Variável vs TIR'),
