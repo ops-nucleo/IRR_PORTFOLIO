@@ -155,66 +155,32 @@ if st.session_state['acesso_permitido']:
             return df_dividendos
     
 
-        def calcular_tir(self, df_filtrado, data_selecionada):
-            empresas = df_filtrado['Ticker'].unique()
-            pe_coluna = 'P/E'
-            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
-            
-            ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-            anos = [ano_inicial + i for i in range(4)]
-            
-            for empresa in empresas:
-                linha = {'Empresa': empresa}
-                
-                # Obtendo o P/E e tratando valores NaN
-                pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
-                linha['P/E'] = pe
-                
-                # Obtendo o Market Cap
-                market_cap = df_filtrado[df_filtrado['Ticker'] == empresa]['Mkt Cap'].values[0]
-                if pd.isna(market_cap):
-                    df_tir = df_tir.append({'Empresa': empresa, 'P/E': pe, 'TIR': 'faltando dados'}, ignore_index=True)
-                    continue
-                
-                try:
-                    # Calculando os fluxos financeiros
-                    fluxos = [-market_cap]
-                    print(f"Empresa: {empresa}, Market Cap: {market_cap}")  # Verificando o Market Cap
-                    
-                    for i, ano in enumerate(anos):
-                        dividendos = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos']
-                        dividendos = dividendos.values[0] if not dividendos.empty else 0
-                        
-                        # Calcular os dias restantes do ano
-                        if i == 0:
-                            dias_restantes = (pd.Timestamp(f'{ano}-12-31') - pd.to_datetime(data_selecionada)).days
-                            perc_ano_restante = dias_restantes / 365
-                            fluxo = dividendos * perc_ano_restante
-                        else:
-                            fluxo = dividendos
-                        
-                        fluxos.append(fluxo)
-                        print(f"Ano: {ano}, Dividendos: {dividendos}, Fluxo: {fluxo}")  # Verificando dividendos e fluxos
+    def calcular_tir(self, df_filtrado, data_selecionada):
+        empresas = df_filtrado['Ticker'].unique()
+        pe_coluna = 'P/E'
+        tir_coluna = 'TIR'  # Coluna de onde vamos buscar os valores de TIR
+        df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
         
-                    # Último fluxo: (dividendo de 2027 + lucro líquido ajustado) * P/E
-                    lucro_liquido = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == anos[-1])]['Lucro líquido ajustado']
-                    lucro_liquido = lucro_liquido.values[0] if not lucro_liquido.empty else 0
-                    ultimo_fluxo = (dividendos + lucro_liquido) * pe
-                    fluxos.append(ultimo_fluxo)
-                    print(f"Último Fluxo (Dividendos + Lucro): {ultimo_fluxo}, P/E: {pe}, Lucro Líquido: {lucro_liquido}")  # Verificando último fluxo
-                    
-                    # Calculando a TIR
-                    tir = npf.irr(fluxos)
-                    linha['TIR'] = tir if not np.isnan(tir) else 'faltando dados'
-                
-                except Exception as e:
-                    # Caso ocorra qualquer erro no cálculo, vamos registrar 'faltando dados'
-                    linha['TIR'] = 'faltando dados'
-                    print(f"Erro ao calcular TIR para {empresa}: {str(e)}")  # Mensagem de erro
-        
-                df_tir = df_tir.append(linha, ignore_index=True)
+        for empresa in empresas:
+            linha = {'Empresa': empresa}
             
-            return df_tir
+            # Obtendo o P/E e tratando valores NaN
+            pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
+            linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
+            
+            # Obtendo a TIR da coluna 'TIR'
+            tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].values[0]
+            
+            # Se a TIR for NaN ou 0, retornamos 'faltando dados', caso contrário, formatamos como percentual
+            if pd.isna(tir) or tir == 0:
+                linha['TIR'] = 'faltando dados'
+            else:
+                linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
+            
+            # Adicionando a linha no DataFrame
+            df_tir = df_tir.append(linha, ignore_index=True)
+    
+        return df_tir
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
