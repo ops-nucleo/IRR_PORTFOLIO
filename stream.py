@@ -171,11 +171,11 @@ if st.session_state['acesso_permitido']:
                 # Obtendo a TIR da coluna 'TIR'
                 tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].values[0]
                 
-                # Se a TIR for NaN ou 0, retornamos 'faltando dados', caso contrário, formatamos como percentual
-                if pd.isna(tir) or tir == 0:
-                    linha['TIR'] = 'faltando dados'
-                else:
+                # Verificar se a TIR é um número, e formatar como percentual, caso contrário, manter como string
+                if isinstance(tir, (int, float)) and not pd.isna(tir) and tir != 0:
                     linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
+                else:
+                    linha['TIR'] = 'faltando dados'
                 
                 # Adicionando a linha no DataFrame
                 df_tir = df_tir.append(linha, ignore_index=True)
