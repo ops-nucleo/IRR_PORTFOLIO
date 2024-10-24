@@ -168,14 +168,14 @@ if st.session_state['acesso_permitido']:
                 pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
                 linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
         
-                # Obtendo a TIR da coluna 'TIR'
-                tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].values[0]
+                # Obtendo a TIR da coluna 'TIR' e convertendo para float
+                tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
         
-                # Verificar se a TIR é numérica e não é NaN
-                if isinstance(tir, (int, float)) and not pd.isna(tir) and tir != 0:
+                # Verificar se a TIR é numérica, diferente de zero e não NaN
+                if not pd.isna(tir) and tir != 0:
                     linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
                 else:
-                    linha['TIR'] = 'faltando dados'
+                    linha['TIR'] = 'faltando dados'  # Se for 0 ou NaN, exibe "faltando dados"
         
                 # Adicionando a linha no DataFrame
                 df_tir = df_tir.append(linha, ignore_index=True)
