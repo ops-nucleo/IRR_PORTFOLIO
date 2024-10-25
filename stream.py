@@ -297,7 +297,7 @@ if st.session_state['acesso_permitido']:
             media_ponderada_tir = self.calcular_media_ponderada_tir(df_tir, df_portfolio)
     
             # Exibir a média ponderada da TIR em formato de texto
-            col11, col12, col9, col10 = st.columns([1, 1, 1, 1])
+            col11, col9, col10, col12 , col13, col14 , col15, col16= st.columns([1, 1, 1, 1, 1, 1, 1, 1])
             with col9:
                 st.markdown("<h3 style='text-align: left;'>IRR Portfólio</h3>", unsafe_allow_html=True)
             with col10:
