@@ -82,138 +82,138 @@ if st.session_state['acesso_permitido']:
     set_background(get_image_as_base64(logo_path))
 
 
-        class TabelaPortfolioLucro:
-            def __init__(self, df_empresa):
-                # Converte a coluna 'DATA ATUALIZACAO' para datetime
-                self.df_empresa = df_empresa
-                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
-        
-            def filtrar_datas(self):
-                # Obtém datas únicas e ordena do mais recente para o mais antigo
-                datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
-                # Formata as datas para o formato brasileiro
-                datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
-                return datas_formatadas
-        
-            def filtrar_por_data(self, data_selecionada):
-                # Converte a data do formato brasileiro para datetime antes de filtrar
-                data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
-                df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
-                return df_filtrado
-        
-            def criar_tabela_portfolio(self, df_filtrado):
-                # Primeira tabela: "Portfolio"
-                df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
-                df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
-        
-                # Certificando-se de que os valores são numéricos e tratando NaN
-                df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
-        
-                # **Ordenando por % Portfólio em ordem decrescente**
-                df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
-        
-                # Formatando os números
-                df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.2f}%")
-                df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}")
-                return df_portfolio
-        
-            def criar_tabela_lucro(self, df_filtrado, data_selecionada, empresas_ordenadas):
-                # Segunda tabela: "Lucro" (mesma ordem de empresas)
-                ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-                anos = [ano_inicial + i for i in range(4)]
-        
-                df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
-                
-                for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
-                    for i, ano in enumerate(anos):
-                        lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro líquido ajustado']
-                        linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
-                    df_lucro = df_lucro.append(linha, ignore_index=True)
-        
-                # Formatando os números no estilo americano
-                for ano in anos:
-                    df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
-                return df_lucro
-        
-            def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
-                # Tabela de Dividendos (mesma ordem de empresas)
-                ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-                anos = [ano_inicial + i for i in range(4)]
-        
-                df_dividendos = pd.DataFrame(columns=['Empresa'] + anos)
-        
-                for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
-                    for i, ano in enumerate(anos):
-                        dividendo_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos']
-                        linha[ano] = dividendo_ano.values[0] if not dividendo_ano.empty else np.nan
-                    df_dividendos = df_dividendos.append(linha, ignore_index=True)
-        
-                # Formatando os números no estilo americano
-                for ano in anos:
-                    df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
-                return df_dividendos
-        
-            def calcular_tir(self, df_filtrado, empresas_ordenadas):
-                df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
-                pe_coluna = 'P/E'
-                tir_coluna = 'TIR'
-        
-                for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
-                    pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
-                    linha['P/E'] = f"{pe:,.2f}"
-        
-                    tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
-        
-                    if not pd.isna(tir) and tir != 0:
-                        linha['TIR'] = f"{tir:.2%}"
-                    else:
-                        linha['TIR'] = 'faltando dados'
-        
-                    df_tir = df_tir.append(linha, ignore_index=True)
-        
-                return df_tir
-        
-            def mostrar_tabelas(self):
-                # Seção do Selectbox para a data
-                col5, col6, col7, col8 = st.columns([0.5, 1.5, 1, 1])
-                with col5:
-                    datas_disponiveis = self.filtrar_datas()
-                    data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
-        
-                # Filtra os dados pela data selecionada
-                df_filtrado = self.filtrar_por_data(data_selecionada)
-        
-                # Tabela de Portfolio (ordenada por % Portfólio)
-                df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                empresas_ordenadas = df_portfolio['Empresa'].tolist()  # Captura a ordem das empresas
-        
-                col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-        
-                # Tabela de Portfolio
-                with col1:
-                    html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
-                    st.markdown(html_portfolio, unsafe_allow_html=True)
-        
-                # Tabela de Lucro
-                with col2:
-                    df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada, empresas_ordenadas)
-                    html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
-                    st.markdown(html_lucro, unsafe_allow_html=True)
-        
-                # Tabela de Dividendos
-                with col3:
-                    df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada, empresas_ordenadas)
-                    html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividendos")
-                    st.markdown(html_dividendos, unsafe_allow_html=True)
-        
-                # Tabela de P/E e TIR
-                with col4:
-                    df_tir = self.calcular_tir(df_filtrado, empresas_ordenadas)
-                    html_tir = self.gerar_html_tabela(df_tir, "P/E e TIR")
-                    st.markdown(html_tir, unsafe_allow_html=True)
+    class TabelaPortfolioLucro:
+        def __init__(self, df_empresa):
+            # Converte a coluna 'DATA ATUALIZACAO' para datetime
+            self.df_empresa = df_empresa
+            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+    
+        def filtrar_datas(self):
+            # Obtém datas únicas e ordena do mais recente para o mais antigo
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            # Formata as datas para o formato brasileiro
+            datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
+            return datas_formatadas
+    
+        def filtrar_por_data(self, data_selecionada):
+            # Converte a data do formato brasileiro para datetime antes de filtrar
+            data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
+            return df_filtrado
+    
+        def criar_tabela_portfolio(self, df_filtrado):
+            # Primeira tabela: "Portfolio"
+            df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
+            df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
+    
+            # Certificando-se de que os valores são numéricos e tratando NaN
+            df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
+    
+            # **Ordenando por % Portfólio em ordem decrescente**
+            df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
+    
+            # Formatando os números
+            df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.2f}%")
+            df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}")
+            return df_portfolio
+    
+        def criar_tabela_lucro(self, df_filtrado, data_selecionada, empresas_ordenadas):
+            # Segunda tabela: "Lucro" (mesma ordem de empresas)
+            ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
+            anos = [ano_inicial + i for i in range(4)]
+    
+            df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+            
+            for empresa in empresas_ordenadas:
+                linha = {'Empresa': empresa}
+                for i, ano in enumerate(anos):
+                    lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro líquido ajustado']
+                    linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
+                df_lucro = df_lucro.append(linha, ignore_index=True)
+    
+            # Formatando os números no estilo americano
+            for ano in anos:
+                df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+            return df_lucro
+    
+        def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
+            # Tabela de Dividendos (mesma ordem de empresas)
+            ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
+            anos = [ano_inicial + i for i in range(4)]
+    
+            df_dividendos = pd.DataFrame(columns=['Empresa'] + anos)
+    
+            for empresa in empresas_ordenadas:
+                linha = {'Empresa': empresa}
+                for i, ano in enumerate(anos):
+                    dividendo_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos']
+                    linha[ano] = dividendo_ano.values[0] if not dividendo_ano.empty else np.nan
+                df_dividendos = df_dividendos.append(linha, ignore_index=True)
+    
+            # Formatando os números no estilo americano
+            for ano in anos:
+                df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+            return df_dividendos
+    
+        def calcular_tir(self, df_filtrado, empresas_ordenadas):
+            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
+            pe_coluna = 'P/E'
+            tir_coluna = 'TIR'
+    
+            for empresa in empresas_ordenadas:
+                linha = {'Empresa': empresa}
+                pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
+                linha['P/E'] = f"{pe:,.2f}"
+    
+                tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
+    
+                if not pd.isna(tir) and tir != 0:
+                    linha['TIR'] = f"{tir:.2%}"
+                else:
+                    linha['TIR'] = 'faltando dados'
+    
+                df_tir = df_tir.append(linha, ignore_index=True)
+    
+            return df_tir
+    
+        def mostrar_tabelas(self):
+            # Seção do Selectbox para a data
+            col5, col6, col7, col8 = st.columns([0.5, 1.5, 1, 1])
+            with col5:
+                datas_disponiveis = self.filtrar_datas()
+                data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
+    
+            # Filtra os dados pela data selecionada
+            df_filtrado = self.filtrar_por_data(data_selecionada)
+    
+            # Tabela de Portfolio (ordenada por % Portfólio)
+            df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+            empresas_ordenadas = df_portfolio['Empresa'].tolist()  # Captura a ordem das empresas
+    
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+    
+            # Tabela de Portfolio
+            with col1:
+                html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
+                st.markdown(html_portfolio, unsafe_allow_html=True)
+    
+            # Tabela de Lucro
+            with col2:
+                df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada, empresas_ordenadas)
+                html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
+                st.markdown(html_lucro, unsafe_allow_html=True)
+    
+            # Tabela de Dividendos
+            with col3:
+                df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada, empresas_ordenadas)
+                html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividendos")
+                st.markdown(html_dividendos, unsafe_allow_html=True)
+    
+            # Tabela de P/E e TIR
+            with col4:
+                df_tir = self.calcular_tir(df_filtrado, empresas_ordenadas)
+                html_tir = self.gerar_html_tabela(df_tir, "P/E e TIR")
+                st.markdown(html_tir, unsafe_allow_html=True)
 
             st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
