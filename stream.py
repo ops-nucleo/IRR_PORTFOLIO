@@ -229,20 +229,27 @@ if st.session_state['acesso_permitido']:
             return html
     
         def download_excel(self, dfs_dict):
-            # Função para baixar todas as DataFrames em um único arquivo Excel com abas separadas
+            # Função para baixar todas as DataFrames em uma única aba de um arquivo Excel
             output = BytesIO()
-            
-            # Substituir caracteres inválidos no nome da aba
-            safe_sheet_names = {
-                sheet_name: sheet_name.replace('/', '').replace('\\', '').replace('*', '').replace('[', '').replace(']', '').replace(':', '').replace('?', '') 
-                for sheet_name in dfs_dict.keys()
-            }
-            
+        
+            # Converter todas as colunas possíveis para float
+            for df_name, df in dfs_dict.items():
+                # Seleciona apenas as colunas que podem ser convertidas para float
+                dfs_dict[df_name] = df.apply(pd.to_numeric, errors='ignore')
+        
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-                for sheet_name, df in dfs_dict.items():
-                    # Usa o nome corrigido para evitar erros
-                    safe_name = safe_sheet_names[sheet_name]
-                    df.to_excel(writer, sheet_name=safe_name, index=False)
+                # Definindo a aba onde as DataFrames serão adicionadas
+                sheet_name = "Dados Consolidado"
+                
+                # Posição inicial da primeira DataFrame
+                start_col = 0
+                
+                for df_name, df in dfs_dict.items():
+                    # Salvando a DataFrame no arquivo, na aba 'Dados Consolidado' e nas colunas ao lado
+                    df.to_excel(writer, sheet_name=sheet_name, startcol=start_col, index=False)
+                    # Atualizando a posição inicial da próxima DataFrame
+                    start_col += df.shape[1] + 1  # +1 para uma coluna de espaço entre elas
+        
                 writer.save()
         
             # Download do arquivo
@@ -252,7 +259,6 @@ if st.session_state['acesso_permitido']:
                 file_name="tabelas_IRR_portfolio_lucro.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-    
         def mostrar_tabelas(self):
             # Título ajustado
             st.markdown("<h1 style='text-align: center; margin-top: -50px;'>IRR Portfólio</h1>", unsafe_allow_html=True)
