@@ -245,7 +245,7 @@ if st.session_state['acesso_permitido']:
         
             # Download do arquivo
             st.download_button(
-                label="Baixar todas as tabelas em Excel",
+                label="Download all tables in Excel",
                 data=output.getvalue(),
                 file_name="tabelas_IRR_portfolio_lucro.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -568,7 +568,7 @@ if st.session_state['acesso_permitido']:
                     
                         # Botão de download
                         st.download_button(
-                            label="Baixar dados filtrados em CSV",
+                            label="Download filtered data in CSV",
                             data=csv,
                             file_name='dados_filtrados.csv',
                             mime='text/csv'
@@ -579,7 +579,7 @@ if st.session_state['acesso_permitido']:
                     
                         # Botão de download
                         st.download_button(
-                            label="Baixar base completa em CSV",
+                            label="Download complete database in CSV",
                             data=csv2,
                             file_name='df_completa.csv',
                             mime='text/csv'
