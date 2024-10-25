@@ -181,6 +181,23 @@ if st.session_state['acesso_permitido']:
                 df_tir = df_tir.append(linha, ignore_index=True)
         
             return df_tir
+        def calcular_media_ponderada_tir(self, df_tir, df_portfolio):
+            # Remover linhas onde TIR é 'faltando dados'
+            df_validas = df_tir[df_tir['TIR'] != 'faltando dados'].copy()
+    
+            # Converter a coluna de TIR de string percentual para float
+            df_validas['TIR'] = df_validas['TIR'].str.rstrip('%').astype(float) / 100
+            
+            # Atribuir % Portfólio da primeira tabela (df_portfolio) às empresas válidas de TIR
+            df_validas = df_validas.merge(df_portfolio[['Empresa', '% Portfólio']], on='Empresa', how='left')
+    
+            # Converter % Portfólio para float
+            df_validas['% Portfólio'] = df_validas['% Portfólio'].str.rstrip('%').astype(float) / 100
+    
+            # Calcular a média ponderada
+            weighted_avg_tir = (df_validas['TIR'] * df_validas['% Portfólio']).sum() / df_validas['% Portfólio'].sum()
+    
+            return weighted_avg_tir
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com formatação e ajuste de largura
@@ -275,7 +292,16 @@ if st.session_state['acesso_permitido']:
                 st.markdown(html_tir, unsafe_allow_html=True)
 
             st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-
+    
+            # **Cálculo da média ponderada da TIR**
+            media_ponderada_tir = self.calcular_media_ponderada_tir(df_tir, df_portfolio)
+    
+            # Exibir a média ponderada da TIR em formato de texto
+            col9, col10 = st.columns([1, 1])
+            with col9:
+                st.markdown("<h3 style='text-align: left;'>IRR Portfólio</h3>", unsafe_allow_html=True)
+            with col10:
+                st.text_input("", f"{media_ponderada_tir:.1%}", disabled=True)
     
             # Exportar todas as tabelas em um arquivo Excel com abas separadas
             dfs_dict = {
