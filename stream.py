@@ -302,16 +302,16 @@ if st.session_state['acesso_permitido']:
                 st.markdown("<h3 style='text-align: left;'>IRR Portfólio</h3>", unsafe_allow_html=True)
             with col10:
                 st.text_input("", f"{media_ponderada_tir:.1%}", disabled=True)
+            with col11:
+                # Exportar todas as tabelas em um arquivo Excel com abas separadas
+                dfs_dict = {
+                    "Portfolio": df_portfolio,
+                    "Lucro": df_lucro,
+                    "Dividendos": df_dividendos,
+                    "P/E e TIR": df_tir
+                }
+                self.download_excel(dfs_dict)
     
-            # Exportar todas as tabelas em um arquivo Excel com abas separadas
-            dfs_dict = {
-                "Portfolio": df_portfolio,
-                "Lucro": df_lucro,
-                "Dividendos": df_dividendos,
-                "P/E e TIR": df_tir
-            }
-            self.download_excel(dfs_dict)
-
     # Uso da classe no Streamlit
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
