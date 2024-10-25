@@ -259,7 +259,7 @@ if st.session_state['acesso_permitido']:
             col5, col6, col7, col8 = st.columns([0.5, 1.5, 1, 1]) 
             with col5:
                 datas_disponiveis = self.filtrar_datas()
-                data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
+                data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
             # Filtra os dados pela data selecionada
             df_filtrado = self.filtrar_por_data(data_selecionada)
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
@@ -276,19 +276,19 @@ if st.session_state['acesso_permitido']:
             # Tabela de Lucro
             with col2:
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada,empresas_ordenadas)
-                html_lucro = self.gerar_html_tabela(df_lucro, "Lucro")
+                html_lucro = self.gerar_html_tabela(df_lucro, "Profit")
                 st.markdown(html_lucro, unsafe_allow_html=True)
     
             # Tabela de Dividendos
             with col3:
                 df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada, empresas_ordenadas)
-                html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividendos")
+                html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividends")
                 st.markdown(html_dividendos, unsafe_allow_html=True)
     
             # Tabela de P/E e TIR
             with col4:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
-                html_tir = self.gerar_html_tabela(df_tir, "P/E e TIR")
+                html_tir = self.gerar_html_tabela(df_tir, "P/E e IRR")
                 st.markdown(html_tir, unsafe_allow_html=True)
 
             st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
@@ -299,7 +299,7 @@ if st.session_state['acesso_permitido']:
             # Exibir a média ponderada da TIR em formato de texto
             col11, col9, col10, col12 , col13, col14= st.columns([1, 1, 1, 1, 1, 1])
             with col9:
-                st.markdown("<h3 style='text-align: left; font-size:20px;'>IRR Portfólio</h3>", unsafe_allow_html=True)  # Fonte menor ajustada
+                st.markdown("<h3 style='text-align: right; font-size:24px;'>Portfolio average IRR</h3>", unsafe_allow_html=True)  # Fonte menor ajustada
             with col10:
                 st.markdown(
                     f"""
@@ -393,8 +393,8 @@ if st.session_state['acesso_permitido']:
             def formatar_percentual(x, pos):
                 return f'{x * 100:.2f}%'  # Multiplica por 100 para mostrar como percentual corretamente
             
-            # Se for selecionado "Variável vs CDI"
-            if comparacao == "Variável vs CDI":
+            # Se for selecionado "Variable vs CDI"
+            if comparacao == "Variable vs CDI":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_comp = df_filtrado.copy()  # Copia o DataFrame original para evitar alterações no original
                 df_comp['CDI'] = df_comp['CDI'].astype(float)  # Garante que a coluna CDI é do tipo float
@@ -423,8 +423,8 @@ if st.session_state['acesso_permitido']:
                 # Ajusta o tamanho das labels do eixo Y
                 ax2.tick_params(axis='y', labelsize=5)
         
-            # Se for selecionado "Variável vs P/E"
-            elif comparacao == "Variável vs P/E":
+            # Se for selecionado "Variable vs P/E"
+            elif comparacao == "Variable vs P/E":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_comp2 = df_filtrado.copy()
                 df_comp2['P/E'] = df_comp2['P/E'].astype(float)
@@ -445,8 +445,8 @@ if st.session_state['acesso_permitido']:
                 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}'))
                 ax2.tick_params(axis='y', labelsize=5)
         
-            # Se for selecionado "Variável vs TIR"
-            elif comparacao == "Variável vs TIR":
+            # Se for selecionado "Variable vs TIR"
+            elif comparacao == "Variable vs TIR":
                 ax2 = ax1.twinx()  # Cria um segundo eixo Y
                 df_comp3 = df_filtrado.copy()
                 df_comp3['TIR'] = df_comp3['TIR'].astype(float)
@@ -484,14 +484,14 @@ if st.session_state['acesso_permitido']:
     
         # Caixa de seleção para variável analisada no lado direito
         with col2:
-            variavel_selecionada = st.selectbox('Variável analisada', variaveis_disponiveis)
+            variavel_selecionada = st.selectbox('Variable:', variaveis_disponiveis)
     
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
             anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
     
             with col3:
-                ano_selecionado = st.selectbox('Ano Referência', anos_disponiveis)
+                ano_selecionado = st.selectbox('Reference Year:', anos_disponiveis)
     
             # Filtrar datas disponíveis
             datas_disponiveis = analysis.filtrar_datas(empresa_selecionada, variavel_selecionada, ano_selecionado)
@@ -504,18 +504,18 @@ if st.session_state['acesso_permitido']:
                 datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
     
                 # Caixa de seleção "De" (remover a última data)
-                data_de = st.selectbox('De', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
+                data_de = st.selectbox('From:', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
     
             with col5:
                 # Caixa de seleção "Até" (remover a primeira data)
-                data_ate = st.selectbox('Até', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
+                data_ate = st.selectbox('To:', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
     
             # Adicionando um estilo para ajustar a posição do botão de comparação
             with col6:              
                 # Adicionando o botão de comparação
                 comparacao = st.radio(
                     "Comparação",
-                    ('Sem comparação', 'Variável vs CDI', 'Variável vs P/E', 'Variável vs TIR'),
+                    ('No comparison', 'Variable vs CDI', 'Variable vs P/E', 'Variable vs TIR'),
                     index=0  # "Sem comparação" como padrão
                 )
     
@@ -535,11 +535,11 @@ if st.session_state['acesso_permitido']:
                     colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
                 
                     # Adiciona CDI ou P/E dependendo da comparação
-                    if comparacao == 'Variável vs CDI':
+                    if comparacao == 'Variable vs CDI':
                         colunas_exibir.append('CDI')
-                    elif comparacao == 'Variável vs P/E':
+                    elif comparacao == 'Variable vs P/E':
                         colunas_exibir.append('P/E')
-                    elif comparacao == 'Variável vs TIR':
+                    elif comparacao == 'Variable vs TIR':
                         colunas_exibir.append('TIR')
                 
                 
