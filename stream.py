@@ -245,6 +245,7 @@ if st.session_state['acesso_permitido']:
                 data_selecionada = st.selectbox('Selecione a data de atualização:', datas_disponiveis)
             # Filtra os dados pela data selecionada
             df_filtrado = self.filtrar_por_data(data_selecionada)
+            df_portfolio = self.criar_tabela_portfolio(df_filtrado)
             empresas_ordenadas = df_portfolio['Empresa'].tolist()
             # Exibir tabelas lado a lado
             col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
