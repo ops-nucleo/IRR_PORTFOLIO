@@ -299,9 +299,16 @@ if st.session_state['acesso_permitido']:
             # Exibir a média ponderada da TIR em formato de texto
             col11, col9, col10, col12 , col13, col14= st.columns([1, 1, 1, 1, 1, 1])
             with col9:
-                st.markdown("<h3 style='text-align: left;'>IRR Portfólio</h3>", unsafe_allow_html=True)
+                st.markdown("<h3 style='text-align: left; font-size:20px;'>IRR Portfólio</h3>", unsafe_allow_html=True)  # Fonte menor ajustada
             with col10:
-                st.text_input("", f"{media_ponderada_tir:.1%}", disabled=True)
+                st.markdown(
+                    f"""
+                    <div style="background-color: rgb(0, 32, 96); color: white; padding: 10px; border-radius: 5px; text-align: center; font-size: 20px;">
+                        {media_ponderada_tir:.2%}
+                    </div>
+                    """, 
+                    unsafe_allow_html=True
+                )
             with col11:
                 # Exportar todas as tabelas em um arquivo Excel com abas separadas
                 dfs_dict = {
