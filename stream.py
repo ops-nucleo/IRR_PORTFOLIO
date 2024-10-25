@@ -303,7 +303,7 @@ if st.session_state['acesso_permitido']:
             with col10:
                 st.markdown(
                     f"""
-                    <div style="background-color: rgb(0, 32, 96); color: white; padding: 10px; border-radius: 5px; text-align: center; font-size: 20px;">
+                    <div style="background-color: rgb(0, 32, 96); color: white; padding: 10px; border-radius: 5px; text-align: center; font-size: 15px;">
                         {media_ponderada_tir:.2%}
                     </div>
                     """, 
