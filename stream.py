@@ -132,7 +132,7 @@ if st.session_state['acesso_permitido']:
             # Formatando os números no estilo americano
             for ano in anos:
                 df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
-            df_lucro.drop(columns=['Empresa'], inplace=True)
+            df_lucro.drop(columns=['Ticker'], inplace=True)
             return df_lucro
     
         def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
