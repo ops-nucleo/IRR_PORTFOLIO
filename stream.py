@@ -363,7 +363,7 @@ if st.session_state['acesso_permitido']:
             datas = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
             return datas
 
-        def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate, comparacao):
+        def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate):
             df_filtrado = self.df_mkt[
                 (self.df_mkt['Ticker'] == empresa) & 
                 (self.df_mkt['Ano Referência'] == ano_ref) & 
@@ -458,7 +458,7 @@ if st.session_state['acesso_permitido']:
                 data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
     
                 # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
-                fig, df_filtrado, df_completa = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate, comparacao)
+                fig, df_filtrado, df_completa = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate)
 
                 # Verifica se fig e df_filtrado não são None antes de exibir
                 if fig is not None and df_filtrado is not None:
