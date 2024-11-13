@@ -110,8 +110,8 @@ if st.session_state['acesso_permitido']:
             df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
             df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
             # Formatando os números
-            df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.0f}%")
-            df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+            df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.2f}%")
+            df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}")
             return df_portfolio
     
         def criar_tabela_lucro(self, df_filtrado, data_selecionada,empresas_ordenadas):
@@ -131,7 +131,7 @@ if st.session_state['acesso_permitido']:
     
             # Formatando os números no estilo americano
             for ano in anos:
-                df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
+                df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_lucro
     
         def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
@@ -151,7 +151,7 @@ if st.session_state['acesso_permitido']:
     
             # Formatando os números no estilo americano
             for ano in anos:
-                df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
+                df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             return df_dividendos
     
 
@@ -166,14 +166,14 @@ if st.session_state['acesso_permitido']:
         
                 # Obtendo o P/E e tratando valores NaN
                 pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
-                linha['P/E'] = f"{pe:,.1f}"  # Formatando P/E para duas casas decimais
+                linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
         
                 # Obtendo a TIR da coluna 'TIR' e convertendo para float
                 tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
         
                 # Verificar se a TIR é numérica, diferente de zero e não NaN
                 if not pd.isna(tir) and tir != 0:
-                    linha['TIR'] = f"{tir:.1%}"  # Formatando TIR como percentual xx.xx%
+                    linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
                 else:
                     linha['TIR'] = 'faltando dados'  # Se for 0 ou NaN, exibe "faltando dados"
         
@@ -346,7 +346,7 @@ if st.session_state['acesso_permitido']:
             self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
                             "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
                             "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
-                            "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro"]
+                            "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "CDI", "P/E", "TIR"]
             self.empresas = np.sort(self.df_mkt['Ticker'].unique())
 
         def filtrar_variaveis(self, empresa):
@@ -403,89 +403,17 @@ if st.session_state['acesso_permitido']:
             fig.autofmt_xdate()
             ax1.grid(True)
             
-            def formatar_percentual(x, pos):
-                return f'{x * 100:.2f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+            if variavel in {"CDI", "P/E", "TIR"}:             
+                def formatar_percentual(x, pos):
+                    return f'{x * 100:.2f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+                ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
             
-            # Se for selecionado "Variable vs CDI"
-            if comparacao == "Variable vs CDI":
-                ax2 = ax1.twinx()  # Cria um segundo eixo Y
-                df_comp = df_filtrado.copy()  # Copia o DataFrame original para evitar alterações no original
-                df_comp['CDI'] = df_comp['CDI'].astype(float)  # Garante que a coluna CDI é do tipo float
-                df_comp = df_comp.dropna(subset=['CDI'])  # Remove linhas onde CDI é NaN
-                
-                # Checa se todas as linhas do CDI estão vazias
-                if df_comp['CDI'].isna().all():
-                    st.warning(f"Não possuímos dados de CDI para as datas selecionadas.")
-                    return None, None, None
-                
-                # Plota o CDI no segundo eixo Y com marcadores
-                ax2.plot(pd.to_datetime(df_comp['DATA ATUALIZACAO']), df_comp['CDI'], marker='o', color='tab:red', markersize=3)
-            
-                # Define o label para o segundo eixo Y
-                ax2.set_ylabel('CDI (%)', fontsize=6)
-            
-                # Aplica o formatter que multiplica por 100 e mostra o CDI como percentual
-                ax2.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
-                
-                # Ajusta os limites do eixo Y do CDI com folga de 40%
-                min_cdi = df_comp['CDI'].min()
-                max_cdi = df_comp['CDI'].max()
-                y_folga_cdi = 0.4 * (max_cdi - min_cdi)
-                ax2.set_ylim([min_cdi - y_folga_cdi, max_cdi + y_folga_cdi])
-                
-                # Ajusta o tamanho das labels do eixo Y
-                ax2.tick_params(axis='y', labelsize=5)
-        
-            # Se for selecionado "Variable vs P/E"
-            elif comparacao == "Variable vs P/E":
-                ax2 = ax1.twinx()  # Cria um segundo eixo Y
-                df_comp2 = df_filtrado.copy()
-                df_comp2['P/E'] = df_comp2['P/E'].astype(float)
-                df_comp2 = df_comp2.dropna(subset=['P/E'])
-                if df_comp2['P/E'].isna().all():
-                    st.warning(f"Não possuímos dados de P/E para as datas selecionadas.")
-                    return None, None, None
-                # Adicionar o P/E no segundo eixo Y e formatar como número inteiro
-                ax2.plot(pd.to_datetime(df_comp2['DATA ATUALIZACAO']), df_comp2['P/E'], marker='o', color='tab:green', markersize=3)
-                ax2.set_ylabel('P/E', fontsize=6)
-                
-                # Ajusta o limite do segundo eixo Y (P/E) com folga de 40%
-                min_pe = df_comp2['P/E'].min()
-                max_pe = df_comp2['P/E'].max()
-                y_folga_pe = 0.4 * (max_pe - min_pe)
-                ax2.set_ylim([min_pe - y_folga_pe, max_pe + y_folga_pe])
-                
-                ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.2f}'))
-                ax2.tick_params(axis='y', labelsize=5)
-        
-            # Se for selecionado "Variable vs TIR"
-            elif comparacao == "Variable vs TIR":
-                ax2 = ax1.twinx()  # Cria um segundo eixo Y
-                df_comp3 = df_filtrado.copy()
-                df_comp3['TIR'] = df_comp3['TIR'].astype(float)
-                df_comp3 = df_comp3.dropna(subset=['TIR'])
-                if df_comp3['TIR'].isna().all():
-                    st.warning(f"Não possuímos dados de TIR para as datas selecionadas.")
-                    return None, None, None
-                # Adicionar o TIR no segundo eixo Y e formatar como percentual
-                ax2.plot(pd.to_datetime(df_comp3['DATA ATUALIZACAO']), df_comp3['TIR'], marker='o', color='tab:orange', markersize=3)
-                ax2.set_ylabel('TIR (%)', fontsize=6)
-               
-                # Ajusta o limite do segundo eixo Y (TIR) com folga de 40%
-                min_tir = df_comp3['TIR'].min()
-                max_tir = df_comp3['TIR'].max()
-                y_folga_tir = 0.4 * (max_tir - min_tir)
-                ax2.set_ylim([min_tir - y_folga_tir, max_tir + y_folga_tir])
-                
-                ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x * 100:.2f}%'))
-                ax2.tick_params(axis='y', labelsize=5)
-        
             return fig, df_filtrado, self.df_mkt
     # Instancia a classe de análise
     analysis = EmpresaAnalysis()
     
     # Layout das seleções usando colunas para alinhamento
-    col1, col3, col2, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
+    col1, col3, col2, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
     
     # Dropdown para selecionar empresa (Ticker) no lado esquerdo
     with col1:
@@ -523,15 +451,6 @@ if st.session_state['acesso_permitido']:
                 # Caixa de seleção "Até" (remover a primeira data)
                 data_ate = st.selectbox('To:', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
     
-            # Adicionando um estilo para ajustar a posição do botão de comparação
-            with col6:              
-                # Adicionando o botão de comparação
-                comparacao = st.radio(
-                    "Comparação",
-                    ('No comparison', 'Variable vs CDI', 'Variable vs P/E', 'Variable vs TIR'),
-                    index=0  # "Sem comparação" como padrão
-                )
-    
             # Só atualiza o gráfico quando todas as seleções estão preenchidas
             if ano_selecionado and data_de and data_ate:
                 # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
@@ -546,15 +465,6 @@ if st.session_state['acesso_permitido']:
                     # Exibir gráfico
                     st.pyplot(fig)
                     colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
-                
-                    # Adiciona CDI ou P/E dependendo da comparação
-                    if comparacao == 'Variable vs CDI':
-                        colunas_exibir.append('CDI')
-                    elif comparacao == 'Variable vs P/E':
-                        colunas_exibir.append('P/E')
-                    elif comparacao == 'Variable vs TIR':
-                        colunas_exibir.append('TIR')
-                
                 
                     # Filtra o DataFrame para exibir apenas as colunas selecionadas
                     df_filtrado_para_exibir = df_filtrado[colunas_exibir]
