@@ -132,6 +132,7 @@ if st.session_state['acesso_permitido']:
             # Formatando os números no estilo americano
             for ano in anos:
                 df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+            df_lucro.drop(columns=['Empresa'], inplace=True)
             return df_lucro
     
         def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
@@ -152,6 +153,7 @@ if st.session_state['acesso_permitido']:
             # Formatando os números no estilo americano
             for ano in anos:
                 df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+            df_dividendos.drop(columns=['Empresa'], inplace=True)
             return df_dividendos
     
 
@@ -179,7 +181,7 @@ if st.session_state['acesso_permitido']:
         
                 # Adicionando a linha no DataFrame
                 df_tir = df_tir.append(linha, ignore_index=True)
-        
+            df_tir.drop(columns=['Empresa'], inplace=True)
             return df_tir
         def calcular_media_ponderada_tir(self, df_tir, df_portfolio):
             # Remover linhas onde TIR é 'faltando dados'
@@ -284,21 +286,19 @@ if st.session_state['acesso_permitido']:
             # Tabela de Lucro
             with col2:
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada,empresas_ordenadas)
-                df_lucro.drop(columns=['Empresa'], inplace=True)
+                
                 html_lucro = self.gerar_html_tabela(df_lucro, "Profit")
                 st.markdown(html_lucro, unsafe_allow_html=True)
     
             # Tabela de Dividendos
             with col3:
                 df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada, empresas_ordenadas)
-                df_dividendos.drop(columns=['Empresa'], inplace=True)
                 html_dividendos = self.gerar_html_tabela(df_dividendos, "Dividends")
                 st.markdown(html_dividendos, unsafe_allow_html=True)
     
             # Tabela de P/E e TIR
             with col4:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
-                df_tir.drop(columns=['Empresa'], inplace=True)
                 html_tir = self.gerar_html_tabela(df_tir, "P/E e IRR")
                 st.markdown(html_tir, unsafe_allow_html=True)
 
