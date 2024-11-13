@@ -405,7 +405,7 @@ if st.session_state['acesso_permitido']:
             
             if variavel in {"CDI", "TIR"}:             
                 def formatar_percentual(x, pos):
-                    return f'{x * 100:.2f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+                    return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
                 ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
             
             return fig, df_filtrado, self.df_mkt
