@@ -283,6 +283,8 @@ if st.session_state['acesso_permitido']:
             # Tabela de Lucro
             with col2:
                 df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada,empresas_ordenadas)
+                df_lucro = df_lucro.copy()
+                df_lucro = df_lucro.drop(columns=['Empresa'])
                 html_lucro = self.gerar_html_tabela(df_lucro, "Teste")
                 st.markdown(html_lucro, unsafe_allow_html=True)
     
