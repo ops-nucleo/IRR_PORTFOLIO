@@ -403,7 +403,7 @@ if st.session_state['acesso_permitido']:
             fig.autofmt_xdate()
             ax1.grid(True)
             
-            if variavel in {"CDI", "P/E", "TIR"}:             
+            if variavel in {"CDI", "TIR"}:             
                 def formatar_percentual(x, pos):
                     return f'{x * 100:.2f}%'  # Multiplica por 100 para mostrar como percentual corretamente
                 ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
