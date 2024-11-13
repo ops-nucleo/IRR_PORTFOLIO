@@ -131,7 +131,7 @@ if st.session_state['acesso_permitido']:
     
             # Formatando os números no estilo americano
             for ano in anos:
-                df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+                df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
             return df_lucro
     
         def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
@@ -151,7 +151,7 @@ if st.session_state['acesso_permitido']:
     
             # Formatando os números no estilo americano
             for ano in anos:
-                df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
+                df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
             return df_dividendos
     
 
@@ -166,14 +166,14 @@ if st.session_state['acesso_permitido']:
         
                 # Obtendo o P/E e tratando valores NaN
                 pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
-                linha['P/E'] = f"{pe:,.2f}"  # Formatando P/E para duas casas decimais
+                linha['P/E'] = f"{pe:,.1f}"  # Formatando P/E para duas casas decimais
         
                 # Obtendo a TIR da coluna 'TIR' e convertendo para float
                 tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
         
                 # Verificar se a TIR é numérica, diferente de zero e não NaN
                 if not pd.isna(tir) and tir != 0:
-                    linha['TIR'] = f"{tir:.2%}"  # Formatando TIR como percentual xx.xx%
+                    linha['TIR'] = f"{tir:.1%}"  # Formatando TIR como percentual xx.xx%
                 else:
                     linha['TIR'] = 'faltando dados'  # Se for 0 ou NaN, exibe "faltando dados"
         
