@@ -154,6 +154,7 @@ if st.session_state['acesso_permitido']:
             for ano in anos:
                 df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.2f}" if not pd.isna(x) else 'nan')
             df_dividendos.drop(columns=['Empresa'], inplace=True)
+            df_dividendos.drop(columns=['Ticker'], inplace=True)
             return df_dividendos
     
 
