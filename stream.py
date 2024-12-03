@@ -450,7 +450,12 @@ if st.session_state['acesso_permitido']:
     
             with col5:
                 # Caixa de seleção "Até" (remover a primeira data)
-                data_ate = st.selectbox('To:', datas_formatadas[1:], key='data_ate')  # Remover a primeira data da lista
+                    data_ate = st.selectbox(
+                    'To:',
+                    datas_formatadas[1:],  # Remover a primeira data da lista
+                    key='data_ate',
+                    index=len(datas_formatadas[1:]) - 1  # Última data da lista como default
+                )
     
             # Só atualiza o gráfico quando todas as seleções estão preenchidas
             if ano_selecionado and data_de and data_ate:
