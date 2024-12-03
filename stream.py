@@ -19,6 +19,7 @@ st.markdown("""
         padding: 0.01px;
         border-radius: 5px;
         margin-top: -10px;  /* Ajustar a margem para mover tudo para cima */
+        color: black !important; /* Texto preto */
     }
     </style>
     """, unsafe_allow_html=True)
@@ -30,6 +31,7 @@ st.markdown("""
         padding: 5px;  /* Diminuir o padding para reduzir a altura */
         border-radius: 5px;
         margin-top: -30px;  /* Ajustar a margem para mover tudo para cima */
+        color: black !important; /* Texto preto */
     }
 
     label[data-testid="stMarkdownContainer"] {
