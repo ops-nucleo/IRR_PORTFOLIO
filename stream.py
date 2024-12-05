@@ -210,7 +210,7 @@ if st.session_state['acesso_permitido']:
             # Adicionando os cabeçalhos da tabela com cor personalizada (R: 0, G: 32, B: 96)
             html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
             for col in df.columns:
-                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">{col}</th>'
+                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
             html += '</tr></thead><tbody>'
         
             # Linhas alternadas (cinza e branco)
@@ -222,7 +222,7 @@ if st.session_state['acesso_permitido']:
         
                 html += f'<tr style="background-color: {bg_color}; color: black;">'
                 for col in df.columns:
-                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: left; color: black;">{row[col]}</td>'
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
                 html += '</tr>'
         
             html += '</tbody></table>'
