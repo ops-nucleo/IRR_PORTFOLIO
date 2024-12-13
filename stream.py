@@ -160,8 +160,8 @@ if st.session_state['acesso_permitido']:
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             empresas = df_filtrado['Ticker'].unique()
             pe_coluna = 'P/E'
-            tir_coluna = 'TIR'  # Coluna de onde vamos buscar os valores de TIR
-            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'TIR'])
+            tir_coluna = 'IRR'  # Coluna de onde vamos buscar os valores de TIR
+            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'IRR'])
         
             for empresa in empresas_ordenadas:
                 linha = {'Empresa': empresa}
@@ -175,19 +175,19 @@ if st.session_state['acesso_permitido']:
         
                 # Verificar se a TIR é numérica, diferente de zero e não NaN
                 if not pd.isna(tir) and tir != 0:
-                    linha['TIR'] = f"{tir:.1%}"  # Formatando TIR como percentual xx.xx%
+                    linha['IRR'] = f"{tir:.1%}"  # Formatando TIR como percentual xx.xx%
                 else:
-                    linha['TIR'] = 'faltando dados'  # Se for 0 ou NaN, exibe "faltando dados"
+                    linha['IRR'] = 'faltando dados'  # Se for 0 ou NaN, exibe "faltando dados"
         
                 # Adicionando a linha no DataFrame
                 df_tir = df_tir.append(linha, ignore_index=True)
             return df_tir
         def calcular_media_ponderada_tir(self, df_tir, df_portfolio):
             # Remover linhas onde TIR é 'faltando dados'
-            df_validas = df_tir[df_tir['TIR'] != 'faltando dados'].copy()
+            df_validas = df_tir[df_tir['IRR'] != 'faltando dados'].copy()
     
             # Converter a coluna de TIR de string percentual para float
-            df_validas['TIR'] = df_validas['TIR'].str.rstrip('%').astype(float) / 100
+            df_validas['IRR'] = df_validas['IRR'].str.rstrip('%').astype(float) / 100
             
             # Atribuir % Portfólio da primeira tabela (df_portfolio) às empresas válidas de TIR
             df_validas = df_validas.merge(df_portfolio[['Empresa', '% Portfólio']], on='Empresa', how='left')
@@ -196,7 +196,7 @@ if st.session_state['acesso_permitido']:
             df_validas['% Portfólio'] = df_validas['% Portfólio'].str.rstrip('%').astype(float) / 100
     
             # Calcular a média ponderada
-            weighted_avg_tir = (df_validas['TIR'] * df_validas['% Portfólio']).sum() / df_validas['% Portfólio'].sum()
+            weighted_avg_tir = (df_validas['IRR'] * df_validas['% Portfólio']).sum() / df_validas['% Portfólio'].sum()
             if pd.isna(weighted_avg_tir):
                 return 0
     
@@ -329,7 +329,7 @@ if st.session_state['acesso_permitido']:
                     "Portfolio": df_portfolio,
                     "Lucro": df_lucro,
                     "Dividendos": df_dividendos,
-                    "P/E e TIR": df_tir
+                    "P/E e IRR": df_tir
                 }
                 self.download_excel(dfs_dict)
     
@@ -404,7 +404,7 @@ if st.session_state['acesso_permitido']:
             fig.autofmt_xdate()
             ax1.grid(True)
             
-            if variavel in {"CDI", "TIR"}:             
+            if variavel in {"CDI", "IRR"}:             
                 def formatar_percentual(x, pos):
                     return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
                 ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
