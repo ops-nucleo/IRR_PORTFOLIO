@@ -143,7 +143,11 @@ if st.session_state['acesso_permitido']:
         def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
             # Tabela de Dividendos (mesma lógica da tabela de Lucro)
             ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-            anos = [ano_inicial + i for i in range(4)]
+            if ano_inicial == 2025:
+                ano_inicial = 2023
+                anos = [ano_inicial + i for i in range(5)]
+            else:
+                anos = [ano_inicial + i for i in range(4)]
             
             df_dividendos = pd.DataFrame(columns=['Empresa'] + anos)
             empresas = df_filtrado['Ticker'].unique()
