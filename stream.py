@@ -119,8 +119,12 @@ if st.session_state['acesso_permitido']:
         def criar_tabela_lucro(self, df_filtrado, data_selecionada,empresas_ordenadas):
             # Segunda tabela: "Lucro" (mostra os 4 anos a partir da data filtrada)
             ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-            anos = [ano_inicial + i for i in range(4)]
-            
+            if ano_inicial == 2025:
+                ano_inicial = ano_inicial - 1
+                anos = [ano_inicial + i for i in range(4)]
+            else:
+                anos = [ano_inicial + i for i in range(4)]
+                
             df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
             empresas = df_filtrado['Ticker'].unique()
     
