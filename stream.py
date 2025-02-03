@@ -366,8 +366,8 @@ if st.session_state['acesso_permitido']:
             
             idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
             
-            if idx is not None and idx <= 3:
-                datas_recentes = datas_disponiveis[idx+3:idx-1][::-1]  # Últimas 4 datas incluindo a selecionada, invertendo a ordem
+            if idx is not None and idx >= 3:
+                datas_recentes = datas_disponiveis[idx-3:idx+1][::-1]  # Últimas 4 datas incluindo a selecionada, invertendo a ordem
             else:
                 st.warning("Não há dados suficientes para exibir 4 semanas.")
                 return pd.DataFrame()
