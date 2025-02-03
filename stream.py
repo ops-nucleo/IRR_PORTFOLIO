@@ -347,13 +347,13 @@ if st.session_state['acesso_permitido']:
     tabela.mostrar_tabelas()
     
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-
+    
     class TabelaAnaliticaProjecoes:
         def __init__(self, df_empresa):
             self.df_empresa = df_empresa
             self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
             self.variaveis = [
-                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos"
+                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos", "% Portfolio"
             ]  # Adicione mais variáveis se necessário
         
         def filtrar_datas_disponiveis(self):
@@ -392,7 +392,10 @@ if st.session_state['acesso_permitido']:
                 df_tabela = df_tabela.append(linha, ignore_index=True)
             
             for col in df_tabela.columns[1:]:
-                df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+                if variavel == "% Portfolio":
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.1%}")
+                else:
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
             
             return df_tabela, datas_formatadas, anos
         
