@@ -373,15 +373,20 @@ if st.session_state['acesso_permitido']:
                 return pd.DataFrame()
             
             anos = [2024, 2025, 2026, 2027]
-            df_tabela = pd.DataFrame(columns=['Empresa'] + [f"{pd.to_datetime(data).strftime('%d-%b-%y')}" for data in datas_recentes])
+            colunas = ['Empresa']
+            for data in datas_recentes:
+                for ano in anos:
+                    colunas.append(f"{pd.to_datetime(data).strftime('%d-%b-%y')} - {ano}")
             
+            df_tabela = pd.DataFrame(columns=colunas)
             empresas = self.df_empresa['Ticker'].unique()
             
             for empresa in empresas:
                 linha = {'Empresa': empresa}
                 for data in datas_recentes:
-                    valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data)][variavel]
-                    linha[pd.to_datetime(data).strftime('%d-%b-%y')] = valor.values[0] if not valor.empty else np.nan
+                    for ano in anos:
+                        valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
+                        linha[f"{pd.to_datetime(data).strftime('%d-%b-%y')} - {ano}"] = valor.values[0] if not valor.empty else np.nan
                 df_tabela = df_tabela.append(linha, ignore_index=True)
             
             for col in df_tabela.columns[1:]:
