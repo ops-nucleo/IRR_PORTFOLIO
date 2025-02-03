@@ -605,30 +605,30 @@ if st.session_state['acesso_permitido']:
         empresa_selecionada = st.selectbox('Ticker', analysis.empresas)
     
     if empresa_selecionada:
-    
-        # Guardamos a variável selecionada antes de mudar a empresa
+            
+        # Inicializa o session_state se ainda não existir
         if "variavel_selecionada" not in st.session_state:
             st.session_state.variavel_selecionada = None
         
-        # Filtrar variáveis disponíveis para a empresa selecionada
+        # Obtém as variáveis disponíveis para a empresa selecionada
         variaveis_disponiveis = analysis.filtrar_variaveis(empresa_selecionada)
         
-        # Se a variável anterior ainda estiver disponível, mantém ela
+        # Mantém a variável selecionada se ainda estiver na lista de disponíveis
         if st.session_state.variavel_selecionada in variaveis_disponiveis:
             variavel_selecionada = st.session_state.variavel_selecionada
         else:
             variavel_selecionada = variaveis_disponiveis[0] if variaveis_disponiveis else None
         
-        # Atualiza a variável no session_state para a próxima seleção
-        st.session_state.variavel_selecionada = variavel_selecionada
-        
-        # Caixa de seleção para variável analisada
+        # Renderiza o selectbox sem alterar a variável que já estava selecionada
         with col2:
             variavel_selecionada = st.selectbox(
-                'Variable:',
-                variaveis_disponiveis,
+                'Variable:', 
+                variaveis_disponiveis, 
                 index=variaveis_disponiveis.index(variavel_selecionada) if variavel_selecionada in variaveis_disponiveis else 0
             )
+        
+        # Atualiza o session_state para manter a variável na próxima interação
+        st.session_state.variavel_selecionada = variavel_selecionada
     
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
