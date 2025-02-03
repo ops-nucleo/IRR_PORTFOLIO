@@ -348,6 +348,86 @@ if st.session_state['acesso_permitido']:
     
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
+    class TabelaAnaliticaProjecoes:
+        def __init__(self, df_empresa):
+            self.df_empresa = df_empresa
+            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+            self.variaveis = [
+                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos"
+            ]  # Adicione mais variáveis se necessário
+        
+        def filtrar_datas_disponiveis(self):
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            return pd.to_datetime(datas).strftime('%d/%m/%Y')
+        
+        def obter_tabela_projecoes(self, data_selecionada, variavel):
+            data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+            datas_disponiveis = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            
+            idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
+            
+            if idx is not None and idx >= 3:
+                datas_recentes = datas_disponiveis[idx-3:idx+1]  # Últimas 4 datas incluindo a selecionada
+            else:
+                st.warning("Não há dados suficientes para exibir 4 semanas.")
+                return pd.DataFrame()
+            
+            anos = [2024, 2025, 2026, 2027]
+            df_tabela = pd.DataFrame(columns=['Empresa'] + [f"{pd.to_datetime(data).strftime('%d-%b-%y')}" for data in datas_recentes])
+            
+            empresas = self.df_empresa['Ticker'].unique()
+            
+            for empresa in empresas:
+                linha = {'Empresa': empresa}
+                for data in datas_recentes:
+                    valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data)][variavel]
+                    linha[pd.to_datetime(data).strftime('%d-%b-%y')] = valor.values[0] if not valor.empty else np.nan
+                df_tabela = df_tabela.append(linha, ignore_index=True)
+            
+            for col in df_tabela.columns[1:]:
+                df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+            
+            return df_tabela
+        
+        def gerar_html_tabela(self, df, titulo):
+            html = f"<h3 style='color: black;'>{titulo}</h3>"
+            html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
+            
+            html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
+            for col in df.columns:
+                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
+            html += '</tr></thead><tbody>'
+            
+            for i, row in df.iterrows():
+                bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                html += f'<tr style="background-color: {bg_color}; color: black;">'
+                for col in df.columns:
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
+                html += '</tr>'
+            
+            html += '</tbody></table>'
+            return html
+        
+        def mostrar_tabela_projecoes(self):
+            st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Análise de Projeções Semanais</h1>", unsafe_allow_html=True)
+            
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                datas_disponiveis = self.filtrar_datas_disponiveis()
+                data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis)
+            with col2:
+                variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
+            
+            if data_selecionada and variavel_selecionada:
+                df_projecoes = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
+                if not df_projecoes.empty:
+                    html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana")
+                    st.markdown(html_tabela, unsafe_allow_html=True)
+
+
+
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
     class EmpresaAnalysis:
         def __init__(self):
