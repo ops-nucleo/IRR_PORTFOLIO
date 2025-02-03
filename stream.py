@@ -351,58 +351,106 @@ if st.session_state['acesso_permitido']:
     class TabelaAnaliticaProjecoes:
         def __init__(self, df_empresa):
             self.df_empresa = df_empresa
+            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
             self.variaveis = [
-                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos", "% Portfolio"
-            ]
-    
-        def filtrar_datas(self):
+                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos"
+            ]  # Adicione mais variáveis se necessário
+        
+        def filtrar_datas_disponiveis(self):
             datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
-            return datas
-    
-        def filtrar_por_data(self, data_selecionada):
-            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
-            return df_filtrado
-    
-        def gerar_tabela(self, data_selecionada, variavel):
-            datas_disponiveis = self.filtrar_datas()
-            index_selecionado = np.where(datas_disponiveis == data_selecionada)[0][0]
-            datas_analise = datas_disponiveis[max(0, index_selecionado - 3):index_selecionado + 1]
-            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'].isin(datas_analise)]
+            return pd.to_datetime(datas).strftime('%d/%m/%Y')
+        
+        def obter_tabela_projecoes(self, data_selecionada, variavel):
+            data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+            datas_disponiveis = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            
+            idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
+            
+            if idx is not None and idx + 3 < len(datas_disponiveis):
+                datas_recentes = datas_disponiveis[idx:idx+4][::-1]  # Mantendo a data selecionada e pegando as 3 seguintes da esquerda para a direita
+            else:
+                st.warning("Não há dados suficientes para exibir 4 semanas.")
+                return pd.DataFrame()
+            
             anos = [2024, 2025, 2026, 2027]
-            df_tabela = pd.pivot_table(df_filtrado, values=variavel, index='Ticker', columns=['DATA ATUALIZACAO', 'Ano Referência'])
-            return df_tabela
-    
-        def gerar_html_tabela(self, df_tabela):
-            html = '<table style="width:100%; border-collapse: collapse; text-align: center;">'
-            html += '<thead><tr style="background-color: navy; color: white;">'
-            html += '<th>Empresa</th>'
-            for data in df_tabela.columns.levels[0]:
-                html += f'<th colspan="4">{data.strftime("%d-%b-%y")}</th>'
-            html += '</tr><tr style="background-color: navy; color: white;">'
-            for data in df_tabela.columns.levels[0]:
-                for ano in [2024, 2025, 2026, 2027]:
-                    html += f'<th>{ano}</th>'
-            html += '</tr></thead><tbody>'
-            for index, row in df_tabela.iterrows():
-                html += f'<tr><td>{index}</td>'
-                for value in row:
-                    html += f'<td>{value if not pd.isna(value) else "-"}</td>'
+            colunas = ['Empresa']
+            datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
+            
+            for data in datas_formatadas:
+                for ano in anos:
+                    colunas.append(f"{data} - {ano}")
+            
+            df_tabela = pd.DataFrame(columns=colunas)
+            empresas = self.df_empresa['Ticker'].unique()
+            
+            for empresa in empresas:
+                linha = {'Empresa': empresa}
+                for i, data in enumerate(datas_recentes):
+                    for ano in anos:
+                        valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
+                        linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
+                df_tabela = df_tabela.append(linha, ignore_index=True)
+            
+            for col in df_tabela.columns[1:]:
+                df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+            
+            return df_tabela, datas_formatadas, anos
+        
+        def gerar_html_tabela(self, df, titulo, datas_formatadas, anos):
+            html = f"<h3 style='color: black;'>{titulo}</h3>"
+            html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
+            
+            # Criar cabeçalhos mesclados
+            html += '<thead>'
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            html += '<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
+            for data in datas_formatadas:
+                html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
+            html += '</tr>'
+            
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            for _ in datas_formatadas:
+                for ano in anos:
+                    html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{ano}</th>'
+            html += '</tr>'
+            html += '</thead><tbody>'
+            
+            for i, row in df.iterrows():
+                bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                html += f'<tr style="background-color: {bg_color}; color: black;">'
+                for j, col in enumerate(df.columns):
+                    cell_color = ""
+                    if j > 1:  # Evita a primeira coluna (nomes das empresas)
+                        prev_col = df.columns[j - 4] if j - 4 >= 1 else None  # Comparação com a mesma empresa na semana anterior
+                        if prev_col and df.at[i, col] != df.at[i, prev_col]:
+                            cell_color = "background-color: yellow;"
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
                 html += '</tr>'
+            
             html += '</tbody></table>'
             return html
+        
+        def mostrar_tabela_projecoes(self):
+            st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Análise de Projeções Semanais</h1>", unsafe_allow_html=True)
+            
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                datas_disponiveis = self.filtrar_datas_disponiveis()
+                data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis)
+            with col2:
+                variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
+            
+            if data_selecionada and variavel_selecionada:
+                df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
+                if not df_projecoes.empty:
+                    html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
+                    st.markdown(html_tabela, unsafe_allow_html=True)
     
-        def mostrar_tabelas(self):
-            st.title("Análise de Projeções Semanais")
-            data_selecionada = st.selectbox("Selecione a data:", self.filtrar_datas())
-            variavel = st.selectbox("Selecione a variável:", self.variaveis)
-            df_tabela = self.gerar_tabela(data_selecionada, variavel)
-            html_tabela = self.gerar_html_tabela(df_tabela)
-            st.markdown(html_tabela, unsafe_allow_html=True)
-    
-    # Uso da classe
-    df_empresa = pd.read_csv("base_empilhada_total.csv")
+    # Instanciando e exibindo a nova classe no Streamlit
+    df_empresa = pd.read_csv('base_empilhada_total.csv')
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
-    tabela_projecoes.mostrar_tabelas()
+    tabela_projecoes.mostrar_tabela_projecoes()
+
            
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
