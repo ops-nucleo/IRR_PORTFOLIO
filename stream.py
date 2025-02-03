@@ -418,8 +418,12 @@ if st.session_state['acesso_permitido']:
             for i, row in df.iterrows():
                 bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
                 html += f'<tr style="background-color: {bg_color}; color: black;">'
-                for col in df.columns:
-                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
+                for j, col in enumerate(df.columns):
+                    cell_color = ""
+                    if j > 0 and i > 0:  # Comparação com a linha anterior
+                        if df.iloc[i][col] != df.iloc[i-1][col]:
+                            cell_color = "background-color: yellow;"
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
                 html += '</tr>'
             
             html += '</tbody></table>'
