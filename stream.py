@@ -423,6 +423,11 @@ if st.session_state['acesso_permitido']:
                 if not df_projecoes.empty:
                     html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana")
                     st.markdown(html_tabela, unsafe_allow_html=True)
+
+    # Instanciando e exibindo a nova classe no Streamlit
+    df_empresa = pd.read_csv(excel_file_path)
+    tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
+    tabela_projecoes.mostrar_tabela_projecoes()
    
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
