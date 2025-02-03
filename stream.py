@@ -367,41 +367,53 @@ if st.session_state['acesso_permitido']:
             idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
             
             if idx is not None and idx >= 3:
-                datas_recentes = datas_disponiveis[idx-3:idx+1]  # Últimas 4 datas incluindo a selecionada
+                datas_recentes = datas_disponiveis[idx-3:idx+1][::-1]  # Últimas 4 datas incluindo a selecionada, invertendo a ordem
             else:
                 st.warning("Não há dados suficientes para exibir 4 semanas.")
                 return pd.DataFrame()
             
             anos = [2024, 2025, 2026, 2027]
             colunas = ['Empresa']
-            for data in datas_recentes:
+            datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
+            
+            for data in datas_formatadas:
                 for ano in anos:
-                    colunas.append(f"{pd.to_datetime(data).strftime('%d-%b-%y')} - {ano}")
+                    colunas.append(f"{data} - {ano}")
             
             df_tabela = pd.DataFrame(columns=colunas)
             empresas = self.df_empresa['Ticker'].unique()
             
             for empresa in empresas:
                 linha = {'Empresa': empresa}
-                for data in datas_recentes:
+                for i, data in enumerate(datas_recentes):
                     for ano in anos:
                         valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
-                        linha[f"{pd.to_datetime(data).strftime('%d-%b-%y')} - {ano}"] = valor.values[0] if not valor.empty else np.nan
+                        linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
                 df_tabela = df_tabela.append(linha, ignore_index=True)
             
             for col in df_tabela.columns[1:]:
                 df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
             
-            return df_tabela
+            return df_tabela, datas_formatadas, anos
         
-        def gerar_html_tabela(self, df, titulo):
+        def gerar_html_tabela(self, df, titulo, datas_formatadas, anos):
             html = f"<h3 style='color: black;'>{titulo}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
             
-            html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
-            for col in df.columns:
-                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
-            html += '</tr></thead><tbody>'
+            # Criar cabeçalhos mesclados
+            html += '<thead>'
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            html += '<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
+            for data in datas_formatadas:
+                html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
+            html += '</tr>'
+            
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            for _ in datas_formatadas:
+                for ano in anos:
+                    html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{ano}</th>'
+            html += '</tr>'
+            html += '</thead><tbody>'
             
             for i, row in df.iterrows():
                 bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
@@ -424,9 +436,9 @@ if st.session_state['acesso_permitido']:
                 variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
             
             if data_selecionada and variavel_selecionada:
-                df_projecoes = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
+                df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
                 if not df_projecoes.empty:
-                    html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana")
+                    html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
                     st.markdown(html_tabela, unsafe_allow_html=True)
 
     # Instanciando e exibindo a nova classe no Streamlit
