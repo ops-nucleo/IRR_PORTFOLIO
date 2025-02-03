@@ -399,6 +399,42 @@ if st.session_state['acesso_permitido']:
             
             return df_tabela, datas_formatadas, anos
         
+        def obter_tabela_projecoes_perc(self, data_selecionada, variavel):
+            data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+            datas_disponiveis = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            
+            idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
+            
+            if idx is not None and idx + 3 < len(datas_disponiveis):
+                datas_recentes = datas_disponiveis[idx:idx+4][::-1]  # Mantendo a data selecionada e pegando as 3 seguintes da esquerda para a direita
+            else:
+                st.warning("Não há dados suficientes para exibir 4 semanas.")
+                return pd.DataFrame()
+            
+            colunas = ['Empresa']
+            datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
+            
+            for data in datas_formatadas:
+                colunas.append(f"{data}")
+            
+            df_tabela = pd.DataFrame(columns=colunas)
+            empresas = self.df_empresa['Ticker'].unique()
+            
+            for empresa in empresas:
+                linha = {'Empresa': empresa}
+                for i, data in enumerate(datas_recentes):
+                    valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data)][variavel]
+                    linha[f"{datas_formatadas[i]}"] = valor.values[0] if not valor.empty else np.nan
+                df_tabela = df_tabela.append(linha, ignore_index=True)
+            
+            for col in df_tabela.columns[1:]:
+                if variavel == "% Portfolio":
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.1%}")
+                else:
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+            
+            return df_tabela, datas_formatadas
+        
         def gerar_html_tabela(self, df, titulo, datas_formatadas, anos):
             html = f"<h3 style='color: black;'>{titulo}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
@@ -444,7 +480,10 @@ if st.session_state['acesso_permitido']:
                 variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
             
             if data_selecionada and variavel_selecionada:
-                df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
+                if variavel_selecionada == "% Portfolio":
+                    df_projecoes, datas_formatadas = self.obter_tabela_projecoes_perc(data_selecionada, variavel_selecionada)
+                else:
+                    df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
                 if not df_projecoes.empty:
                     html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
                     st.markdown(html_tabela, unsafe_allow_html=True)
