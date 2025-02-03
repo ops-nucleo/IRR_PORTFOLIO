@@ -420,8 +420,9 @@ if st.session_state['acesso_permitido']:
                 html += f'<tr style="background-color: {bg_color}; color: black;">'
                 for j, col in enumerate(df.columns):
                     cell_color = ""
-                    if j > 0 and i > 0:  # Comparação com a linha anterior
-                        if df.iloc[i][col] != df.iloc[i-1][col]:
+                    if j > 1:  # Evita a primeira coluna (nomes das empresas)
+                        prev_col = df.columns[j - 4] if j - 4 >= 1 else None  # Comparação com a mesma empresa na semana anterior
+                        if prev_col and df.at[i, col] != df.at[i, prev_col]:
                             cell_color = "background-color: yellow;"
                     html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
                 html += '</tr>'
