@@ -392,7 +392,10 @@ if st.session_state['acesso_permitido']:
                 df_tabela = df_tabela.append(linha, ignore_index=True)
             
             for col in df_tabela.columns[1:]:
-                df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+                if variavel == "% Portfolio":
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.1%}")
+                else:
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
             
             return df_tabela, datas_formatadas, anos
         
@@ -431,6 +434,7 @@ if st.session_state['acesso_permitido']:
             return html
         
         def mostrar_tabela_projecoes(self):
+            st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Análise de Projeções Semanais</h1>", unsafe_allow_html=True)
             
             col1, col2 = st.columns([1, 1])
             with col1:
@@ -442,9 +446,9 @@ if st.session_state['acesso_permitido']:
             if data_selecionada and variavel_selecionada:
                 df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
                 if not df_projecoes.empty:
-                    html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos)
+                    html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
                     st.markdown(html_tabela, unsafe_allow_html=True)
-
+                
     # Instanciando e exibindo a nova classe no Streamlit
     df_empresa = pd.read_csv(excel_file_path)
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
