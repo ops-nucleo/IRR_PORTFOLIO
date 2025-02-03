@@ -353,7 +353,7 @@ if st.session_state['acesso_permitido']:
             self.df_empresa = df_empresa
             self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
             self.variaveis = [
-                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos"
+                "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos", "% Portfolio"
             ]  # Adicione mais variáveis se necessário
         
         def filtrar_datas_disponiveis(self):
