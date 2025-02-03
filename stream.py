@@ -626,7 +626,11 @@ if st.session_state['acesso_permitido']:
         
         # Caixa de seleção para variável analisada
         with col2:
-            variavel_selecionada = st.selectbox('Variable:', variaveis_disponiveis, index=variaveis_disponiveis.index(variavel_selecionada) if variavel_selecionada in variaveis_disponiveis else 0))
+            variavel_selecionada = st.selectbox(
+                'Variable:',
+                variaveis_disponiveis,
+                index=variaveis_disponiveis.index(variavel_selecionada) if variavel_selecionada in variaveis_disponiveis else 0
+            )
     
         if variavel_selecionada:
             # Filtrar anos disponíveis para a variável selecionada
