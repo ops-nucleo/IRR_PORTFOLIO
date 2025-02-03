@@ -423,10 +423,7 @@ if st.session_state['acesso_permitido']:
                 if not df_projecoes.empty:
                     html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana")
                     st.markdown(html_tabela, unsafe_allow_html=True)
-
-
-
-    
+   
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
     class EmpresaAnalysis:
