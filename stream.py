@@ -366,8 +366,8 @@ if st.session_state['acesso_permitido']:
             
             idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
             
-            if idx is not None and idx >= 3:
-                datas_recentes = datas_disponiveis[idx-3:idx+1][::-1]  # Últimas 4 datas incluindo a selecionada, invertendo a ordem
+            if idx is not None and idx + 3 < len(datas_disponiveis):
+                datas_recentes = datas_disponiveis[idx:idx+4]  # A data selecionada será a maior, à direita, com as 3 menores à esquerda
             else:
                 st.warning("Não há dados suficientes para exibir 4 semanas.")
                 return pd.DataFrame()
@@ -440,6 +440,7 @@ if st.session_state['acesso_permitido']:
                 if not df_projecoes.empty:
                     html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
                     st.markdown(html_tabela, unsafe_allow_html=True)
+
 
     # Instanciando e exibindo a nova classe no Streamlit
     df_empresa = pd.read_csv(excel_file_path)
