@@ -605,8 +605,6 @@ if st.session_state['acesso_permitido']:
         empresa_selecionada = st.selectbox('Ticker', analysis.empresas)
     
     if empresa_selecionada:
-        # Filtrar variáveis disponíveis para a empresa selecionada
-        variaveis_disponiveis = analysis.filtrar_variaveis(empresa_selecionada)
     
         # Guardamos a variável selecionada antes de mudar a empresa
         if "variavel_selecionada" not in st.session_state:
