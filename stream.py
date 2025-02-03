@@ -482,11 +482,14 @@ if st.session_state['acesso_permitido']:
             if data_selecionada and variavel_selecionada:
                 if variavel_selecionada == "% Portfolio":
                     df_projecoes, datas_formatadas = self.obter_tabela_projecoes_perc(data_selecionada, variavel_selecionada)
+                    if not df_projecoes.empty:
+                        html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas)
+                        st.markdown(html_tabela, unsafe_allow_html=True)
                 else:
                     df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
-                if not df_projecoes.empty:
-                    html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
-                    st.markdown(html_tabela, unsafe_allow_html=True)
+                    if not df_projecoes.empty:
+                        html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos)
+                        st.markdown(html_tabela, unsafe_allow_html=True)
     
     # Instanciando e exibindo a nova classe no Streamlit
     df_empresa = pd.read_csv('base_empilhada_total.csv')
