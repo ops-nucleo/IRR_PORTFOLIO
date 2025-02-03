@@ -354,75 +354,57 @@ if st.session_state['acesso_permitido']:
             self.variaveis = [
                 "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos", "% Portfolio"
             ]
-            
+    
         def filtrar_datas(self):
-            datas_unicas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
-            datas_formatadas = pd.to_datetime(datas_unicas).strftime('%d/%m/%Y')
-            return datas_formatadas
-        
-        def filtrar_por_data(self, data_selecionada, variavel):
-            data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
-            datas_disponiveis = self.df_empresa['DATA ATUALIZACAO'].unique()
-            datas_disponiveis = np.sort(datas_disponiveis)[::-1]
-            index = np.where(datas_disponiveis == data_selecionada)[0][0]
-            datas_filtradas = datas_disponiveis[max(0, index - 3):index + 1]
-            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'].isin(datas_filtradas)]
-            return df_filtrado, datas_filtradas
-        
-        def criar_tabela(self, df_filtrado, datas_filtradas, variavel):
-            df_pivot = df_filtrado.pivot(index='Ticker', columns='DATA ATUALIZACAO', values=variavel)
-            df_pivot = df_pivot[datas_filtradas[::-1]]
-            return df_pivot
-        
-        def comparar_variacoes(self, df_pivot):
-            df_variacao = df_pivot.copy()
-            for i in range(1, len(df_pivot.columns)):
-                df_variacao.iloc[:, i] = np.where(df_pivot.iloc[:, i] != df_pivot.iloc[:, i-1], df_pivot.iloc[:, i], '')
-            return df_variacao
-        
-        def gerar_html_tabela(self, df_pivot, df_variacao, variavel):
-            html = '<table style="width:100%; border-collapse: collapse; margin: auto;">
-            html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            return datas
+    
+        def filtrar_por_data(self, data_selecionada):
+            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
+            return df_filtrado
+    
+        def gerar_tabela(self, data_selecionada, variavel):
+            datas_disponiveis = self.filtrar_datas()
+            index_selecionado = np.where(datas_disponiveis == data_selecionada)[0][0]
+            datas_analise = datas_disponiveis[max(0, index_selecionado - 3):index_selecionado + 1]
+            df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'].isin(datas_analise)]
+            anos = [2024, 2025, 2026, 2027]
+            df_tabela = pd.pivot_table(df_filtrado, values=variavel, index='Ticker', columns=['DATA ATUALIZACAO', 'Ano Referência'])
+            return df_tabela
+    
+        def gerar_html_tabela(self, df_tabela):
+            html = '<table style="width:100%; border-collapse: collapse; text-align: center;">'
+            html += '<thead><tr style="background-color: navy; color: white;">'
             html += '<th>Empresa</th>'
-            for col in df_pivot.columns:
-                html += f'<th>{col.strftime("%d-%b-%y")}</th>'
+            for data in df_tabela.columns.levels[0]:
+                html += f'<th colspan="4">{data.strftime("%d-%b-%y")}</th>'
+            html += '</tr><tr style="background-color: navy; color: white;">'
+            for data in df_tabela.columns.levels[0]:
+                for ano in [2024, 2025, 2026, 2027]:
+                    html += f'<th>{ano}</th>'
             html += '</tr></thead><tbody>'
-            
-            for idx, row in df_pivot.iterrows():
-                html += '<tr>'
-                html += f'<td>{idx}</td>'
-                for col in df_pivot.columns:
-                    valor = row[col]
-                    estilo = "background-color: yellow;" if df_variacao.loc[idx, col] != '' else ""
-                    html += f'<td style="{estilo}">{valor}</td>'
+            for index, row in df_tabela.iterrows():
+                html += f'<tr><td>{index}</td>'
+                for value in row:
+                    html += f'<td>{value if not pd.isna(value) else "-"}</td>'
                 html += '</tr>'
-            
             html += '</tbody></table>'
             return html
-        
+    
         def mostrar_tabelas(self):
-            st.markdown("<h1 style='text-align: center;'>Análise de Projeções Semanais</h1>", unsafe_allow_html=True)
-            
-            col1, col2 = st.columns([1, 1])
-            with col1:
-                datas_disponiveis = self.filtrar_datas()
-                data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis)
-            
-            with col2:
-                variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
-            
-            df_filtrado, datas_filtradas = self.filtrar_por_data(data_selecionada, variavel_selecionada)
-            df_pivot = self.criar_tabela(df_filtrado, datas_filtradas, variavel_selecionada)
-            df_variacao = self.comparar_variacoes(df_pivot)
-            
-            html_tabela = self.gerar_html_tabela(df_pivot, df_variacao, variavel_selecionada)
+            st.title("Análise de Projeções Semanais")
+            data_selecionada = st.selectbox("Selecione a data:", self.filtrar_datas())
+            variavel = st.selectbox("Selecione a variável:", self.variaveis)
+            df_tabela = self.gerar_tabela(data_selecionada, variavel)
+            html_tabela = self.gerar_html_tabela(df_tabela)
             st.markdown(html_tabela, unsafe_allow_html=True)
     
-    # Uso da classe no Streamlit
-    df_empresa = pd.read_csv('base_empilhada_total.csv')
+    # Uso da classe
+    st.set_page_config(layout="wide")
+    df_empresa = pd.read_csv("base_empilhada_total.csv")
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
     tabela_projecoes.mostrar_tabelas()
-       
+           
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
     class EmpresaAnalysis:
