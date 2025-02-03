@@ -431,7 +431,6 @@ if st.session_state['acesso_permitido']:
             return html
         
         def mostrar_tabela_projecoes(self):
-            st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Análise de Projeções Semanais</h1>", unsafe_allow_html=True)
             
             col1, col2 = st.columns([1, 1])
             with col1:
