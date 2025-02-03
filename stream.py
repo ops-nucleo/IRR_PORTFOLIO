@@ -400,7 +400,6 @@ if st.session_state['acesso_permitido']:
             st.markdown(html_tabela, unsafe_allow_html=True)
     
     # Uso da classe
-    st.set_page_config(layout="wide")
     df_empresa = pd.read_csv("base_empilhada_total.csv")
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
     tabela_projecoes.mostrar_tabelas()
