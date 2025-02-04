@@ -120,7 +120,7 @@ if st.session_state['acesso_permitido']:
             # Segunda tabela: "Lucro" (mostra os 4 anos a partir da data filtrada)
             ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
             if ano_inicial == 2025:
-                ano_inicial = 2023
+                ano_inicial = 2024
                 anos = [ano_inicial + i for i in range(5)]
             else:
                 anos = [ano_inicial + i for i in range(4)]
@@ -144,7 +144,7 @@ if st.session_state['acesso_permitido']:
             # Tabela de Dividendos (mesma lógica da tabela de Lucro)
             ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
             if ano_inicial == 2025:
-                ano_inicial = 2023
+                ano_inicial = 2024    
                 anos = [ano_inicial + i for i in range(5)]
             else:
                 anos = [ano_inicial + i for i in range(4)]
