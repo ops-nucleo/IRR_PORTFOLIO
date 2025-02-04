@@ -121,7 +121,7 @@ if st.session_state['acesso_permitido']:
             ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
             if ano_inicial == 2025:
                 ano_inicial = 2024
-                anos = [ano_inicial + i for i in range(5)]
+                anos = [ano_inicial + i for i in range(4)]
             else:
                 anos = [ano_inicial + i for i in range(4)]
                 
@@ -145,7 +145,7 @@ if st.session_state['acesso_permitido']:
             ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
             if ano_inicial == 2025:
                 ano_inicial = 2024    
-                anos = [ano_inicial + i for i in range(5)]
+                anos = [ano_inicial + i for i in range(4)]
             else:
                 anos = [ano_inicial + i for i in range(4)]
             
