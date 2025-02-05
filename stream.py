@@ -532,7 +532,7 @@ if st.session_state['acesso_permitido']:
                             "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
                             "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
                             "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "CDI", "P/E", "IRR"]
-            self.empresas = np.sort(self.df_mkt['Ticker'].unique())
+            self.empresas = np.sort(self.df_mkt['Ticker'].dropna().unique())
 
         def filtrar_variaveis(self, empresa):
             df_empresa = self.df_mkt[self.df_mkt['Ticker'] == empresa]
@@ -541,7 +541,7 @@ if st.session_state['acesso_permitido']:
         
         def filtrar_anos(self, empresa, variavel):
             df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
-            return df_empresa['Ano Referência'].unique()
+            return df_empresa['Ano Referência'].dropna().unique()
         
         def filtrar_datas(self, empresa, variavel, ano):
             df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
