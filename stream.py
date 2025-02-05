@@ -92,7 +92,7 @@ if st.session_state['acesso_permitido']:
     
         def filtrar_datas(self):
             # Obtém datas únicas e ordena do menor para o maior
-            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
             # Formata as datas para o formato brasileiro
             datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
             return datas_formatadas
@@ -357,7 +357,7 @@ if st.session_state['acesso_permitido']:
             ]  # Adicione mais variáveis se necessário
         
         def filtrar_datas_disponiveis(self):
-            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
             return pd.to_datetime(datas).strftime('%d/%m/%Y')
         
         def obter_tabela_projecoes(self, data_selecionada, variavel):
@@ -545,7 +545,7 @@ if st.session_state['acesso_permitido']:
         
         def filtrar_datas(self, empresa, variavel, ano):
             df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
-            datas = np.sort(df_empresa['DATA ATUALIZACAO'].unique())
+            datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
             return datas
 
         def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate):
