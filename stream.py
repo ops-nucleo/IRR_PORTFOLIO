@@ -92,7 +92,7 @@ if st.session_state['acesso_permitido']:
     
         def filtrar_datas(self):
             # Obtém datas únicas e ordena do menor para o maior
-            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
+            datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
             # Formata as datas para o formato brasileiro
             datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
             return datas_formatadas
