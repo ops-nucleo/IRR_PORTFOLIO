@@ -289,7 +289,6 @@ if st.session_state['acesso_permitido']:
             with col3:
                 anos = list(df_lucro.columns[1:])
                 df_growth = self.calcular_earnings_growth(df_lucro, anos)
-                df_growth = df_growth.drop(columns=['Empresa'])
                 st.markdown(self.gerar_html_tabela(df_growth, "Earnings growth"), unsafe_allow_html=True)
                 st.markdown(html_dividendos, unsafe_allow_html=True)
     
