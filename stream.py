@@ -402,11 +402,12 @@ if st.session_state['acesso_permitido']:
             for col in df_tabela.columns[1:]:
                 if variavel == "% Portfolio":
                     df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.1%}")
-                    return df_tabela, datas_formatadas
                 else:
                     df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
-                
-            return df_tabela, datas_formatadas, anos
+            if variavel == "% Portfolio":
+                return df_tabela, datas_formatadas
+            else:
+                return df_tabela, datas_formatadas, anos
         
         def gerar_html_tabela_perc(self, df, titulo, datas_formatadas):
             html = f"<h3 style='color: black;'>{titulo}</h3>"
