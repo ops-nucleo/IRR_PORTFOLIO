@@ -390,9 +390,13 @@ if st.session_state['acesso_permitido']:
             for empresa in empresas:
                 linha = {'Empresa': empresa}
                 for i, data in enumerate(datas_recentes):
-                    for ano in anos:
-                        valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
-                        linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
+                    if variavel == "% Portfolio":
+                        valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data)][variavel]
+                        linha[f"{datas_formatadas[i]}"] = valor.values[0] if not valor.empty else np.nan
+                    else:
+                        for ano in anos:
+                            valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
+                            linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
                 df_tabela = df_tabela.append(linha, ignore_index=True)
             
             for col in df_tabela.columns[1:]:
