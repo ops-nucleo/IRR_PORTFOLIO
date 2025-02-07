@@ -215,9 +215,8 @@ if st.session_state['acesso_permitido']:
             html = f"<h3 style='color: black;'>{titulo}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
             html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
-            colspan = df.shape[1] - 1
-            html += f'<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
-            html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Valores</th>'
+            colspan = df.shape[1]
+            html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
             html += '</tr><tr>'
             for col in df.columns[1:]:
                 html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
@@ -264,7 +263,7 @@ if st.session_state['acesso_permitido']:
         def mostrar_tabelas(self):
             # Título ajustado
             st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
-    
+            
             # Seção do Selectbox para a data (com a formatação que você mencionou)
             col5, col6, col7, col8 = st.columns([0.5, 1.5, 1, 1]) 
             with col5:
