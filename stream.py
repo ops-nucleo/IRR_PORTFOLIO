@@ -212,7 +212,7 @@ if st.session_state['acesso_permitido']:
             return weighted_avg_tir
     
         def gerar_html_tabela(self, df, titulo):
-            html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
+            html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
             html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
             colspan = df.shape[1]
             html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
