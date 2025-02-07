@@ -420,6 +420,20 @@ if st.session_state['acesso_permitido']:
                 html += '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
                 for data in datas_formatadas:
                     html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
+                html += '</tr>'
+                html += '</thead><tbody>'
+                
+                for i, row in df.iterrows():
+                    bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                    html += f'<tr style="background-color: {bg_color}; color: black;">'
+                    for j, col in enumerate(df.columns):
+                        cell_color = ""
+                        if j > 1:  # Evita a primeira coluna (nomes das empresas)
+                            prev_col = df.columns[j - 1] if j - 1 >= 1 else None  # Comparação com a mesma empresa na semana anterior
+                            if prev_col and df.at[i, col] != df.at[i, prev_col]:
+                                cell_color = "background-color: yellow;"
+                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
+                    html += '</tr>'        
             else:   
                 html += '<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
                 for data in datas_formatadas:
@@ -430,20 +444,20 @@ if st.session_state['acesso_permitido']:
                 for _ in datas_formatadas:
                     for ano in anos:
                         html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{ano}</th>'
-            html += '</tr>'
-            html += '</thead><tbody>'
-            
-            for i, row in df.iterrows():
-                bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
-                html += f'<tr style="background-color: {bg_color}; color: black;">'
-                for j, col in enumerate(df.columns):
-                    cell_color = ""
-                    if j > 1:  # Evita a primeira coluna (nomes das empresas)
-                        prev_col = df.columns[j - 4] if j - 4 >= 1 else None  # Comparação com a mesma empresa na semana anterior
-                        if prev_col and df.at[i, col] != df.at[i, prev_col]:
-                            cell_color = "background-color: yellow;"
-                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
                 html += '</tr>'
+                html += '</thead><tbody>'
+                
+                for i, row in df.iterrows():
+                    bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                    html += f'<tr style="background-color: {bg_color}; color: black;">'
+                    for j, col in enumerate(df.columns):
+                        cell_color = ""
+                        if j > 1:  # Evita a primeira coluna (nomes das empresas)
+                            prev_col = df.columns[j - 4] if j - 4 >= 1 else None  # Comparação com a mesma empresa na semana anterior
+                            if prev_col and df.at[i, col] != df.at[i, prev_col]:
+                                cell_color = "background-color: yellow;"
+                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
+                    html += '</tr>'
             
             html += '</tbody></table>'
             return html
