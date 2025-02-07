@@ -213,6 +213,7 @@ if st.session_state['acesso_permitido']:
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com cor de fonte preta
+            html = f"<h3 style='color: black;'>{titulo}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
 
         
