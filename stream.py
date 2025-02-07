@@ -378,8 +378,11 @@ if st.session_state['acesso_permitido']:
             datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
             
             for data in datas_formatadas:
-                for ano in anos:
-                    colunas.append(f"{data} - {ano}")
+                if variavel == "% Portfolio":
+                    colunas.append(f"{data}")
+                else:
+                    for ano in anos:
+                        colunas.append(f"{data} - {ano}")
             
             df_tabela = pd.DataFrame(columns=colunas)
             empresas = self.df_empresa['Ticker'].unique()
