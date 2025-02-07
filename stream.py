@@ -1,4 +1,4 @@
-import streamlit as st
+    import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -477,7 +477,7 @@ if st.session_state['acesso_permitido']:
                     df_projecoes, datas_formatadas = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
                     if not df_projecoes.empty:
                         anos = None
-                        html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos, variavel_selecionada)
+                        html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos, variavel_selecionada)
                         st.markdown(html_tabela, unsafe_allow_html=True)
                 else:
                     df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
