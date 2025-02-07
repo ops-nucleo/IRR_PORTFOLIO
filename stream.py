@@ -140,30 +140,24 @@ if st.session_state['acesso_permitido']:
                 df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
             return df_lucro
     
-        def criar_tabela_dividendos(self, df_filtrado, data_selecionada, empresas_ordenadas):
-            # Tabela de Dividendos (mesma lógica da tabela de Lucro)
-            ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-            if ano_inicial == 2025:
-                ano_inicial = 2024    
-                anos = [ano_inicial + i for i in range(4)]
-            else:
-                anos = [ano_inicial + i for i in range(4)]
-            
-            df_dividendos = pd.DataFrame(columns=['Empresa'] + anos)
-            empresas = df_filtrado['Ticker'].unique()
-    
-            for empresa in empresas_ordenadas:
-                linha = {'Empresa': empresa}
-                for i, ano in enumerate(anos):
-                    dividendo_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Dividendos']
-                    linha[ano] = dividendo_ano.values[0] if not dividendo_ano.empty else np.nan
-                df_dividendos = df_dividendos.append(linha, ignore_index=True)
-    
-            # Formatando os números no estilo americano
-            for ano in anos:
-                df_dividendos[ano] = pd.to_numeric(df_dividendos[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
-            return df_dividendos
-    
+        def calcular_earnings_growth(self, df_lucro, anos):
+            df_growth = pd.DataFrame(columns=['Empresa'] + anos[1:])
+            for _, row in df_lucro.iterrows():
+                empresa = row['Empresa']
+                crescimento = {'Empresa': empresa}
+                for i in range(1, len(anos)):
+                    if row[anos[i - 1]] != 'nan' and row[anos[i]] != 'nan':
+                        try:
+                            crescimento[anos[i]] = (float(row[anos[i]].replace(',', '')) / float(row[anos[i - 1]].replace(',', '')) - 1) * 100
+                        except ValueError:
+                            crescimento[anos[i]] = 'nan'
+                    else:
+                        crescimento[anos[i]] = 'nan'
+                df_growth = df_growth.append(crescimento, ignore_index=True)
+            for ano in anos[1:]:
+                df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
+            return df_growth
+
 
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             empresas = df_filtrado['Ticker'].unique()
@@ -293,10 +287,9 @@ if st.session_state['acesso_permitido']:
     
             # Tabela de Dividendos
             with col3:
-                df_dividendos = self.criar_tabela_dividendos(df_filtrado, data_selecionada, empresas_ordenadas)
-                df_dividendos = df_dividendos.copy()
-                df_dividendos = df_dividendos.drop(columns=['Empresa'])
-                html_dividendos = self.gerar_html_tabela(df_dividendos, "Earnings growth")
+                df_growth = self.calcular_earnings_growth(df_lucro, anos)
+                df_growth = df_growth.drop(columns=['Empresa'])
+                st.markdown(self.gerar_html_tabela(df_growth, "Earnings growth"), unsafe_allow_html=True)
                 st.markdown(html_dividendos, unsafe_allow_html=True)
     
             # Tabela de P/E e TIR
