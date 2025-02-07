@@ -88,7 +88,7 @@ if st.session_state['acesso_permitido']:
         def __init__(self, df_empresa):
             # Converte a coluna 'DATA ATUALIZACAO' para datetime
             self.df_empresa = df_empresa
-            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datcoletime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
     
         def filtrar_datas(self):
             # Obtém datas únicas e ordena do menor para o maior
