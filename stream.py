@@ -285,7 +285,7 @@ if st.session_state['acesso_permitido']:
                 html_lucro = self.gerar_html_tabela(df_lucro2, "Lucro")
                 st.markdown(html_lucro, unsafe_allow_html=True)
     
-            # Tabela de Dividendos
+            # Tabela de earnings growth
             with col3:
                 anos = list(df_lucro.columns[1:])
                 df_growth = self.calcular_earnings_growth(df_lucro, anos)
@@ -322,8 +322,8 @@ if st.session_state['acesso_permitido']:
                 # Exportar todas as tabelas em um arquivo Excel com abas separadas
                 dfs_dict = {
                     "Portfolio": df_portfolio,
-                    "Lucro": df_lucro,
-                    "Dividendos": df_dividendos,
+                    "Lucro": df_lucro2,
+                    "Earnings growth": df_growth,
                     "P/E e IRR": df_tir
                 }
                 self.download_excel(dfs_dict)
