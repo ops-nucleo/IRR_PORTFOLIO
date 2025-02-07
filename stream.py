@@ -158,40 +158,36 @@ if st.session_state['acesso_permitido']:
                 df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
             return df_growth
 
-
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
-            empresas = df_filtrado['Ticker'].unique()
-            pe_coluna = 'P/E'
-            perp_coluna = 'TIR Fluxos Perp. (Real)'
-            tir_saida_coluna = 'Ke Saída (Real)'
-            tir_coluna = 'IRR'  # Coluna de onde vamos buscar os valores de TIR
-            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'IRR perpet.','IRR saída','IRR'])
+            colunas = {
+                'P/E': 'P/E',
+                'TIR Fluxos Perp. (Real)': 'IRR perpet.',
+                'Ke Saída (Real)': 'IRR saída',
+                'IRR': 'IRR'
+            }
+        
+            df_tir = []
         
             for empresa in empresas_ordenadas:
+                dados = df_filtrado[df_filtrado['Ticker'] == empresa].fillna("")
+        
                 linha = {'Empresa': empresa}
+                for coluna_original, coluna_nova in colunas.items():
+                    valor = dados[coluna_original].values[0]
         
-                # Obtendo o P/E e tratando valores NaN
-                pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
-                linha['P/E'] = f"{pe:,.1f}"  # Formatando P/E para duas casas decimais
-
-                perp = df_filtrado[df_filtrado['Ticker'] == empresa][perp_coluna].fillna(0).values[0]
-                linha['IRR perpet.'] = f"{perp:,.1%}" 
-
-                tir_saida = df_filtrado[df_filtrado['Ticker'] == empresa][tir_saida_coluna].fillna(0).values[0]
-                linha['IRR saída'] = f"{tir_saida:.1%}"   
-
-                # Obtendo a TIR da coluna 'TIR' e convertendo para float
-                tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
+                    if isinstance(valor, (int, float)):  # Apenas formata se for número
+                        linha[coluna_nova] = f"{valor:,.1%}" if 'IRR' in coluna_nova else f"{valor:,.1f}"
+                    else:
+                        linha[coluna_nova] = ""  # Mantém vazio se não for número válido
         
-                # Verificar se a TIR é numérica, diferente de zero e não NaN
-                if not pd.isna(tir) and tir != 0:
-                    linha['IRR'] = f"{tir:.1%}"  # Formatando TIR como percentual xx.xx%
-                else:
-                    linha['IRR'] = 'faltando dados'  # Se for 0 ou NaN, exibe "faltando dados"
+                # Ajuste específico para a coluna 'IRR'
+                tir = dados['IRR'].astype(str).values[0]  # Converte para string antes de checar
+                linha['IRR'] = f"{float(tir):.1%}" if tir.replace(".", "").isdigit() and float(tir) != 0 else 'faltando dados'
         
-                # Adicionando a linha no DataFrame
-                df_tir = df_tir.append(linha, ignore_index=True)
-            return df_tir
+                df_tir.append(linha)
+        
+            return pd.DataFrame(df_tir)
+
             
         def calcular_media_ponderada_tir(self, df_tir, df_portfolio):
             # Remover linhas onde TIR é 'faltando dados'
