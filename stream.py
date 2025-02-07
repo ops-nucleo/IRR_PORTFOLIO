@@ -162,8 +162,10 @@ if st.session_state['acesso_permitido']:
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             empresas = df_filtrado['Ticker'].unique()
             pe_coluna = 'P/E'
+            perp_coluna = 'TIR Fluxos Perp. (Real)'
+            tir_saida_coluna = 'Ke Saída (Real)'
             tir_coluna = 'IRR'  # Coluna de onde vamos buscar os valores de TIR
-            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'IRR'])
+            df_tir = pd.DataFrame(columns=['Empresa', 'P/E', 'IRR perpet.','IRR saída','IRR'])
         
             for empresa in empresas_ordenadas:
                 linha = {'Empresa': empresa}
@@ -171,7 +173,13 @@ if st.session_state['acesso_permitido']:
                 # Obtendo o P/E e tratando valores NaN
                 pe = df_filtrado[df_filtrado['Ticker'] == empresa][pe_coluna].fillna(0).values[0]
                 linha['P/E'] = f"{pe:,.1f}"  # Formatando P/E para duas casas decimais
-        
+
+                perp = df_filtrado[df_filtrado['Ticker'] == empresa][perp_coluna].fillna(0).values[0]
+                linha['IRR perpet.'] = f"{perp:,.1f}" 
+
+                tir_saida = df_filtrado[df_filtrado['Ticker'] == empresa][tir_saida_coluna].fillna(0).values[0]
+                linha['IRR saída'] = f"{tir_saida:,.1f}"  
+
                 # Obtendo a TIR da coluna 'TIR' e convertendo para float
                 tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
         
