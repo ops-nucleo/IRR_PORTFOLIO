@@ -217,14 +217,16 @@ if st.session_state['acesso_permitido']:
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
 
             for tit in titulo:
-                html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{tit}</th>'
+                ncolunas = df.shape[1]
+                html += f'<th colspan={ncolunas} style="border: 1px solid #ddd; padding: 8px; text-align: center;">{tit}</th>'
             html += '</tr>'
                 
             html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
             for tit in titulo:
                 for col in df.columns:
                     html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
-                html += '</tr></thead><tbody>'
+                html += '</tr>'
+                html += '</thead><tbody>'
     
                 # Linhas alternadas (cinza e branco)
                 for i, row in df.iterrows():
