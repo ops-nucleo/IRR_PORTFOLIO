@@ -88,7 +88,7 @@ if st.session_state['acesso_permitido']:
         def __init__(self, df_empresa):
             # Converte a coluna 'DATA ATUALIZACAO' para datetime
             self.df_empresa = df_empresa
-            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+            self.df_empresa['DATA ATUALIZACAO'] = pd.to_datcoletime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
     
         def filtrar_datas(self):
             # Obtém datas únicas e ordena do menor para o maior
@@ -218,7 +218,7 @@ if st.session_state['acesso_permitido']:
             colspan = df.shape[1]
             html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
             html += '</tr><tr>'
-            for col in df.columns[]:
+            for col in df.columns:
                 html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
             html += '</tr></thead><tbody>'
             for _, row in df.iterrows():
