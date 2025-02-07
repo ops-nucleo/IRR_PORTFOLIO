@@ -409,49 +409,27 @@ if st.session_state['acesso_permitido']:
             else:
                 return df_tabela, datas_formatadas, anos
         
-        def gerar_html_tabela_perc(self, df, titulo, datas_formatadas):
+        def gerar_html_tabela(self, df, titulo, datas_formatadas, anos, variavel):
             html = f"<h3 style='color: black;'>{titulo}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
             
             # Criar cabeçalhos mesclados
             html += '<thead>'
             html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
-            html += '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
-            for data in datas_formatadas:
-                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
-            html += '</tr>'
-            html += '</thead><tbody>'
-            
-            for i, row in df.iterrows():
-                bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
-                html += f'<tr style="background-color: {bg_color}; color: black;">'
-                for j, col in enumerate(df.columns):
-                    cell_color = ""
-                    if j > 1:  # Evita a primeira coluna (nomes das empresas)
-                        prev_col = df.columns[j - 1] if j - 1 >= 1 else None  # Comparação com a mesma empresa na semana anterior
-                        if prev_col and df.at[i, col] != df.at[i, prev_col]:
-                            cell_color = "background-color: yellow;"
-                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
+            if variavel == "% Portfolio":
+                html += '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
+                for data in datas_formatadas:
+                    html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
+            else:   
+                html += '<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
+                for data in datas_formatadas:
+                    html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
                 html += '</tr>'
-            
-            html += '</tbody></table>'
-            return html
-        def gerar_html_tabela(self, df, titulo, datas_formatadas, anos):
-            html = f"<h3 style='color: black;'>{titulo}</h3>"
-            html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
-            
-            # Criar cabeçalhos mesclados
-            html += '<thead>'
-            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
-            html += '<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
-            for data in datas_formatadas:
-                html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
-            html += '</tr>'
-            
-            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
-            for _ in datas_formatadas:
-                for ano in anos:
-                    html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{ano}</th>'
+                
+                html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+                for _ in datas_formatadas:
+                    for ano in anos:
+                        html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{ano}</th>'
             html += '</tr>'
             html += '</thead><tbody>'
             
@@ -484,12 +462,14 @@ if st.session_state['acesso_permitido']:
                 if variavel_selecionada == "% Portfolio":
                     df_projecoes, datas_formatadas = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
                     if not df_projecoes.empty:
-                        html_tabela = self.gerar_html_tabela_perc(df_projecoes, "Projeção por Semana", datas_formatadas)
+                        anos = None
+                        html_tabela = self.gerar_html_tabela(df_projecoes, "Projeção por Semana", datas_formatadas, anos, variavel_selecionada)
                         st.markdown(html_tabela, unsafe_allow_html=True)
                 else:
                     df_projecoes, datas_formatadas, anos = self.obter_tabela_projecoes(data_selecionada, variavel_selecionada)
                     if not df_projecoes.empty:
-                        html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos)
+                        variavel_ = None
+                        html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos, variavel_)
                         st.markdown(html_tabela, unsafe_allow_html=True)
     
     # Instanciando e exibindo a nova classe no Streamlit
