@@ -213,27 +213,30 @@ if st.session_state['acesso_permitido']:
     
         def gerar_html_tabela(self, df, titulo):
             # Gera o código HTML da tabela com cor de fonte preta
-            html = f"<h3 style='color: black;'>{titulo}</h3>"
+            html = f"<h3 style='color: black;'>{""}</h3>"
             html += '<table style="width:100%; border-collapse: collapse; margin: auto;">'
 
-        
-            # Adicionando os cabeçalhos da tabela com cor personalizada (R: 0, G: 32, B: 96)
-            html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
-            for col in df.columns:
-                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
-            html += '</tr></thead><tbody>'
-        
-            # Linhas alternadas (cinza e branco)
-            for i, row in df.iterrows():
-                if i % 2 == 0:
-                    bg_color = 'rgb(242, 242, 242)'  # Cinza
-                else:
-                    bg_color = 'white'  # Branco
-        
-                html += f'<tr style="background-color: {bg_color}; color: black;">'
+            for tit in titulo:
+                html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{tit}</th>'
+            html += '</tr>'
+                
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            for tit in titulo:
                 for col in df.columns:
-                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
-                html += '</tr>'
+                    html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
+                html += '</tr></thead><tbody>'
+    
+                # Linhas alternadas (cinza e branco)
+                for i, row in df.iterrows():
+                    if i % 2 == 0:
+                        bg_color = 'rgb(242, 242, 242)'  # Cinza
+                    else:
+                        bg_color = 'white'  # Branco
+            
+                    html += f'<tr style="background-color: {bg_color}; color: black;">'
+                    for col in df.columns:
+                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
+                    html += '</tr>'
         
             html += '</tbody></table>'
             return html
