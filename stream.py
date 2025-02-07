@@ -175,10 +175,10 @@ if st.session_state['acesso_permitido']:
                 linha['P/E'] = f"{pe:,.1f}"  # Formatando P/E para duas casas decimais
 
                 perp = df_filtrado[df_filtrado['Ticker'] == empresa][perp_coluna].fillna(0).values[0]
-                linha['IRR perpet.'] = f"{perp:,.1f}" 
+                linha['IRR perpet.'] = f"{perp:,.1%}" 
 
                 tir_saida = df_filtrado[df_filtrado['Ticker'] == empresa][tir_saida_coluna].fillna(0).values[0]
-                linha['IRR saída'] = f"{tir_saida:,.1f}"  
+                linha['IRR saída'] = f"{tir_saida:.1%}"   
 
                 # Obtendo a TIR da coluna 'TIR' e convertendo para float
                 tir = df_filtrado[df_filtrado['Ticker'] == empresa][tir_coluna].astype(float).values[0]
