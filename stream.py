@@ -219,8 +219,8 @@ if st.session_state['acesso_permitido']:
             html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
             html += '</tr><tr>'
             colunas_listadas = df.columns
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
             for col in colunas_listadas:
-                html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
                 html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
             html += '</tr></thead><tbody>'
             for _, row in df.iterrows():
