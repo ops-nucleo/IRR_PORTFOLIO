@@ -229,6 +229,17 @@ if st.session_state['acesso_permitido']:
                 for col in df.columns:
                     html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{row[col]}</td>'
                 html += '</tr>'
+            # Linhas alternadas (cinza e branco)
+            for i, row in df.iterrows():
+                if i % 2 == 0:
+                    bg_color = 'rgb(242, 242, 242)'  # Cinza
+                else:
+                    bg_color = 'white'  # Branco
+        
+                html += f'<tr style="background-color: {bg_color}; color: black;">'
+                for col in df.columns:
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
+                html += '</tr>'
             html += '</tbody></table>'
             return html
     
