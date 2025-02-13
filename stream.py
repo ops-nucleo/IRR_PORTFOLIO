@@ -158,6 +158,24 @@ if st.session_state['acesso_permitido']:
                 df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
             return df_growth
 
+       def apresentar_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
+            ano_atual = pd.to_datetime(data_selecionada).year
+            anos = [ano_atual + i for i in range(1, 3)]           
+            df_pe_calc = pd.DataFrame(columns=['Empresa'] + anos[])         
+            for ano in anos:
+                for _, row in df_filtrado.iterrows():
+                    empresa = row['Empresa']
+                    pe_cal = {'Empresa': empresa}
+                    for i in range(1, len(anos)):
+                        try:
+                            pe_cal[anos[i]] = df_filtrado['Ticker'] == empresa) & (df_dia['Ano Referência'] == ano), 'P/E Calculado'].values[0]
+                        except ValueError:
+                            pe_cal[anos[i]] = ''
+                    df_pe_calc = df_pe_calc.append(pe_cal, ignore_index=True)
+            for ano in anos[]:
+                df_pe_calc[ano] = df_pe_calc[ano].apply(lambda x: f"{valor:,.1f}")
+            return df_pe_calc
+
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
                 'P/E': 'P/E',
@@ -187,7 +205,7 @@ if st.session_state['acesso_permitido']:
                 df_tir.append(linha)
         
             return pd.DataFrame(df_tir)
-
+            
             
         def calcular_media_ponderada_tir(self, df_tir, df_portfolio):
             # Remover linhas onde TIR é 'faltando dados'
@@ -275,7 +293,7 @@ if st.session_state['acesso_permitido']:
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
             empresas_ordenadas = df_portfolio['Empresa'].tolist()
             # Exibir tabelas lado a lado
-            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+            col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
             # Tabela de Portfolio
             with col1:
@@ -298,14 +316,23 @@ if st.session_state['acesso_permitido']:
                 df_growth = df_growth.drop(columns=['Empresa'])
                 st.markdown(self.gerar_html_tabela(df_growth, "Earnings growth"), unsafe_allow_html=True)
     
-            # Tabela de P/E e TIR
+            # Tabela de P/E Calculado
             with col4:
+                df_pe = self.apresentar_pe(df_filtrado, data_selecionada, empresas_ordenadas)
+                df_pe2 = df_pe.copy()
+                df_pe2 = df_pe2.drop(columns=['Empresa'])
+                html_pe = self.gerar_html_tabela(df_pe2, "P/E")
+                st.markdown(html_pe, unsafe_allow_html=True)
+
+            # Tabela de P/E e TIR
+            with col5:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_tir2 = df_tir.copy()
                 df_tir2 = df_tir2.drop(columns=['Empresa'])
                 html_tir = self.gerar_html_tabela(df_tir2, "P/E e IRR")
                 st.markdown(html_tir, unsafe_allow_html=True)
 
+            
             st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
             # **Cálculo da média ponderada da TIR**
