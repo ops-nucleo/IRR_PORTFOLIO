@@ -182,7 +182,7 @@ if st.session_state['acesso_permitido']:
 
         def apresentar_scorecard(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = ["Negocio", "Pessoas"]           
-            df_score = pd.DataFrame(columns=['Empresa'] + anos)         
+            df_score = pd.DataFrame(columns=['Empresa'] + colunas)         
                    
             for empresa in empresas_ordenadas:
                 score_cards = {'Empresa': empresa}
