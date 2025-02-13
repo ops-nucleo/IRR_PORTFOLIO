@@ -165,7 +165,7 @@ if st.session_state['acesso_permitido']:
             for ano in anos:
                 print(ano)
                 dados_ano = df_filtrado[(df_filtrado['Ano Referência'] == ano)] 
-                print(dados_ano)
+                display(dados_ano)
                 for _, row in dados_ano.iterrows():
                     empresa = row['Ticker']
                     pe_cal = {'Empresa': empresa}
