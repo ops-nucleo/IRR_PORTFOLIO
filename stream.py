@@ -172,7 +172,7 @@ if st.session_state['acesso_permitido']:
                         except ValueError:
                             pe_cal[anos[i]] = ''
                     df_pe_calc = df_pe_calc.append(pe_cal, ignore_index=True)
-            for ano in anos[]:
+            for ano in anos:
                 df_pe_calc[ano] = df_pe_calc[ano].apply(lambda x: f"{valor:,.1f}")
             return df_pe_calc
 
