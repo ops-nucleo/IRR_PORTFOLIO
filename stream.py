@@ -190,8 +190,7 @@ if st.session_state['acesso_permitido']:
                 for coluna in colunas:
                     try:
                         score_cards[coluna] = df_filtrado.loc[
-                            (df_filtrado['Ticker'] == empresa) & 
-                            (df_filtrado['Ano Referência'] == ano), 
+                            (df_filtrado['Ticker'] == empresa), 
                             coluna
                         ].values[0]
                     except IndexError:
