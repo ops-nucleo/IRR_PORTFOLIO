@@ -158,7 +158,7 @@ if st.session_state['acesso_permitido']:
                 df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
             return df_growth
 
-       def apresentar_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
+        def apresentar_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
             ano_atual = pd.to_datetime(data_selecionada).year
             anos = [ano_atual + i for i in range(1, 3)]           
             df_pe_calc = pd.DataFrame(columns=['Empresa'] + anos[])         
