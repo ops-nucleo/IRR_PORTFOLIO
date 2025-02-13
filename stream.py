@@ -164,7 +164,7 @@ if st.session_state['acesso_permitido']:
             df_pe_calc = pd.DataFrame(columns=['Empresa'] + anos)         
             for ano in anos:
                 for _, row in df_filtrado.iterrows():
-                    empresa = row['Empresa']
+                    empresa = row['Ticker']
                     pe_cal = {'Empresa': empresa}
                     for i in range(1, len(anos)):
                         try:
