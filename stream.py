@@ -357,7 +357,7 @@ if st.session_state['acesso_permitido']:
                 st.markdown(html_tir, unsafe_allow_html=True)
                 
             # Tabela de Scorecards
-            with col5:
+            with col6:
                 df_score = self.apresentar_scorecard(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_score2 = df_score.copy()
                 df_score2 = df_score2.drop(columns=['Empresa'])
