@@ -162,20 +162,24 @@ if st.session_state['acesso_permitido']:
             ano_atual = pd.to_datetime(data_selecionada).year
             anos = [ano_atual + i for i in range(1, 3)]           
             df_pe_calc = pd.DataFrame(columns=['Empresa'] + anos)         
-            for ano in anos:
-                dados_ano = df_filtrado[(df_filtrado['Ano Referência'] == ano)] 
-                for _, row in dados_ano.iterrows():
-                    empresa = row['Ticker']
-                    pe_cal = {'Empresa': empresa}
-                    for i in range(len(anos)):
-                        try:
-                            pe_cal[anos[i]] = df_filtrado.loc[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano), 'P/E Calculado'].values[0]
-                        except ValueError:
-                            pe_cal[anos[i]] = ''
-                    df_pe_calc = df_pe_calc.append(pe_cal, ignore_index=True)
-
+                   
+            for empresa in empresas_ordenadas:
+                pe_cal = {'Empresa': empresa}
+        
+                for ano in anos:
+                    try:
+                        pe_cal[ano] = df_filtrado.loc[
+                            (df_filtrado['Ticker'] == empresa) & 
+                            (df_filtrado['Ano Referência'] == ano), 
+                            'P/E Calculado'
+                        ].values[0]
+                    except IndexError:
+                        pe_cal[ano] = ""  
+        
+                df_pe_calc = pd.concat([df_pe_calc, pd.DataFrame([pe_cal])], ignore_index=True)
+        
             return df_pe_calc
-
+            
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
                 'P/E': 'P/E',
