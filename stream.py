@@ -181,7 +181,7 @@ if st.session_state['acesso_permitido']:
             return df_pe_calc
 
         def apresentar_scorecard(self, df_filtrado, data_selecionada, empresas_ordenadas):
-            colunas = ["Negocio", "Pessoas"]           
+            colunas = ["Negocios", "Pessoas"]           
             df_score = pd.DataFrame(columns=['Empresa'] + colunas)         
                    
             for empresa in empresas_ordenadas:
