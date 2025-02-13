@@ -167,7 +167,7 @@ if st.session_state['acesso_permitido']:
                 for _, row in dados_ano.iterrows():
                     empresa = row['Ticker']
                     pe_cal = {'Empresa': empresa}
-                    for i in range(1, len(anos)):
+                    for i in range(len(anos)):
                         try:
                             pe_cal[anos[i]] = df_filtrado.loc[(df_filtrado['Ticker'] == empresa), 'P/E Calculado'].values[0]
                         except ValueError:
