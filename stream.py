@@ -179,6 +179,27 @@ if st.session_state['acesso_permitido']:
                 df_pe_calc = pd.concat([df_pe_calc, pd.DataFrame([pe_cal])], ignore_index=True)
         
             return df_pe_calc
+
+        def apresentar_scorecard(self, df_filtrado, data_selecionada, empresas_ordenadas):
+            colunas = ["Negocio", "Pessoas"]           
+            df_score = pd.DataFrame(columns=['Empresa'] + anos)         
+                   
+            for empresa in empresas_ordenadas:
+                score_cards = {'Empresa': empresa}
+        
+                for coluna in colunas:
+                    try:
+                        score_cards[coluna] = df_filtrado.loc[
+                            (df_filtrado['Ticker'] == empresa) & 
+                            (df_filtrado['Ano Referência'] == ano), 
+                            coluna
+                        ].values[0]
+                    except IndexError:
+                        score_cards[coluna] = ""  
+        
+                df_score = pd.concat([df_score, pd.DataFrame([score_cards])], ignore_index=True)
+        
+            return df_score
             
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
@@ -297,7 +318,7 @@ if st.session_state['acesso_permitido']:
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
             empresas_ordenadas = df_portfolio['Empresa'].tolist()
             # Exibir tabelas lado a lado
-            col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
+            col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 1])
     
             # Tabela de Portfolio
             with col1:
@@ -335,6 +356,14 @@ if st.session_state['acesso_permitido']:
                 df_tir2 = df_tir2.drop(columns=['Empresa'])
                 html_tir = self.gerar_html_tabela(df_tir2, "P/E e IRR")
                 st.markdown(html_tir, unsafe_allow_html=True)
+                
+            # Tabela de Scorecards
+            with col5:
+                df_score = self.apresentar_scorecard(df_filtrado, data_selecionada, empresas_ordenadas)
+                df_score2 = df_score.copy()
+                df_score2 = df_score2.drop(columns=['Empresa'])
+                html_score = self.gerar_html_tabela(df_score2, "Scorecard Quali")
+                st.markdown(html_score, unsafe_allow_html=True)
 
             
             st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
