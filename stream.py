@@ -169,7 +169,7 @@ if st.session_state['acesso_permitido']:
                     pe_cal = {'Empresa': empresa}
                     for i in range(len(anos)):
                         try:
-                            pe_cal[anos[i]] = df_filtrado.loc[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano), 'P/E Calculado'].values[0].round(1)
+                            pe_cal[anos[i]] = df_filtrado.loc[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano), 'P/E Calculado'].values[0]
                         except ValueError:
                             pe_cal[anos[i]] = ''
                     df_pe_calc = df_pe_calc.append(pe_cal, ignore_index=True)
