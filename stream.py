@@ -263,7 +263,7 @@ if st.session_state['acesso_permitido']:
                 html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
             html += '</tr></thead><tbody>'
             for i, row in df.iterrows():
-                bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
                 html += f'<tr style="background-color: {bg_color}; color: black;">'
                 for col in df.columns:
                     html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
@@ -475,7 +475,7 @@ if st.session_state['acesso_permitido']:
                 html += '</thead><tbody>'
                 
                 for i, row in df.iterrows():
-                    bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                    bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
                     html += f'<tr style="background-color: {bg_color}; color: black;">'
                     for j, col in enumerate(df.columns):
                         cell_color = ""
@@ -499,7 +499,7 @@ if st.session_state['acesso_permitido']:
                 html += '</thead><tbody>'
                 
                 for i, row in df.iterrows():
-                    bg_color = 'rgb(242, 242, 242)' if i % 2 == 0 else 'white'
+                    bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
                     html += f'<tr style="background-color: {bg_color}; color: black;">'
                     for j, col in enumerate(df.columns):
                         cell_color = ""
