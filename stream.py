@@ -246,6 +246,7 @@ if st.session_state['acesso_permitido']:
     
             # Calcular a média ponderada
             weighted_avg_tir = (df_validas['IRR'] * df_validas['% Portfólio']).sum() / df_validas['% Portfólio'].sum()
+            weighted_avg_tir.round(1)
             if pd.isna(weighted_avg_tir):
                 return 0
     
