@@ -203,8 +203,8 @@ if st.session_state['acesso_permitido']:
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
                 'P/E': 'P/E',
-                'TIR Fluxos Perp. (Real)': 'IRR perpet.',
-                'Ke Saída (Real)': 'IRR saída',
+                'TIR Fluxos Perp. (Real)': 'IRR perp',
+                'Ke Saída (Real)': 'IRR out',
                 'IRR': 'IRR'
             }
         
