@@ -172,7 +172,7 @@ if st.session_state['acesso_permitido']:
                             (df_filtrado['Ticker'] == empresa) & 
                             (df_filtrado['Ano Referência'] == ano), 
                             'P/E Calculado'
-                        ].values[0]
+                        ].values[0].round(1)
                     except IndexError:
                         pe_cal[ano] = ""  
         
@@ -192,7 +192,7 @@ if st.session_state['acesso_permitido']:
                         score_cards[coluna] = df_filtrado.loc[
                             (df_filtrado['Ticker'] == empresa), 
                             coluna
-                        ].values[0]
+                        ].values[0].round(1)
                     except IndexError:
                         score_cards[coluna] = ""  
         
