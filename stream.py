@@ -225,7 +225,6 @@ if st.session_state['acesso_permitido']:
         
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
-                'P/E': 'P/E',
                 'TIR Fluxos Perp. (Real)': 'IRR perp',
                 'Ke Saída (Real)': 'IRR out',
                 'IRR': 'IRR'
@@ -241,7 +240,7 @@ if st.session_state['acesso_permitido']:
                     valor = dados[coluna_original].values[0]
         
                     if isinstance(valor, (int, float)):  # Apenas formata se for número
-                        linha[coluna_nova] = f"{valor:,.1%}" if 'IRR' in coluna_nova else f"{valor:,.1f}"
+                        linha[coluna_nova] = f"{valor:,.1%}" 
                     else:
                         linha[coluna_nova] = ""  # Mantém vazio se não for número válido
         
