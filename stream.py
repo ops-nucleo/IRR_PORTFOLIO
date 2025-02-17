@@ -202,7 +202,7 @@ if st.session_state['acesso_permitido']:
 
         def df_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
-                'P/E': 'P/E',
+                'P/E': '&nbsp;',
             }
         
             df_pe = []
