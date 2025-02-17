@@ -515,7 +515,9 @@ if st.session_state['acesso_permitido']:
                             if prev_col:
                                 valor_atual = df.at[i, col]
                                 valor_anterior = df.at[i, prev_col]
-        
+                                valor_atual = float(str(valor_atual).replace(",", "").replace("%", "").strip()) / 100  
+                                valor_anterior = float(str(valor_anterior).replace(",", "").replace("%", "").strip()) / 100
+ 
                                 # Verifica se os valores são numéricos e a diferença é maior que 0.3%
                                 if isinstance(valor_atual, (int, float)) and isinstance(valor_anterior, (int, float)):
                                     if abs(valor_atual - valor_anterior) > 0.001:
