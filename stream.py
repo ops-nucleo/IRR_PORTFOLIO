@@ -520,7 +520,7 @@ if st.session_state['acesso_permitido']:
  
                                 # Verifica se os valores são numéricos e a diferença é maior que 0.3%
                                 if isinstance(valor_atual, (int, float)) and isinstance(valor_anterior, (int, float)):
-                                    if abs(valor_atual - valor_anterior) > 0.001:
+                                    if abs(valor_atual - valor_anterior) > 0.003:
                                         cell_color = "background-color: yellow;"
                                     
                         html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
