@@ -205,10 +205,10 @@ if st.session_state['acesso_permitido']:
                 'P/E': 'P/E',
             }
         
-            df_tir = []
+            df_pe = []
         
             for empresa in empresas_ordenadas:
-                dados = df_filtrado[df_filtrado['Ticker'] == empresa].fillna("")
+                dados = df_filtrado[df_filtrado['Ticker'] == empresa].fillna(" ")
         
                 linha = {'Empresa': empresa}
                 for coluna_original, coluna_nova in colunas.items():
@@ -219,9 +219,9 @@ if st.session_state['acesso_permitido']:
                     else:
                         linha[coluna_nova] = ""  # Mantém vazio se não for número válido
         
-                df_tir.append(linha)
+                df_pe.append(linha)
         
-            return pd.DataFrame(df_tir)
+            return pd.DataFrame(df_pe)
         
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
