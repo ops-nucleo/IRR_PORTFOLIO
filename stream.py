@@ -497,6 +497,7 @@ if st.session_state['acesso_permitido']:
             # Criar cabeçalhos mesclados
             html += '<thead>'
             html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            
             if variavel == "% Portfolio":
                 html += '<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
                 for data in datas_formatadas:
@@ -519,6 +520,7 @@ if st.session_state['acesso_permitido']:
                                 if isinstance(valor_atual, (int, float)) and isinstance(valor_anterior, (int, float)):
                                     if abs(valor_atual - valor_anterior) > 0.003:
                                         cell_color = "background-color: yellow;"
+                                    
                         html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
                     html += '</tr>'        
             else:   
