@@ -339,7 +339,7 @@ if st.session_state['acesso_permitido']:
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
             empresas_ordenadas = df_portfolio['Empresa'].tolist()
             # Exibir tabelas lado a lado
-            col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 1, 1, 0.5, 1.5, 1])
+            col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 1, 1, 0.5, 1.25, 1.25])
     
             # Tabela de Portfolio
             with col1:
