@@ -216,8 +216,6 @@ if st.session_state['acesso_permitido']:
         
                     if isinstance(valor, (int, float)):  # Apenas formata se for número
                         linha[coluna_nova] = f"{valor:,.1f}"
-                    else:
-                        linha[coluna_nova] = ""  # Mantém vazio se não for número válido
         
                 df_tir.append(linha)
         
