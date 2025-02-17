@@ -160,7 +160,7 @@ if st.session_state['acesso_permitido']:
 
         def apresentar_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
             ano_atual = pd.to_datetime(data_selecionada).year
-            anos = [ano_atual + i for i in range(1, 3)]           
+            anos = [ano_atual + i for i in range(0, 2)]           
             df_pe_calc = pd.DataFrame(columns=['Empresa'] + anos)         
                    
             for empresa in empresas_ordenadas:
