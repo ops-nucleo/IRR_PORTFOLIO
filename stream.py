@@ -199,7 +199,30 @@ if st.session_state['acesso_permitido']:
                 df_score = pd.concat([df_score, pd.DataFrame([score_cards])], ignore_index=True)
         
             return df_score
-            
+
+        def df_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
+            colunas = {
+                'P/E': '',
+            }
+        
+            df_tir = []
+        
+            for empresa in empresas_ordenadas:
+                dados = df_filtrado[df_filtrado['Ticker'] == empresa].fillna("")
+        
+                linha = {'Empresa': empresa}
+                for coluna_original, coluna_nova in colunas.items():
+                    valor = dados[coluna_original].values[0]
+        
+                    if isinstance(valor, (int, float)):  # Apenas formata se for número
+                        linha[coluna_nova] = f"{valor:,.1f}"
+                    else:
+                        linha[coluna_nova] = ""  # Mantém vazio se não for número válido
+        
+                df_tir.append(linha)
+        
+            return pd.DataFrame(df_tir)
+        
         def calcular_tir(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
                 'P/E': 'P/E',
@@ -308,8 +331,8 @@ if st.session_state['acesso_permitido']:
             st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
             
             # Seção do Selectbox para a data (com a formatação que você mencionou)
-            col5, col6, col7, col8 = st.columns([0.5, 1.5, 1, 1]) 
-            with col5:
+            col10, co11, col2, col3 = st.columns([0.5, 1.5, 1, 1]) 
+            with col10:
                 datas_disponiveis = self.filtrar_datas()
                 data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
             # Filtra os dados pela data selecionada
@@ -317,7 +340,7 @@ if st.session_state['acesso_permitido']:
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
             empresas_ordenadas = df_portfolio['Empresa'].tolist()
             # Exibir tabelas lado a lado
-            col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 1])
+            col1, col2, col3, col4, col5, col6, col7 = st.columns([1, 1, 1, 1, 1, 1, 1])
     
             # Tabela de Portfolio
             with col1:
@@ -347,9 +370,17 @@ if st.session_state['acesso_permitido']:
                 df_pe2 = df_pe2.drop(columns=['Empresa'])
                 html_pe = self.gerar_html_tabela(df_pe2, "P/E")
                 st.markdown(html_pe, unsafe_allow_html=True)
+                        # Tabela de P/E e TIR
+            with col5:
+                df_pee = self.df_pe(df_filtrado, data_selecionada, empresas_ordenadas)
+                df_pee2 = df_pee.copy()
+                df_pee2 = df_pee2.drop(columns=['Empresa'])
+                html_tir = self.gerar_html_tabela(df_pee2, "P/E saída")
+                st.markdown(html_tir, unsafe_allow_html=True)
+                
 
             # Tabela de P/E e TIR
-            with col5:
+            with col6:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_tir2 = df_tir.copy()
                 df_tir2 = df_tir2.drop(columns=['Empresa'])
@@ -357,7 +388,7 @@ if st.session_state['acesso_permitido']:
                 st.markdown(html_tir, unsafe_allow_html=True)
                 
             # Tabela de Scorecards
-            with col6:
+            with col7:
                 df_score = self.apresentar_scorecard(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_score2 = df_score.copy()
                 df_score2 = df_score2.drop(columns=['Empresa'])
