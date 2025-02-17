@@ -370,16 +370,16 @@ if st.session_state['acesso_permitido']:
                 df_pe2 = df_pe2.drop(columns=['Empresa'])
                 html_pe = self.gerar_html_tabela(df_pe2, "P/E")
                 st.markdown(html_pe, unsafe_allow_html=True)
-                        # Tabela de P/E e TIR
+            # Tabela de P/E
             with col5:
                 df_pee = self.df_pe(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_pee2 = df_pee.copy()
                 df_pee2 = df_pee2.drop(columns=['Empresa'])
-                html_tir = self.gerar_html_tabela(df_pee2, "P/E saída")
-                st.markdown(html_tir, unsafe_allow_html=True)
+                html_pee = self.gerar_html_tabela(df_pee2, "P/E saída")
+                st.markdown(html_pee, unsafe_allow_html=True)
                 
 
-            # Tabela de P/E e TIR
+            # Tabela de TIR
             with col6:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_tir2 = df_tir.copy()
