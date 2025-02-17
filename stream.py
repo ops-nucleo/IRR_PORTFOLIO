@@ -383,7 +383,7 @@ if st.session_state['acesso_permitido']:
                 df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
                 df_tir2 = df_tir.copy()
                 df_tir2 = df_tir2.drop(columns=['Empresa'])
-                html_tir = self.gerar_html_tabela(df_tir2, "P/E e IRR")
+                html_tir = self.gerar_html_tabela(df_tir2, "IRR")
                 st.markdown(html_tir, unsafe_allow_html=True)
                 
             # Tabela de Scorecards
