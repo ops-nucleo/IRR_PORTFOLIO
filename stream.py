@@ -482,7 +482,7 @@ if st.session_state['acesso_permitido']:
             
             for col in df_tabela.columns[1:]:
                 if variavel == "% Portfolio":
-                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.1%}")
+                    df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.3%}")
                 else:
                     df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
             if variavel == "% Portfolio":
