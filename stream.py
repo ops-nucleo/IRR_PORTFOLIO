@@ -202,7 +202,7 @@ if st.session_state['acesso_permitido']:
 
         def df_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
             colunas = {
-                'P/E': ' ',
+                'P/E': 'P/E',
             }
         
             df_tir = []
@@ -216,6 +216,8 @@ if st.session_state['acesso_permitido']:
         
                     if isinstance(valor, (int, float)):  # Apenas formata se for número
                         linha[coluna_nova] = f"{valor:,.1f}"
+                    else:
+                        linha[coluna_nova] = ""  # Mantém vazio se não for número válido
         
                 df_tir.append(linha)
         
