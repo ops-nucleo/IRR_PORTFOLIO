@@ -634,7 +634,7 @@ if st.session_state['acesso_permitido']:
     """, unsafe_allow_html=True)
     
     # Criando um radio com opções lado a lado dentro de colunas
-    col1, col2 = st.columns([1, 3])  # Ajusta largura das colunas
+    col1, col2 = st.columns([3, 1])  # Ajusta largura das colunas
     
     with col1:
         graphs = st.radio(
