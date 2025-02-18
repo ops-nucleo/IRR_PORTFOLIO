@@ -106,7 +106,7 @@ if st.session_state['acesso_permitido']:
         def criar_tabela_portfolio(self, df_filtrado):
             # Primeira tabela: "Portfolio"
             df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
-            df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
+            df_portfolio.columns = ['Empresa', '%', 'Mkt cap']
     
             # Certificando-se de que os valores são numéricos e tratando NaN
             df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
@@ -114,6 +114,7 @@ if st.session_state['acesso_permitido']:
             # Formatando os números
             df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.1f}%")
             df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
+            df_portfolio = df_portfolio.rename(columns={"% Portfólio": "%"})
             return df_portfolio
     
         def criar_tabela_lucro(self, df_filtrado, data_selecionada,empresas_ordenadas):
@@ -339,7 +340,7 @@ if st.session_state['acesso_permitido']:
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
             empresas_ordenadas = df_portfolio['Empresa'].tolist()
             # Exibir tabelas lado a lado
-            col1, col2, col3, col4, col5, col6, col7 = st.columns([1.5, 1, 1, 0.5, 0.5, 1.25, 1.25])
+            col1, col2, col3, col4, col5, col6, col7 = st.columns([1.3, 1, 1, 0.7, 0.5, 1.25, 1.25])
     
             # Tabela de Portfolio
             with col1:
