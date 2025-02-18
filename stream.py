@@ -598,12 +598,56 @@ if st.session_state['acesso_permitido']:
            
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
 
-
-    # Opções do ratio
-    graphs = st.radio(
-        "Escolha a análise:",
-        options=["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
-    )
+    st.markdown("""
+        <style>
+            div[data-baseweb="radio"] {
+                display: flex;
+                gap: 15px;  /* Adiciona espaçamento entre os botões */
+            }
+    
+            div[data-baseweb="radio"] label {
+                background-color: rgb(0, 32, 96); /* Azul da Nucleo Capital */
+                color: white;
+                padding: 8px 16px;
+                border-radius: 5px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+    
+            div[data-baseweb="radio"] label:hover {
+                background-color: white;
+                color: rgb(0, 32, 96);
+                border: 2px solid rgb(0, 32, 96);
+            }
+    
+            div[data-baseweb="radio"] input:checked + label {
+                background-color: white;
+                color: rgb(0, 32, 96);
+                border: 2px solid rgb(0, 32, 96);
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    # Criando colunas para alinhar os botões lado a lado
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        opcao1 = st.radio("", ["Análise das projeções dos modelos"], index=0)
+    
+    with col2:
+        opcao2 = st.radio("", ["TIR média ponderada Nucleo Capital"], index=0)
+    
+    # Definindo a opção selecionada
+    if opcao1 == "Análise das projeções dos modelos":
+        graphs = "Análise das projeções dos modelos"
+    elif opcao2 == "TIR média ponderada Nucleo Capital":
+        graphs = "TIR média ponderada Nucleo Capital"
+        # Opções do ratio
+        graphs = st.radio(
+            "Escolha a análise:",
+            options=["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
+        )
     
     # Se for a primeira opção, exibir o gráfico já existente
     if graphs == "Análise das projeções dos modelos":
