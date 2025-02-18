@@ -594,9 +594,9 @@ if st.session_state['acesso_permitido']:
     df_empresa = pd.read_csv('base_empilhada_total.csv')
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
     tabela_projecoes.mostrar_tabela_projecoes()
-
+    st.markdown("br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     # Customizando o estilo dos botões
-    st.markdown("<br><br>"
+    st.markdown("""
         <style>
             /* Centraliza os botões */
             div[data-baseweb="radio"] {
