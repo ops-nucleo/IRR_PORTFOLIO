@@ -595,24 +595,28 @@ if st.session_state['acesso_permitido']:
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
     tabela_projecoes.mostrar_tabela_projecoes()
 
-           
-    st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-
+              
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # Customizando o estilo dos botões
     st.markdown("""
         <style>
+            /* Centraliza os botões */
             div[data-baseweb="radio"] {
                 display: flex;
-                gap: 15px;  /* Adiciona espaçamento entre os botões */
+                justify-content: center;
+                gap: 20px;  /* Espaçamento entre os botões */
             }
     
             div[data-baseweb="radio"] label {
                 background-color: rgb(0, 32, 96); /* Azul da Nucleo Capital */
                 color: white;
-                padding: 8px 16px;
-                border-radius: 5px;
+                padding: 10px 20px;
+                border-radius: 8px;
                 font-weight: bold;
                 cursor: pointer;
                 transition: 0.3s;
+                text-align: center;
             }
     
             div[data-baseweb="radio"] label:hover {
@@ -629,22 +633,17 @@ if st.session_state['acesso_permitido']:
         </style>
     """, unsafe_allow_html=True)
     
-    # Criando colunas para alinhar os botões lado a lado
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        opcao1 = st.radio("", ["Análise das projeções dos modelos"], index=0)
+    # Criando um radio com opções lado a lado dentro de colunas
+    col1, col2 = st.columns([1, 3])  # Ajusta largura das colunas
     
     with col2:
-        opcao2 = st.radio("", ["TIR média ponderada Nucleo Capital"], index=0)
+        graphs = st.radio(
+            "Escolha a análise:",
+            ["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
+            horizontal=True  # Exibe os botões lado a lado
+        )
     
-    # Definindo a opção selecionada
-    if opcao1 == "Análise das projeções dos modelos":
-        graphs = "Análise das projeções dos modelos"
-    elif opcao2 == "TIR média ponderada Nucleo Capital":
-        graphs = "TIR média ponderada Nucleo Capital"
-    
-    # Se for a primeira opção, exibir o gráfico já existente
+    # Exibir o gráfico correspondente
     if graphs == "Análise das projeções dos modelos":
         class EmpresaAnalysis:
             def __init__(self):
