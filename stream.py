@@ -106,7 +106,7 @@ if st.session_state['acesso_permitido']:
         def criar_tabela_portfolio(self, df_filtrado):
             # Primeira tabela: "Portfolio"
             df_portfolio = df_filtrado[['Ticker', '% Portfolio', 'Mkt Cap']].drop_duplicates().reset_index(drop=True)
-            df_portfolio.columns = ['Empresa', '% Portfolio', 'Mkt cap']
+            df_portfolio.columns = ['Empresa', '% Portfólio', 'Mkt cap']
     
             # Certificando-se de que os valores são numéricos e tratando NaN
             df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
