@@ -639,7 +639,7 @@ if st.session_state['acesso_permitido']:
     with col1:
         # Criando um radio estilizado
         graphs = st.radio(
-            "Escolha a análise:",
+            "",
             ["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
             horizontal=True  # Exibe os botões lado a lado
         )
