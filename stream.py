@@ -597,168 +597,170 @@ if st.session_state['acesso_permitido']:
 
            
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-    
-    class EmpresaAnalysis:
-        def __init__(self):
-            self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
-            self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
-                            "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
-                            "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
-                            "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "CDI", "P/E", "IRR"]
-            self.empresas = np.sort(self.df_mkt['Ticker'].dropna().unique())
 
-        def filtrar_variaveis(self, empresa):
-            df_empresa = self.df_mkt[self.df_mkt['Ticker'] == empresa]
-            variaveis_disponiveis = [col for col in self.colunas if df_empresa[col].notna().any()]
-            return variaveis_disponiveis
-        
-        def filtrar_anos(self, empresa, variavel):
-            df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
-            return df_empresa['Ano Referência'].dropna().unique()
-        
-        def filtrar_datas(self, empresa, variavel, ano):
-            df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
-            datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
-            return datas
 
-        def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate):
-            df_filtrado = self.df_mkt[
-                (self.df_mkt['Ticker'] == empresa) & 
-                (self.df_mkt['Ano Referência'] == ano_ref) & 
-                (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
-                (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
-            ]
+    # Opções do ratio
+    graphs = st.radio(
+        "Escolha a análise:",
+        options=["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
+    )
+    
+    # Se for a primeira opção, exibir o gráfico já existente
+    if graphs == "Análise das projeções dos modelos":
+        class EmpresaAnalysis:
+            def __init__(self):
+                self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
+                self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
+                                "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
+                                "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
+                                "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "CDI", "P/E", "IRR"]
+                self.empresas = np.sort(self.df_mkt['Ticker'].dropna().unique())
+    
+            def filtrar_variaveis(self, empresa):
+                df_empresa = self.df_mkt[self.df_mkt['Ticker'] == empresa]
+                variaveis_disponiveis = [col for col in self.colunas if df_empresa[col].notna().any()]
+                return variaveis_disponiveis
             
-            df_filtrado = df_filtrado.dropna(subset=[variavel])
-            if df_filtrado.empty:
-                st.warning(f"Não possuímos dados de {variavel} nessas datas.")
-                return None, None, None
-            # Ajuste de escala para evitar notação científica no eixo Y
-            df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
-            df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
+            def filtrar_anos(self, empresa, variavel):
+                df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
+                return df_empresa['Ano Referência'].dropna().unique()
             
-            # Calculando os limites do eixo Y com base em 40% de folga
-            min_val = df_filtrado[variavel].min()
-            max_val = df_filtrado[variavel].max()
-            y_folga = 0.4 * (max_val - min_val)
-        
-            # Calculando os limites do eixo X (datas) com folga
-            data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
-            data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
-            x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
-        
-            # Cria o gráfico com o primeiro eixo Y (a variável principal)
-            fig, ax1 = plt.subplots(figsize=(10, 4.2))
-            ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
-            ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
-            ax1.set_xlabel("Data", fontsize=5)
-            ax1.set_ylabel(variavel, fontsize=5)
-            ax1.tick_params(axis='x', labelsize=5)
-            ax1.tick_params(axis='y', labelsize=5)
-            ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
-            ax1.set_ylim([min_val - y_folga, max_val + y_folga])
-            ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-            fig.autofmt_xdate()
-            ax1.grid(True)
+            def filtrar_datas(self, empresa, variavel, ano):
+                df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
+                datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
+                return datas
+    
+            def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate):
+                df_filtrado = self.df_mkt[
+                    (self.df_mkt['Ticker'] == empresa) & 
+                    (self.df_mkt['Ano Referência'] == ano_ref) & 
+                    (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
+                    (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
+                ]
+                
+                df_filtrado = df_filtrado.dropna(subset=[variavel])
+                if df_filtrado.empty:
+                    st.warning(f"Não possuímos dados de {variavel} nessas datas.")
+                    return None, None, None
+                # Ajuste de escala para evitar notação científica no eixo Y
+                df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
+                df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
+                
+                # Calculando os limites do eixo Y com base em 40% de folga
+                min_val = df_filtrado[variavel].min()
+                max_val = df_filtrado[variavel].max()
+                y_folga = 0.4 * (max_val - min_val)
             
-            if variavel in {"CDI", "IRR"}:             
-                def formatar_percentual(x, pos):
-                    return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
-                ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
+                # Calculando os limites do eixo X (datas) com folga
+                data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
+                data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
+                x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
             
-            return fig, df_filtrado, self.df_mkt
-    # Instancia a classe de análise
-    analysis = EmpresaAnalysis()
-    
-    # Layout das seleções usando colunas para alinhamento
-    col1, col3, col2, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
-    
-    # Dropdown para selecionar empresa (Ticker) no lado esquerdo
-    with col1:
-        empresa_selecionada = st.selectbox('Ticker', analysis.empresas)
-    
-    if empresa_selecionada:
+                # Cria o gráfico com o primeiro eixo Y (a variável principal)
+                fig, ax1 = plt.subplots(figsize=(10, 4.2))
+                ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
+                ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
+                ax1.set_xlabel("Data", fontsize=5)
+                ax1.set_ylabel(variavel, fontsize=5)
+                ax1.tick_params(axis='x', labelsize=5)
+                ax1.tick_params(axis='y', labelsize=5)
+                ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
+                ax1.set_ylim([min_val - y_folga, max_val + y_folga])
+                ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+                fig.autofmt_xdate()
+                ax1.grid(True)
+                
+                if variavel in {"CDI", "IRR"}:             
+                    def formatar_percentual(x, pos):
+                        return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+                    ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
+                
+                return fig, df_filtrado, self.df_mkt
+        # Instancia a classe de análise
+        analysis = EmpresaAnalysis()
+        
+        # Layout das seleções usando colunas para alinhamento
+        col1, col3, col2, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
+        
+        # Dropdown para selecionar empresa (Ticker) no lado esquerdo
+        with col1:
+            empresa_selecionada = st.selectbox('Ticker', analysis.empresas)
+        
+        if empresa_selecionada:
+                
+            # Inicializa o session_state se ainda não existir
+            if "variavel_selecionada" not in st.session_state:
+                st.session_state.variavel_selecionada = None
             
-        # Inicializa o session_state se ainda não existir
-        if "variavel_selecionada" not in st.session_state:
-            st.session_state.variavel_selecionada = None
-        
-        # Obtém as variáveis disponíveis para a empresa selecionada
-        variaveis_disponiveis = analysis.filtrar_variaveis(empresa_selecionada)
-        
-        # Mantém a variável selecionada se ainda estiver na lista de disponíveis
-        if st.session_state.variavel_selecionada in variaveis_disponiveis:
-            variavel_selecionada = st.session_state.variavel_selecionada
-        else:
-            variavel_selecionada = variaveis_disponiveis[0] if variaveis_disponiveis else None
-        
-        # Renderiza o selectbox sem alterar a variável que já estava selecionada
-        with col2:
-            variavel_selecionada = st.selectbox(
-                'Variable:', 
-                variaveis_disponiveis, 
-                index=variaveis_disponiveis.index(variavel_selecionada) if variavel_selecionada in variaveis_disponiveis else 0
-            )
-        
-        # Atualiza o session_state para manter a variável na próxima interação
-        st.session_state.variavel_selecionada = variavel_selecionada
-    
-        if variavel_selecionada:
-            # Filtrar anos disponíveis para a variável selecionada
-            anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
-    
-            with col3:
-                ano_selecionado = st.selectbox('Reference Year:', anos_disponiveis)
-    
-            # Filtrar datas disponíveis
-            datas_disponiveis = analysis.filtrar_datas(empresa_selecionada, variavel_selecionada, ano_selecionado)
-            # Ordenar as datas em ordem crescente
-            datas_disponiveis = np.sort(datas_disponiveis)
-    
-            # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
-            with col4:
-                # Aqui convertemos as datas para exibição em formato correto
-                datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
-    
-                # Caixa de seleção "De" (remover a última data)
-                data_de = st.selectbox('From:', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
-    
-            with col5:
-                # Caixa de seleção "Até" (remover a primeira data)
-                    data_ate = st.selectbox(
-                    'To:',
-                    datas_formatadas[1:],  # Remover a primeira data da lista
-                    key='data_ate',
-                    index=len(datas_formatadas[1:]) - 1  # Última data da lista como default
+            # Obtém as variáveis disponíveis para a empresa selecionada
+            variaveis_disponiveis = analysis.filtrar_variaveis(empresa_selecionada)
+            
+            # Mantém a variável selecionada se ainda estiver na lista de disponíveis
+            if st.session_state.variavel_selecionada in variaveis_disponiveis:
+                variavel_selecionada = st.session_state.variavel_selecionada
+            else:
+                variavel_selecionada = variaveis_disponiveis[0] if variaveis_disponiveis else None
+            
+            # Renderiza o selectbox sem alterar a variável que já estava selecionada
+            with col2:
+                variavel_selecionada = st.selectbox(
+                    'Variable:', 
+                    variaveis_disponiveis, 
+                    index=variaveis_disponiveis.index(variavel_selecionada) if variavel_selecionada in variaveis_disponiveis else 0
                 )
+            
+            # Atualiza o session_state para manter a variável na próxima interação
+            st.session_state.variavel_selecionada = variavel_selecionada
+        
+            if variavel_selecionada:
+                # Filtrar anos disponíveis para a variável selecionada
+                anos_disponiveis = analysis.filtrar_anos(empresa_selecionada, variavel_selecionada)
+        
+                with col3:
+                    ano_selecionado = st.selectbox('Reference Year:', anos_disponiveis)
+        
+                # Filtrar datas disponíveis
+                datas_disponiveis = analysis.filtrar_datas(empresa_selecionada, variavel_selecionada, ano_selecionado)
+                # Ordenar as datas em ordem crescente
+                datas_disponiveis = np.sort(datas_disponiveis)
+        
+                # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
+                with col4:
+                    # Aqui convertemos as datas para exibição em formato correto
+                    datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
+        
+                    # Caixa de seleção "De" (remover a última data)
+                    data_de = st.selectbox('From:', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
+        
+                with col5:
+                    # Caixa de seleção "Até" (remover a primeira data)
+                        data_ate = st.selectbox(
+                        'To:',
+                        datas_formatadas[1:],  # Remover a primeira data da lista
+                        key='data_ate',
+                        index=len(datas_formatadas[1:]) - 1  # Última data da lista como default
+                    )
+        
+                # Só atualiza o gráfico quando todas as seleções estão preenchidas
+                if ano_selecionado and data_de and data_ate:
+                    # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
+                    data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
+                    data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
+        
+                    # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
+                    fig, df_filtrado, df_completa = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate)
     
-            # Só atualiza o gráfico quando todas as seleções estão preenchidas
-            if ano_selecionado and data_de and data_ate:
-                # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
-                data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
-                data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
+                    # Verifica se fig e df_filtrado não são None antes de exibir
+                    if fig is not None and df_filtrado is not None:
+                        # Exibir gráfico
+                        st.pyplot(fig)
+                        colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
+                    
+                        # Filtra o DataFrame para exibir apenas as colunas selecionadas
+                        df_filtrado_para_exibir = df_filtrado[colunas_exibir]
+                    
+                        # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
+                        df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
     
-                # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
-                fig, df_filtrado, df_completa = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate)
-
-                # Verifica se fig e df_filtrado não são None antes de exibir
-                if fig is not None and df_filtrado is not None:
-                    # Exibir gráfico
-                    st.pyplot(fig)
-                    colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
-                
-                    # Filtra o DataFrame para exibir apenas as colunas selecionadas
-                    df_filtrado_para_exibir = df_filtrado[colunas_exibir]
-                
-                    # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
-                    df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
-
-                    # col8, col9, col10 = st.columns([2, 1, 1])  # 2/3 da tela para o AgGrid, 1/3 para o botão
-                    
-                    # with col8:
-                    
-                    # with col9:
-                    # with col10:
-                                    
-                else:
-                    pass
+                    else:
+                        pass
