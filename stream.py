@@ -636,7 +636,7 @@ if st.session_state['acesso_permitido']:
     # Criando um radio com opções lado a lado dentro de colunas
     col1, col2 = st.columns([1, 3])  # Ajusta largura das colunas
     
-    with col2:
+    with col1:
         graphs = st.radio(
             "Escolha a análise:",
             ["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
