@@ -643,11 +643,6 @@ if st.session_state['acesso_permitido']:
         graphs = "Análise das projeções dos modelos"
     elif opcao2 == "TIR média ponderada Nucleo Capital":
         graphs = "TIR média ponderada Nucleo Capital"
-        # Opções do ratio
-        graphs = st.radio(
-            "Escolha a análise:",
-            options=["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
-        )
     
     # Se for a primeira opção, exibir o gráfico já existente
     if graphs == "Análise das projeções dos modelos":
