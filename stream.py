@@ -753,12 +753,12 @@ if st.session_state['acesso_permitido']:
                     # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                     df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
-                    col8, col9, col10 = st.columns([2, 1, 1])  # 2/3 da tela para o AgGrid, 1/3 para o botão
+                    # col8, col9, col10 = st.columns([2, 1, 1])  # 2/3 da tela para o AgGrid, 1/3 para o botão
                     
-                    with col8:
+                    # with col8:
                     
-                    with col9:
-                    with col10:
+                    # with col9:
+                    # with col10:
                                     
                 else:
                     pass
