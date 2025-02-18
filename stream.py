@@ -756,39 +756,9 @@ if st.session_state['acesso_permitido']:
                     col8, col9, col10 = st.columns([2, 1, 1])  # 2/3 da tela para o AgGrid, 1/3 para o botão
                     
                     with col8:
-                        # Configurar AgGrid
-                        gb = GridOptionsBuilder.from_dataframe(df_filtrado_para_exibir)
-                        gb.configure_pagination(paginationAutoPageSize=True)  # Habilitar paginação
-                        gb.configure_side_bar()  # Adicionar barra lateral para filtros
-                        gb.configure_selection('multiple', use_checkbox=True)  # Habilitar múltiplas seleções
-                        grid_options = gb.build()
-                        
-                        # Exibir a tabela
-                        AgGrid(df_filtrado_para_exibir, gridOptions=grid_options, enable_enterprise_modules=True)
                     
                     with col9:
-                        # Converter o DataFrame para CSV
-                        csv = df_filtrado_para_exibir.to_csv(index=False)
-                    
-                        # Botão de download
-                        st.download_button(
-                            label="Download filtered data in CSV",
-                            data=csv,
-                            file_name='dados_filtrados.csv',
-                            mime='text/csv'
-                        )
                     with col10:
-                                                # Converter o DataFrame para CSV
-                        csv2 = df_completa.to_csv(index=False)
-                    
-                        # Botão de download
-                        st.download_button(
-                            label="Download complete database in CSV",
-                            data=csv2,
-                            file_name='df_completa.csv',
-                            mime='text/csv'
-                        )
-                        
                                     
                 else:
                     pass
