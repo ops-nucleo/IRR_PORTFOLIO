@@ -262,7 +262,7 @@ if st.session_state['acesso_permitido']:
             df_validas['IRR'] = df_validas['IRR'].str.rstrip('%').astype(float) / 100
             
             # Atribuir % Portfólio da primeira tabela (df_portfolio) às empresas válidas de TIR
-            df_validas = df_validas.merge(df_portfolio[['Empresa', '% Portfólio']], on='Empresa', how='left')
+            df_validas = df_validas.merge(df_portfolio[['Empresa', '%']], on='Empresa', how='left')
     
             # Converter % Portfólio para float
             df_validas['%'] = df_validas['%'].str.rstrip('%').astype(float) / 100
