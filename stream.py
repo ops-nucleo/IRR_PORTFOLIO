@@ -546,8 +546,20 @@ if st.session_state['acesso_permitido']:
                         cell_color = ""
                         if j > 1:  # Evita a primeira coluna (nomes das empresas)
                             prev_col = df.columns[j - 4] if j - 4 >= 1 else None  # Comparação com a mesma empresa na semana anterior
-                            if prev_col and df.at[i, col] != df.at[i, prev_col]:
-                                cell_color = "background-color: yellow;"
+                            if prev_col:
+                                valor_atual = df.at[i, col]
+                                valor_anterior = df.at[i, prev_col]
+                                valor_atual = float(str(valor_atual).replace(",", "."))
+                                valor_anterior = float(str(valor_anterior).replace(",", "."))
+                                if valor_anterior == 0 and valor_atual == 0:
+                                    pass  # Ambos são zero, então não precisa pintar
+                                elif valor_anterior == 0 or valor_atual == 0:
+                                    cell_color = "background-color: yellow;"  # Mudança brusca para ou de zero
+                                else:
+                                    variacao = abs((valor_atual / valor_anterior) - 1)
+                                    if variacao > 0.05:  # Mudança maior que 5%
+                                        cell_color = "background-color: yellow;"
+                                       
                         html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
                     html += '</tr>'
             
