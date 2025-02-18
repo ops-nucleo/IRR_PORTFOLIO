@@ -595,9 +595,7 @@ if st.session_state['acesso_permitido']:
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
     tabela_projecoes.mostrar_tabela_projecoes()
 
-              
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
+   
     # Customizando o estilo dos botões
     st.markdown("""
         <style>
