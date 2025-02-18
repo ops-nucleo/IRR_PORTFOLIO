@@ -265,10 +265,10 @@ if st.session_state['acesso_permitido']:
             df_validas = df_validas.merge(df_portfolio[['Empresa', '% Portfólio']], on='Empresa', how='left')
     
             # Converter % Portfólio para float
-            df_validas['% Portfólio'] = df_validas['% Portfólio'].str.rstrip('%').astype(float) / 100
+            df_validas['%'] = df_validas['%'].str.rstrip('%').astype(float) / 100
     
             # Calcular a média ponderada
-            weighted_avg_tir = (df_validas['IRR'] * df_validas['% Portfólio']).sum() / df_validas['% Portfólio'].sum()
+            weighted_avg_tir = (df_validas['IRR'] * df_validas['%']).sum() / df_validas['%'].sum()
             if pd.isna(weighted_avg_tir):
                 return 0
     
