@@ -598,15 +598,16 @@ if st.session_state['acesso_permitido']:
     # Customizando o estilo dos botões
     st.markdown("""
         <style>
-            /* Centraliza os botões */
-            div[data-baseweb="radio"] {
+            /* Centraliza os botões e define espaçamento */
+            div[role="radiogroup"] {
                 display: flex;
                 justify-content: center;
-                gap: 20px;  /* Espaçamento entre os botões */
+                gap: 20px;
             }
     
-            div[data-baseweb="radio"] label {
-                background-color: rgb(0, 32, 96); /* Azul da Nucleo Capital */
+            /* Estiliza cada opção do radio */
+            div[role="radiogroup"] label {
+                background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white;
                 padding: 10px 20px;
                 border-radius: 8px;
@@ -614,31 +615,35 @@ if st.session_state['acesso_permitido']:
                 cursor: pointer;
                 transition: 0.3s;
                 text-align: center;
+                border: 2px solid transparent;
             }
     
-            div[data-baseweb="radio"] label:hover {
+            /* Efeito de hover para dar destaque */
+            div[role="radiogroup"] label:hover {
                 background-color: white;
                 color: rgb(0, 32, 96);
                 border: 2px solid rgb(0, 32, 96);
             }
     
-            div[data-baseweb="radio"] input:checked + label {
+            /* Quando o botão está selecionado */
+            div[role="radiogroup"] input:checked + div {
                 background-color: white;
                 color: rgb(0, 32, 96);
                 border: 2px solid rgb(0, 32, 96);
             }
         </style>
     """, unsafe_allow_html=True)
-    
     # Criando um radio com opções lado a lado dentro de colunas
     col1, col2 = st.columns([3, 1])  # Ajusta largura das colunas
     
     with col1:
+        # Criando um radio estilizado
         graphs = st.radio(
             "Escolha a análise:",
             ["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
             horizontal=True  # Exibe os botões lado a lado
         )
+
     
     # Exibir o gráfico correspondente
     if graphs == "Análise das projeções dos modelos":
