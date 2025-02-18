@@ -595,9 +595,8 @@ if st.session_state['acesso_permitido']:
     tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
     tabela_projecoes.mostrar_tabela_projecoes()
 
-   
     # Customizando o estilo dos botões
-    st.markdown("""
+    st.markdown("<br><br>"
         <style>
             /* Centraliza os botões */
             div[data-baseweb="radio"] {
