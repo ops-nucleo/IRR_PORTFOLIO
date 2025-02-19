@@ -601,7 +601,7 @@ if st.session_state['acesso_permitido']:
             /* Centraliza os botões e define espaçamento */
             div[role="radiogroup"] {
                 display: flex;
-                justify-content: center;
+                justify-content: left;
                 gap: 20px;
             }
     
