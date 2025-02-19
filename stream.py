@@ -619,11 +619,11 @@ if st.session_state['acesso_permitido']:
     
             /* Efeito de hover para dar destaque */
             div[role="radiogroup"] label:hover {
-                background-color: rgb(0, 32, 96);
+                background-color: white;
                 color: white;
                 border: 2px solid rgb(0, 32, 96);
             }
-    
+
             /* Quando o botão está selecionado */
             div[role="radiogroup"] input:checked + div {
                 background-color: rgb(0, 32, 96);
