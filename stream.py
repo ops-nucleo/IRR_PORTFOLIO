@@ -598,7 +598,6 @@ if st.session_state['acesso_permitido']:
     # Customizando o estilo dos botões
     st.markdown("""
         <style>
-            /* Centraliza os botões e define espaçamento */
             div[role="radiogroup"] {
                 display: flex;
                 justify-content: left;
@@ -630,6 +629,7 @@ if st.session_state['acesso_permitido']:
                 background-color: rgb(0, 32, 96);
                 color: white;
                 border: 2px solid rgb(0, 32, 96);
+                text-align: left;
             }
         </style>
     """, unsafe_allow_html=True)
