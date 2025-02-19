@@ -619,15 +619,7 @@ if st.session_state['acesso_permitido']:
     
             /* Quando o botão NÃO está selecionado */
             div[role="radiogroup"] div {
-                background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white;
-                padding: 10px 20px;
-                border-radius: 8px;
-                font-weight: normal;
-                cursor: pointer;
-                transition: 0.3s;
-                text-align: center;
-                border: 2px solid transparent;
             }
                 /* Força a cor branca no texto dentro do botão não selecionado */
             div[role="radiogroup"] label span {
