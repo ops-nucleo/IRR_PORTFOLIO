@@ -610,7 +610,6 @@ if st.session_state['acesso_permitido']:
                 color: white !important;  /* Força a cor do texto como branco */
                 padding: 10px 20px;
                 border-radius: 8px;
-                font-weight: bold;
                 cursor: pointer;
                 transition: 0.3s;
                 text-align: left;
