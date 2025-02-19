@@ -605,7 +605,10 @@ if st.session_state['acesso_permitido']:
             }
     
             div[role="radiogroup"] label {
-                background-color: white; /* Azul Nucleo Capital */
+                background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
+                body {
+                      color: white;
+                    }
                 color: white;
                 padding: 10px 20px;
                 border-radius: 8px;
