@@ -608,13 +608,13 @@ if st.session_state['acesso_permitido']:
             /* Estiliza cada opção do radio */
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
-                color: white;
+                color: white !important;  /* Força a cor do texto como branco */
                 padding: 10px 20px;
                 border-radius: 8px;
                 font-weight: bold;
                 cursor: pointer;
                 transition: 0.3s;
-                text-align: center;
+                text-align: left;
                 border: 2px solid transparent;
             }
     
