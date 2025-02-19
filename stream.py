@@ -615,6 +615,11 @@ if st.session_state['acesso_permitido']:
                 text-align: center;
                 border: 2px solid transparent;
             }
+
+                /* Força a cor branca no texto dentro do botão não selecionado */
+            div[role="radiogroup"] label span {
+                color: white !important; 
+            }
             /* Efeito de hover para dar destaque */
             div[role="radiogroup"] label:hover {
                 background-color: white;
