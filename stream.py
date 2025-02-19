@@ -628,7 +628,7 @@ if st.session_state['acesso_permitido']:
             /* Quando o botão está selecionado */
             div[role="radiogroup"] input:checked + div {
                 background-color: rgb(0, 32, 96);
-                color: rgb(0, 32, 96);
+                color: white;
                 border: 2px solid rgb(0, 32, 96);
             }
         </style>
