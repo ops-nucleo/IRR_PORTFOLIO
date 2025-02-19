@@ -603,6 +603,19 @@ if st.session_state['acesso_permitido']:
                 justify-content: left;
                 gap: 10px;
             }
+
+            /* Estilizando os botões de rádio quando NÃO estão selecionados */
+            div[role="radiogroup"] label {
+                background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
+                color: white !important; /* Texto branco */
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: normal;
+                cursor: pointer;
+                transition: 0.3s;
+                text-align: center;
+                border: 2px solid transparent;
+            }
     
             /* Quando o botão NÃO está selecionado */
             div[role="radiogroup"] div {
