@@ -609,7 +609,7 @@ if st.session_state['acesso_permitido']:
                 color: white;
                 padding: 10px 20px;
                 border-radius: 8px;
-                font-weight: bold;
+                font-weight: normal;
                 cursor: pointer;
                 transition: 0.3s;
                 text-align: center;
