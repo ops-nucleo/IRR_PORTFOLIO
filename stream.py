@@ -602,7 +602,7 @@ if st.session_state['acesso_permitido']:
             div[role="radiogroup"] {
                 display: flex;
                 justify-content: left;
-                gap: 20px;
+                gap: 10px;
             }
     
             /* Estiliza cada opção do radio */
