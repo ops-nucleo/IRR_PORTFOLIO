@@ -606,7 +606,7 @@ if st.session_state['acesso_permitido']:
     
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
-                color: white;
+                color: white !important; /* Texto branco */
                 padding: 10px 20px;
                 border-radius: 8px;
                 font-weight: normal;
@@ -615,7 +615,6 @@ if st.session_state['acesso_permitido']:
                 text-align: center;
                 border: 2px solid transparent;
             }
-    
             /* Efeito de hover para dar destaque */
             div[role="radiogroup"] label:hover {
                 background-color: white;
