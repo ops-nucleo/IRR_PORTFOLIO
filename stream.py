@@ -814,12 +814,11 @@ if st.session_state['acesso_permitido']:
                                 datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
                                 return datas
                     
-                            def gerar_grafico(self, "Portfolio average IRR", data_de, data_ate):
+                            def gerar_grafico(self, variavel, data_de, data_ate):
                                 df_filtrado = self.df_mkt[                           
                                     (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
                                     (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
                                 ]
-                                
                                 df_filtrado = df_filtrado.dropna(subset=[variavel])
                                 if df_filtrado.empty:
                                     st.warning(f"Não possuímos dados de {variavel} nessas datas.")
@@ -892,7 +891,7 @@ if st.session_state['acesso_permitido']:
                             data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
                 
                             # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
-                            fig, df_filtrado, df_completa = analysis.gerar_grafico(variavel_selecionada, data_de, data_ate)
+                            fig, df_filtrado, df_completa = analysis.gerar_grafico("Portfolio average IRR", data_de, data_ate)
             
                             # Verifica se fig e df_filtrado não são None antes de exibir
                             if fig is not None and df_filtrado is not None:
