@@ -804,103 +804,103 @@ if st.session_state['acesso_permitido']:
                         # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                         df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
     
-                    else:
-                        class AvgIRRAnalysis:
-                            def __init__(self):
-                                self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
-                         
-                            def filtrar_datas(self,variavel):
-                                df_empresa = self.df_mkt[(self.df_mkt[variavel].notna())]
-                                datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
-                                return datas
-                    
-                            def gerar_grafico(self, variavel, data_de, data_ate):
-                                df_filtrado = self.df_mkt[                           
-                                    (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
-                                    (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
-                                ]
-                                df_filtrado = df_filtrado.dropna(subset=[variavel])
-                                if df_filtrado.empty:
-                                    st.warning(f"Não possuímos dados de {variavel} nessas datas.")
-                                    return None, None, None
-                                # Ajuste de escala para evitar notação científica no eixo Y
-                                df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
-                                df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
-                                
-                                # Calculando os limites do eixo Y com base em 40% de folga
-                                min_val = df_filtrado[variavel].min()
-                                max_val = df_filtrado[variavel].max()
-                                y_folga = 0.4 * (max_val - min_val)
-                            
-                                # Calculando os limites do eixo X (datas) com folga
-                                data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
-                                data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
-                                x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
-                            
-                                # Cria o gráfico com o primeiro eixo Y (a variável principal)
-                                fig, ax1 = plt.subplots(figsize=(10, 4.2))
-                                ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
-                                ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
-                                ax1.set_xlabel("Data", fontsize=5)
-                                ax1.set_ylabel(variavel, fontsize=5)
-                                ax1.tick_params(axis='x', labelsize=5)
-                                ax1.tick_params(axis='y', labelsize=5)
-                                ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
-                                ax1.set_ylim([min_val - y_folga, max_val + y_folga])
-                                ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-                                fig.autofmt_xdate()
-                                ax1.grid(True)
-                                
-                                def formatar_percentual(x, pos):
-                                    return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
-                                ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
-                            
-                                return fig, df_filtrado, self.df_mkt
-                        # Instancia a classe de análise
-                        analysis = AvgIRRAnalysis()
-                        
-                        # Layout das seleções usando colunas para alinhamento
-                        col1, col3, col2, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
-                        
-                        # Filtrar datas disponíveis
-                        datas_disponiveis = analysis.filtrar_datas("Portfolio average IRR")
-                        # Ordenar as datas em ordem crescente
-                        datas_disponiveis = np.sort(datas_disponiveis)
+    elif graphs == "TIR média ponderada Nucleo Capital":
+        class AvgIRRAnalysis:
+            def __init__(self):
+                self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
+         
+            def filtrar_datas(self,variavel):
+                df_empresa = self.df_mkt[(self.df_mkt[variavel].notna())]
+                datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
+                return datas
+    
+            def gerar_grafico(self, variavel, data_de, data_ate):
+                df_filtrado = self.df_mkt[                           
+                    (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
+                    (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
+                ]
+                df_filtrado = df_filtrado.dropna(subset=[variavel])
+                if df_filtrado.empty:
+                    st.warning(f"Não possuímos dados de {variavel} nessas datas.")
+                    return None, None, None
+                # Ajuste de escala para evitar notação científica no eixo Y
+                df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
+                df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
                 
-                        # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
-                        with col1:
-                            # Aqui convertemos as datas para exibição em formato correto
-                            datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
-                
-                            # Caixa de seleção "De" (remover a última data)
-                            data_de = st.selectbox('From:', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
-                
-                        with col2:
-                            # Caixa de seleção "Até" (remover a primeira data)
-                                data_ate = st.selectbox(
-                                'To:',
-                                datas_formatadas[1:],  # Remover a primeira data da lista
-                                key='data_ate',
-                                index=len(datas_formatadas[1:]) - 1  # Última data da lista como default
-                            )
-                
-                        # Só atualiza o gráfico quando todas as seleções estão preenchidas
-                        if data_de and data_ate:
-                            # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
-                            data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
-                            data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
-                
-                            # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
-                            fig, df_filtrado, df_completa = analysis.gerar_grafico("Portfolio average IRR", data_de, data_ate)
+                # Calculando os limites do eixo Y com base em 40% de folga
+                min_val = df_filtrado[variavel].min()
+                max_val = df_filtrado[variavel].max()
+                y_folga = 0.4 * (max_val - min_val)
             
-                            # Verifica se fig e df_filtrado não são None antes de exibir
-                            if fig is not None and df_filtrado is not None:
-                                # Exibir gráfico
-                                st.pyplot(fig)
-                                colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
-                            
-                                # Filtra o DataFrame para exibir apenas as colunas selecionadas
-                                df_filtrado_para_exibir = df_filtrado[colunas_exibir]
-                            
-                                # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
-                                df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
+                # Calculando os limites do eixo X (datas) com folga
+                data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
+                data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
+                x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
+            
+                # Cria o gráfico com o primeiro eixo Y (a variável principal)
+                fig, ax1 = plt.subplots(figsize=(10, 4.2))
+                ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
+                ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
+                ax1.set_xlabel("Data", fontsize=5)
+                ax1.set_ylabel(variavel, fontsize=5)
+                ax1.tick_params(axis='x', labelsize=5)
+                ax1.tick_params(axis='y', labelsize=5)
+                ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
+                ax1.set_ylim([min_val - y_folga, max_val + y_folga])
+                ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+                fig.autofmt_xdate()
+                ax1.grid(True)
+                
+                def formatar_percentual(x, pos):
+                    return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+                ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
+            
+                return fig, df_filtrado, self.df_mkt
+        # Instancia a classe de análise
+        analysis = AvgIRRAnalysis()
+        
+        # Layout das seleções usando colunas para alinhamento
+        col1, col3, col2, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
+        
+        # Filtrar datas disponíveis
+        datas_disponiveis = analysis.filtrar_datas("Portfolio average IRR")
+        # Ordenar as datas em ordem crescente
+        datas_disponiveis = np.sort(datas_disponiveis)
+    
+        # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
+        with col1:
+            # Aqui convertemos as datas para exibição em formato correto
+            datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
+    
+            # Caixa de seleção "De" (remover a última data)
+            data_de = st.selectbox('From:', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
+    
+        with col2:
+            # Caixa de seleção "Até" (remover a primeira data)
+                data_ate = st.selectbox(
+                'To:',
+                datas_formatadas[1:],  # Remover a primeira data da lista
+                key='data_ate',
+                index=len(datas_formatadas[1:]) - 1  # Última data da lista como default
+            )
+    
+        # Só atualiza o gráfico quando todas as seleções estão preenchidas
+        if data_de and data_ate:
+            # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
+            data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
+            data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
+    
+            # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
+            fig, df_filtrado, df_completa = analysis.gerar_grafico("Portfolio average IRR", data_de, data_ate)
+    
+            # Verifica se fig e df_filtrado não são None antes de exibir
+            if fig is not None and df_filtrado is not None:
+                # Exibir gráfico
+                st.pyplot(fig)
+                colunas_exibir = ['DATA ATUALIZACAO', 'Ticker' ,variavel_selecionada]  # Sempre a data e a variável principal
+            
+                # Filtra o DataFrame para exibir apenas as colunas selecionadas
+                df_filtrado_para_exibir = df_filtrado[colunas_exibir]
+            
+                # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
+                df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
