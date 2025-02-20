@@ -569,7 +569,9 @@ if st.session_state['acesso_permitido']:
         def mostrar_tabela_projecoes(self):
             st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'></h1>", unsafe_allow_html=True)
             
-            col1, col2 = st.columns([1, 1])
+                    # Layout das seleções usando colunas para alinhamento
+            col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
+
             with col1:
                 datas_disponiveis = self.filtrar_datas_disponiveis()
                 data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis)
@@ -860,7 +862,7 @@ if st.session_state['acesso_permitido']:
         analysis = AvgIRRAnalysis()
         
         # Layout das seleções usando colunas para alinhamento
-        col1, col3, col2, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
+        col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
         
         # Filtrar datas disponíveis
         datas_disponiveis = analysis.filtrar_datas("Portfolio average IRR")
