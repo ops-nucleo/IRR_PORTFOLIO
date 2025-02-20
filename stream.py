@@ -840,7 +840,7 @@ if st.session_state['acesso_permitido']:
                 # Cria o gráfico com o primeiro eixo Y (a variável principal)
                 fig, ax1 = plt.subplots(figsize=(10, 4.2))
                 ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
-                ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
+                ax1.set_title(f"{variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
                 ax1.set_xlabel("Data", fontsize=5)
                 ax1.set_ylabel(variavel, fontsize=5)
                 ax1.tick_params(axis='x', labelsize=5)
