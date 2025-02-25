@@ -481,7 +481,7 @@ if st.session_state['acesso_permitido']:
         tabela = TabelaPortfolioLucro(df_empresa)
         tabela.mostrar_tabelas()
 
-   elif graphs2 == "Núcleo VS consenso":
+    elif graphs2 == "Núcleo VS consenso":
         class lucroconsenso:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
