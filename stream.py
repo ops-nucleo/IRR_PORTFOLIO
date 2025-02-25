@@ -55,7 +55,7 @@ if st.session_state['acesso_permitido']:
     set_background(get_image_as_base64(logo_path))
 
 
-     st.markdown("""
+    st.markdown("""
             <style>
                 div[role="radiogroup"] {
                     display: flex;
