@@ -1,4 +1,4 @@
-import streamlit as st
+        import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -626,7 +626,7 @@ if st.session_state['acesso_permitido']:
                     df_lucro3 = self.criar_lucro_consenso(df_filtrado, data_selecionada,empresas_ordenadas)
                     df_lucro4 = df_lucro3.copy()
                     df_lucro4 = df_lucro4.drop(columns=['Empresa'])
-                    html_lucro = self.gerar_html_tabela(df_lucro4, "Lucro  consenso")
+                    html_lucro = self.gerar_html_tabela(df_lucro4, "Lucro consenso")
                     st.markdown(html_lucro, unsafe_allow_html=True)
         
                 # Tabela de P/E Calculado
