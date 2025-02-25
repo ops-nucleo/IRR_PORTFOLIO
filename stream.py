@@ -467,7 +467,7 @@ if st.session_state['acesso_permitido']:
     with col20:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-    with col22:
+    with co21:
         # Criando um radio estilizado
         graphs2 = st.radio(
             "",
