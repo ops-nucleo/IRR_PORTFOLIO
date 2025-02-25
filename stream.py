@@ -543,7 +543,9 @@ if st.session_state['acesso_permitido']:
         
                 # Formatando os números no estilo americano
                 for ano in anos:
-                    df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
+                    df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna("-").apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else "-")
+                    df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 0 else "-")
+
                 return df_lucro
             
             def nucleo_vs_consenso(self, df_lucro, df_lucro2, anos):
