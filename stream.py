@@ -535,14 +535,13 @@ if st.session_state['acesso_permitido']:
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
-                empresas = df_filtrado['Ticker'].unique()
-        
+                empresas = df_filtrado['Ticker'].unique()      
+ 
                 for empresa in empresas_ordenadas:
                     linha = {'Empresa': empresa}
                     for i, ano in enumerate(anos):
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro Consenso']
-                        linha[ano] = lucro_ano.values[0]
-
+                        linha[ano] = lucro_ano.values
                     df_lucro = df_lucro.append(linha, ignore_index=True)
         
                 # Formatando os números no estilo americano
