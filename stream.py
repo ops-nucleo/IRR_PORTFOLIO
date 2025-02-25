@@ -125,8 +125,6 @@ if st.session_state['acesso_permitido']:
     """, unsafe_allow_html=True)
 
    
-    # Exibir o gráfico correspondente
-    if graphs2 == "Tabela IRR Portfilio":
         class TabelaPortfolioLucro:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
@@ -477,6 +475,7 @@ if st.session_state['acesso_permitido']:
         # Uso da classe no Streamlit
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         tabela = TabelaPortfolioLucro(df_empresa)
+    if graphs2 == "Tabela IRR Portfilio":
         tabela.mostrar_tabelas()
 
     elif graphs2 == "Núcleo VS consenso":
