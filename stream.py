@@ -12,57 +12,47 @@ st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
 
 
-st.markdown("""
-    <style>
-        div[role="radiogroup"] {
-            display: flex;
-            justify-content: left;
-            gap: 10px;
-        }
+ st.markdown("""
+        <style>
+            div[role="radiogroup"] {
+                display: flex;
+                justify-content: left;
+                gap: 10px;
+            }
 
-        /* Estilizando os botões de rádio */
-        div[role="radiogroup"] label {
-            background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
-            color: white !important; /* Texto branco */
-            padding: 12px 24px; /* Aumenta o tamanho do botão */
-            border-radius: 8px;
-            font-weight: normal;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
-            border: 2px solid transparent;
-            display: block; /* Faz com que toda a área seja clicável */
-            width: 100%; /* Expande a hitbox */
-        }
+            /* Estilizando os botões de rádio quando NÃO estão selecionados */
+            div[role="radiogroup"] label {
+                background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
+                color: white !important; /* Texto branco */
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: normal;
+                cursor: pointer;
+                transition: 0.3s;
+                text-align: center;
+                display: block; /* Faz com que toda a área seja clicável */
+                border: 2px solid transparent;
+            }
+    
+            /* Quando o botão NÃO está selecionado */
+            div[role="radiogroup"] div {
+                color: white;
+            }
+                /* Força a cor branca no texto dentro do botão não selecionado */
+            div[role="radiogroup"] label span {
+                color: white !important; 
+            }
 
-        /* Quando o botão NÃO está selecionado */
-        div[role="radiogroup"] div {
-            color: white;
-        }
-
-        /* Texto dentro do botão não selecionado */
-        div[role="radiogroup"] label span {
-            color: white !important; 
-        }
-
-        /* Quando o botão está selecionado */
-        div[role="radiogroup"] label:has(input:checked) {
-            background-color: white;
-            color: rgb(0, 32, 96);
-            border: 2px solid rgb(0, 32, 96);
-        }
-
-        /* Ajuste para evitar problemas na detecção do clique */
-        div[role="radiogroup"] input {
-            opacity: 0;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
+            /* Quando o botão está selecionado */
+            div[role="radiogroup"] input:checked + div {
+                background-color: rgb(0, 32, 96);
+                color: white;
+                border: 2px solid rgb(0, 32, 96);
+                text-align: left;
+                cursor: pointer;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 # Inicializa uma variável de sessão para controlar o acesso
 if 'acesso_permitido' not in st.session_state:
     st.session_state['acesso_permitido'] = False
