@@ -67,7 +67,7 @@ if st.session_state['acesso_permitido']:
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white !important; /* Texto branco */
-                padding: 10px 20px;
+                padding: 10px 20.05px;
                 border-radius: 8px;
                 font-weight: normal;
                 cursor: pointer;
@@ -75,7 +75,6 @@ if st.session_state['acesso_permitido']:
                 text-align: center;
                 display: block; /* Faz com que toda a área seja clicável */
                 border: 2px solid transparent;
-                width: 100%; /* Expande a hitbox */
             }
     
             /* Quando o botão NÃO está selecionado */
