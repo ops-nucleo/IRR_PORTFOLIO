@@ -541,12 +541,9 @@ if st.session_state['acesso_permitido']:
                     linha = {'Empresa': empresa}
                     for i, ano in enumerate(anos):
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro Consenso']
-                        linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = df_lucro.append(linha, ignore_index=True)
         
                 # Formatando os números no estilo americano
-                for ano in anos:
-                    df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
                 return df_lucro
             
             def nucleo_vs_consenso(self, df_lucro, df_lucro2, anos):
