@@ -73,7 +73,6 @@ if st.session_state['acesso_permitido']:
                 cursor: pointer;
                 transition: 0.3s;
                 text-align: center;
-                display: block; /* Faz com que toda a área seja clicável */
                 border: 2px solid transparent;
             }
     
