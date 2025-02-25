@@ -73,7 +73,7 @@ if st.session_state['acesso_permitido']:
                 cursor: pointer;
                 transition: 0.3s;
                 text-align: left; /* Alinha o texto à esquerda */
-                display: flex; /* Faz os elementos ficarem lado a lado */
+                display: block; /* Faz com que toda a área seja clicável */
                 align-items: center; /* Centraliza verticalmente */
                 border: 2px solid transparent;
                 gap: 5px; /* Espaço entre a bolinha e o texto */
