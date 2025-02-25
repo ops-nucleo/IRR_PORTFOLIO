@@ -517,14 +517,13 @@ if st.session_state['acesso_permitido']:
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
-                empresas = df_filtrado['Ticker'].unique()
-        
                 for empresa in empresas_ordenadas:
                     linha = {'Empresa': empresa}
                     for i, ano in enumerate(anos):
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro líquido ajustado']
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
-                    df_lucro = df_lucro.append(linha, ignore_index=True)
+                    df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
+        
         
                 # Formatando os números no estilo americano
                 for ano in anos:
@@ -535,14 +534,12 @@ if st.session_state['acesso_permitido']:
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
-                empresas = df_filtrado['Ticker'].unique()      
- 
                 for empresa in empresas_ordenadas:
                     linha = {'Empresa': empresa}
                     for i, ano in enumerate(anos):
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro Consenso']
-                        linha[ano] = lucro_ano.values
-                    df_lucro = df_lucro.append(linha, ignore_index=True)
+                        linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
+                    df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
         
                 # Formatando os números no estilo americano
                 for ano in anos:
@@ -550,25 +547,25 @@ if st.session_state['acesso_permitido']:
                 return df_lucro
             
             def nucleo_vs_consenso(self, df_lucro, df_lucro2, anos):
-                df_growth = pd.DataFrame(columns=['Empresa'] + anos)
-                for _, row in df_lucro.iterrows():
-                    empresa = row['Empresa']
-                    crescimento = {'Empresa': empresa}
-                    for _, row2 in df_lucro2.iterrows():
-                        empresa2 = row['Empresa']
-                        crescimento2 = {'Empresa': empresa}
-                        for i in range(1, len(anos)):
-                            if row[anos[i]] != 'nan' and row2[anos[i]] != 'nan':
-                                try:
-                                    crescimento[anos[i]] = (float(row[anos[i]].replace(',', '')) / float(row2[anos[i]].replace(',', '')) - 1) * 100
-                                except ValueError:
-                                    crescimento[anos[i]] = 'nan'
-                            else:
-                                crescimento[anos[i]] = 'nan'
-                        df_growth = df_growth.append(crescimento, ignore_index=True)
+                # Garantir que as colunas são numéricas e tratar erros
+                df_lucro[anos] = df_lucro[anos].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
+                df_lucro2[anos] = df_lucro2[anos].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
+        
+                # Criar a DataFrame final com a coluna 'Empresa'
+                df_growth = pd.DataFrame({'Empresa': df_lucro['Empresa']})
+        
+                # Loop pelos anos para calcular a diferença percentual
                 for ano in anos:
-                    df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
-                return df_growth   
+                    df_growth[ano] = (df_lucro[ano] / df_lucro2[ano] - 1) * 100  # Cálculo da variação em %
+        
+                    # Tratar divisão por zero e valores NaN
+                    df_growth[ano] = df_growth[ano].replace([float('inf'), -float('inf')], 0)  # Substituir infinitos por 0
+                    df_growth[ano] = df_growth[ano].fillna(0)  # Substituir NaN por 0
+        
+                    # Converter para string formatada em %
+                    df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 0 else "-")
+        
+                return df_growth
        
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
