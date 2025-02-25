@@ -63,22 +63,18 @@ if st.session_state['acesso_permitido']:
                 gap: 10px;
             }
     
-            /* Estilizando os botões de rádio quando NÃO estão selecionados */
+            /* Estilizando os botões de rádio */
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white !important; /* Texto branco */
-                padding: 8px 15px; /* Mantém um padding menor */
+                padding: 12px 24px; /* Aumenta o tamanho do botão */
                 border-radius: 8px;
                 font-weight: normal;
                 cursor: pointer;
                 transition: 0.3s;
-                text-align: left; /* Alinha o texto à esquerda */
-                display: flex; /* Mantém flex para alinhar a bolinha e o texto */
-                align-items: center; /* Centraliza a bolinha e o texto */
+                text-align: center;
                 border: 2px solid transparent;
-                gap: 8px; /* Espaço entre bolinha e texto */
-                width: 100%; /* Faz a área ser clicável sem ficar "gorda" */
-                height: 40px; /* Altura fixa para evitar botões muito altos */
+                display: block; /* Faz com que toda a área seja clicável */
             }
     
             /* Quando o botão NÃO está selecionado */
@@ -86,23 +82,25 @@ if st.session_state['acesso_permitido']:
                 color: white;
             }
     
-            /* Força a cor branca no texto dentro do botão não selecionado */
+            /* Texto dentro do botão não selecionado */
             div[role="radiogroup"] label span {
-                color: white !important;
+                color: white !important; 
             }
     
             /* Quando o botão está selecionado */
-            div[role="radiogroup"] input:checked + div {
-                background-color: rgb(0, 32, 96);
-                color: white;
+            div[role="radiogroup"] label:has(input:checked) {
+                background-color: white;
+                color: rgb(0, 32, 96);
                 border: 2px solid rgb(0, 32, 96);
-                cursor: pointer;
             }
     
-            /* Ajustando o input (bolinha) */
-            div[role="radiogroup"] input[type="radio"] {
-                margin: 0;
-                transform: scale(1.2); /* Aumenta um pouco o tamanho da bolinha */
+            /* Ajuste para evitar problemas na detecção do clique */
+            div[role="radiogroup"] input {
+                opacity: 0;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
             }
         </style>
     """, unsafe_allow_html=True)
