@@ -463,7 +463,7 @@ if st.session_state['acesso_permitido']:
     tabela = TabelaPortfolioLucro(df_empresa)
             
     # Seção do Selectbox para a data (com a formatação que você mencionou)
-    col20, co21, col22, col23 = st.columns([0.5, 0.5, 1, 1]) 
+    col20, co21, col22, col23 = st.columns([0.5, 1.5, 1, 1]) 
     with col20:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
