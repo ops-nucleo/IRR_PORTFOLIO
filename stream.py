@@ -67,7 +67,7 @@ if st.session_state['acesso_permitido']:
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white !important; /* Texto branco */
-                padding: 10px 21px;
+                padding: 5px 15px; 
                 border-radius: 8px;
                 font-weight: normal;
                 cursor: pointer;
