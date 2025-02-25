@@ -515,7 +515,7 @@ if st.session_state['acesso_permitido']:
         
             def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-                anos = [ano_inicial + i for i in range(1)]
+                anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
                 empresas = df_filtrado['Ticker'].unique()
         
@@ -533,7 +533,7 @@ if st.session_state['acesso_permitido']:
                 
             def criar_lucro_consenso(self, df_filtrado, data_selecionada,empresas_ordenadas):
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-                anos = [ano_inicial + i for i in range(1)]
+                anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
                 empresas = df_filtrado['Ticker'].unique()
         
