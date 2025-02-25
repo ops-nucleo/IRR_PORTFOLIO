@@ -76,6 +76,7 @@ if st.session_state['acesso_permitido']:
                 display: flex; /* Faz os elementos ficarem lado a lado */
                 display: block; /* Faz com que toda a área seja clicável */
                 border: 2px solid transparent;
+                gap: 5px; /* Espaço entre a bolinha e o texto */
             }
     
             /* Quando o botão NÃO está selecionado */
