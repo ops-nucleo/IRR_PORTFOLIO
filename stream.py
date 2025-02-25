@@ -124,16 +124,7 @@ if st.session_state['acesso_permitido']:
         </style>
     """, unsafe_allow_html=True)
 
-    # Criando um radio com opções lado a lado dentro de colunas
-    col1, col2, col3  = st.columns([1, 1, 1])
-    
-    with col1:
-        # Criando um radio estilizado
-        graphs2 = st.radio(
-            "",
-            ["Tabela IRR Portfilio", "Núcleo VS consenso"],
-            horizontal=True  # Exibe os botões lado a lado
-        )  
+   
     # Exibir o gráfico correspondente
     if graphs2 == "Tabela IRR Portfilio":
         class TabelaPortfolioLucro:
@@ -387,6 +378,13 @@ if st.session_state['acesso_permitido']:
                 with col10:
                     datas_disponiveis = self.filtrar_datas()
                     data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
+                with co11:
+                    # Criando um radio estilizado
+                    graphs2 = st.radio(
+                        "",
+                        ["Tabela IRR Portfilio", "Núcleo VS consenso"],
+                        horizontal=True  # Exibe os botões lado a lado
+                    )  
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
@@ -598,6 +596,15 @@ if st.session_state['acesso_permitido']:
                 with col10:
                     datas_disponiveis = self.filtrar_datas()
                     data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
+
+                with co11:
+                    # Criando um radio estilizado
+                    graphs2 = st.radio(
+                        "",
+                        ["Tabela IRR Portfilio", "Núcleo VS consenso"],
+                        horizontal=True  # Exibe os botões lado a lado
+                    )  
+
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
