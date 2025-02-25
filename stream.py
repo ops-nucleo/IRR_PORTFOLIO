@@ -466,7 +466,7 @@ if st.session_state['acesso_permitido']:
     col10, co11, col2, col3 = st.columns([0.5, 1.5, 1, 1]) 
     with col10:
         datas_disponiveis = tabela.filtrar_datas()
-        data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
+        data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
     with co11:
         # Criando um radio estilizado
         graphs2 = st.radio(
@@ -626,7 +626,6 @@ if st.session_state['acesso_permitido']:
                    # Uso da classe no Streamlit
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         lucro_consenso = lucroconsenso(df_empresa)
-    
         
         # Seção do Selectbox para a data (com a formatação que você mencionou)
         col10, co11, col2, col3 = st.columns([0.5, 1.5, 1, 1]) 
