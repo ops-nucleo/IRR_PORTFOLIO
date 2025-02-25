@@ -12,7 +12,6 @@ st.set_page_config(layout="wide")
 excel_file_path = 'base_empilhada_total.csv'
 
 
- Inicializa uma variável de sessão para controlar o acesso
 if 'acesso_permitido' not in st.session_state:
     st.session_state['acesso_permitido'] = False
 
