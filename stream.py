@@ -62,19 +62,19 @@ if st.session_state['acesso_permitido']:
                 justify-content: left;
                 gap: 10px;
             }
-
+    
             /* Estilizando os botões de rádio quando NÃO estão selecionados */
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white !important; /* Texto branco */
-                padding: 5px 15px; 
+                padding: 5px 15px; /* Reduzi a altura */
                 border-radius: 8px;
                 font-weight: normal;
                 cursor: pointer;
                 transition: 0.3s;
-                text-align: right;
+                text-align: left; /* Alinha o texto à esquerda */
                 display: flex; /* Faz os elementos ficarem lado a lado */
-                display: block; /* Faz com que toda a área seja clicável */
+                align-items: center; /* Centraliza verticalmente */
                 border: 2px solid transparent;
                 gap: 5px; /* Espaço entre a bolinha e o texto */
             }
@@ -83,22 +83,27 @@ if st.session_state['acesso_permitido']:
             div[role="radiogroup"] div {
                 color: white;
             }
-                /* Força a cor branca no texto dentro do botão não selecionado */
+    
+            /* Força a cor branca no texto dentro do botão não selecionado */
             div[role="radiogroup"] label span {
-                color: white !important; 
+                color: white !important;
             }
-
+    
             /* Quando o botão está selecionado */
             div[role="radiogroup"] input:checked + div {
                 background-color: rgb(0, 32, 96);
                 color: white;
                 border: 2px solid rgb(0, 32, 96);
-                text-align: left;
                 cursor: pointer;
+            }
+    
+            /* Ajustando o input (bolinha) */
+            div[role="radiogroup"] input[type="radio"] {
+                margin: 0;
+                transform: scale(1.2); /* Aumenta um pouco o tamanho da bolinha */
             }
         </style>
     """, unsafe_allow_html=True)
-
 
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
