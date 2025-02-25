@@ -96,7 +96,7 @@ if st.session_state['acesso_permitido']:
                 }
             </style>
         """, unsafe_allow_html=True)
-
+    
     st.markdown("""
         <style>
             /* Estilizando todas as selectbox */
@@ -104,25 +104,30 @@ if st.session_state['acesso_permitido']:
                 background-color: rgb(189, 215, 238) !important; /* Fundo azul claro */
                 border-radius: 5px; /* Bordas arredondadas */
                 padding: 5px; /* Espaçamento interno */
+                font-family: Calibri, sans-serif !important; /* Define a fonte como Calibri */
             }
     
             /* Estilizando o menu dropdown que aparece ao clicar */
             div[data-baseweb="popover"] {
                 background-color: rgb(189, 215, 238) !important;
+                font-family: Calibri, sans-serif !important;
             }
     
             /* Estilizando o texto dentro da selectbox */
             div[data-baseweb="select"] div {
                 color: black !important; /* Texto preto */
                 font-weight: bold;
+                font-family: Calibri, sans-serif !important;
             }
     
-            /* Estilizando a borda da selectbox para não sumir */
+            /* Estilizando a borda da selectbox */
             div[data-baseweb="select"] > div {
                 border: 2px solid rgb(0, 32, 96) !important; /* Azul Nucleo Capital */
+                font-family: Calibri, sans-serif !important;
             }
         </style>
     """, unsafe_allow_html=True)
+
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
             # Converte a coluna 'DATA ATUALIZACAO' para datetime
