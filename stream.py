@@ -472,10 +472,11 @@ if st.session_state['acesso_permitido']:
                 }
                 self.download_excel(dfs_dict)
 
+
+    if graphs2 == "Tabela IRR Portfilio":
         # Uso da classe no Streamlit
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         tabela = TabelaPortfolioLucro(df_empresa)
-    if graphs2 == "Tabela IRR Portfilio":
         tabela.mostrar_tabelas()
 
     elif graphs2 == "Núcleo VS consenso":
