@@ -67,16 +67,18 @@ if st.session_state['acesso_permitido']:
             div[role="radiogroup"] label {
                 background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
                 color: white !important; /* Texto branco */
-                padding: 5px 15px; /* Reduzi a altura */
+                padding: 8px 15px; /* Mantém um padding menor */
                 border-radius: 8px;
                 font-weight: normal;
                 cursor: pointer;
                 transition: 0.3s;
                 text-align: left; /* Alinha o texto à esquerda */
-                display: block; /* Faz com que toda a área seja clicável */
-                align-items: center; /* Centraliza verticalmente */
+                display: flex; /* Mantém flex para alinhar a bolinha e o texto */
+                align-items: center; /* Centraliza a bolinha e o texto */
                 border: 2px solid transparent;
-                gap: 5px; /* Espaço entre a bolinha e o texto */
+                gap: 8px; /* Espaço entre bolinha e texto */
+                width: 100%; /* Faz a área ser clicável sem ficar "gorda" */
+                height: 40px; /* Altura fixa para evitar botões muito altos */
             }
     
             /* Quando o botão NÃO está selecionado */
