@@ -14,31 +14,54 @@ excel_file_path = 'base_empilhada_total.csv'
 
 st.markdown("""
     <style>
-    div[data-baseweb="select"] > div {
-        background-color: rgb(221, 235, 247);
-        padding: 0.01px;
-        border-radius: 5px;
-        margin-top: -10px;  /* Ajustar a margem para mover tudo para cima */
-        color: black !important; /* Texto preto */
-    }
-    </style>
-    """, unsafe_allow_html=True)
+        div[role="radiogroup"] {
+            display: flex;
+            justify-content: left;
+            gap: 10px;
+        }
 
-st.markdown("""
-    <style>
-    div[data-testid="stSelectbox"] {
-        background-color: rgb(221, 235, 247);
-        padding: 5px;  /* Diminuir o padding para reduzir a altura */
-        border-radius: 5px;
-        margin-top: -30px;  /* Ajustar a margem para mover tudo para cima */
-        color: black !important; /* Texto preto */
-    }
+        /* Estilizando os botões de rádio */
+        div[role="radiogroup"] label {
+            background-color: rgb(0, 32, 96); /* Azul Nucleo Capital */
+            color: white !important; /* Texto branco */
+            padding: 12px 24px; /* Aumenta o tamanho do botão */
+            border-radius: 8px;
+            font-weight: normal;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            border: 2px solid transparent;
+            display: block; /* Faz com que toda a área seja clicável */
+            width: 100%; /* Expande a hitbox */
+        }
 
-    label[data-testid="stMarkdownContainer"] {
-        margin-top: -30px;  /* Mover os títulos junto com as caixas */
-    }
+        /* Quando o botão NÃO está selecionado */
+        div[role="radiogroup"] div {
+            color: white;
+        }
+
+        /* Texto dentro do botão não selecionado */
+        div[role="radiogroup"] label span {
+            color: white !important; 
+        }
+
+        /* Quando o botão está selecionado */
+        div[role="radiogroup"] label:has(input:checked) {
+            background-color: white;
+            color: rgb(0, 32, 96);
+            border: 2px solid rgb(0, 32, 96);
+        }
+
+        /* Ajuste para evitar problemas na detecção do clique */
+        div[role="radiogroup"] input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Inicializa uma variável de sessão para controlar o acesso
 if 'acesso_permitido' not in st.session_state:
