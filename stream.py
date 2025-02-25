@@ -72,7 +72,8 @@ if st.session_state['acesso_permitido']:
                 font-weight: normal;
                 cursor: pointer;
                 transition: 0.3s;
-                text-align: center;
+                text-align: right;
+                display: flex; /* Faz os elementos ficarem lado a lado */
                 display: block; /* Faz com que toda a área seja clicável */
                 border: 2px solid transparent;
             }
