@@ -476,7 +476,8 @@ if st.session_state['acesso_permitido']:
         )  
     if graphs2 == "Tabela IRR Portfilio":
         tabela.mostrar_tabelas()
-
+        
+    elif graphs2 == "Núcleo VS consenso":
         class lucroconsenso:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
@@ -622,31 +623,27 @@ if st.session_state['acesso_permitido']:
                     df_growth = self.nucleo_vs_consenso(df_lucro, df_lucro4, anos)
                     df_growth = df_growth.drop(columns=['Empresa'])
                     st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
-                       
-
-    # Uso da classe no Streamlit
-    df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
-    lucro_consenso = lucroconsenso(df_empresa)
-
+                   # Uso da classe no Streamlit
+        df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
+        lucro_consenso = lucroconsenso(df_empresa)
     
-    # Seção do Selectbox para a data (com a formatação que você mencionou)
-    col10, co11, col2, col3 = st.columns([0.5, 1.5, 1, 1]) 
-    with col10:
-        datas_disponiveis = lucro_consenso.filtrar_datas()
-        data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
+        
+        # Seção do Selectbox para a data (com a formatação que você mencionou)
+        col10, co11, col2, col3 = st.columns([0.5, 1.5, 1, 1]) 
+        with col10:
+            datas_disponiveis = lucro_consenso.filtrar_datas()
+            data_selecionada = st.selectbox('Select update date:', datas_disponiveis)
+    
+        with co11:
+            # Criando um radio estilizado
+            graphs2 = st.radio(
+                "",
+                ["Tabela IRR Portfilio", "Núcleo VS consenso"],
+                horizontal=True  # Exibe os botões lado a lado
+            )  
 
-    with co11:
-        # Criando um radio estilizado
-        graphs2 = st.radio(
-            "",
-            ["Tabela IRR Portfilio", "Núcleo VS consenso"],
-            horizontal=True  # Exibe os botões lado a lado
-        )  
-
-    elif graphs2 == "Núcleo VS consenso":
         lucro_consenso.mostrar_tabelas()
-
-   
+              
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
     class TabelaAnaliticaProjecoes:
