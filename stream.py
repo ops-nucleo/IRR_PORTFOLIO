@@ -291,7 +291,7 @@ if st.session_state['acesso_permitido']:
         
                 # Ajuste específico para a coluna 'IRR'
                 tir = dados['IRR'].astype(str).values[0]  # Converte para string antes de checar
-                linha['IRR'] = f"{float(tir):.1%}" if tir.replace(".", "").isdigit() and float(tir) != 0 else 'faltando dados'
+                linha['IRR'] = f"{float(tir):.1%}" if tir.lstrip("-").replace(".", "").isdigit() and float(tir) != 0 else 'faltando dados'
         
                 df_tir.append(linha)
         
