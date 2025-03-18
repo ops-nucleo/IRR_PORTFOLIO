@@ -486,7 +486,8 @@ if st.session_state['acesso_permitido']:
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
-        
+                self.lista_empresas = ["SBSP3", "EQTL3", "RAIL3", "CPLE6", "ELET3"]
+
             def filtrar_datas(self):
                 # Obtém datas únicas e ordena do menor para o maior
                 datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
@@ -519,7 +520,8 @@ if st.session_state['acesso_permitido']:
                 for empresa in empresas_ordenadas:
                     linha = {'Empresa': empresa}
                     for i, ano in enumerate(anos):
-                        lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro líquido ajustado']
+                        coluna_lucro = 'EBITDA ajustado' if empresa in lista_empresas else 'Lucro líquido ajustado'
+                        lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)][coluna_lucro]
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
         
