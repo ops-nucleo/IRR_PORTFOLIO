@@ -520,7 +520,7 @@ if st.session_state['acesso_permitido']:
                 for empresa in empresas_ordenadas:
                     linha = {'Empresa': empresa}
                     for i, ano in enumerate(anos):
-                        coluna_lucro = 'EBITDA ajustado' if empresa in lista_empresas else 'Lucro líquido ajustado'
+                        coluna_lucro = 'EBITDA ajustado' if empresa in self.lista_empresas else 'Lucro líquido ajustado'
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)][coluna_lucro]
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
