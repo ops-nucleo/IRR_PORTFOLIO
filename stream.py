@@ -617,8 +617,7 @@ if st.session_state['acesso_permitido']:
                    # Uso da classe no Streamlit
         
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
-        lucro_consenso = lucroconsenso(df_empresa)
-        st.markdown("<p style='color:red; font-size:14px; text-align:center'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
+        lucro_consenso = lucroconsenso(df_empresaze:14px; text-align:center'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
         lucro_consenso.mostrar_tabelas()
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
