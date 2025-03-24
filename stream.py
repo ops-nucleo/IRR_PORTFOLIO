@@ -464,16 +464,18 @@ if st.session_state['acesso_permitido']:
            
     # Seção do Selectbox para a data (com a formatação que você mencionou)
     col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1]) 
-    with col21:
+    with col20:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-    with co20:
+    with co21:
         # Criando um radio estilizado
         graphs2 = st.radio(
             "",
             ["Tabela IRR Portfilio", "Núcleo VS consenso"],
             horizontal=True  # Exibe os botões lado a lado
         )  
+    tabela.mostrar_tabelas()
+    df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
 
 
     class lucroconsenso:
@@ -621,11 +623,8 @@ if st.session_state['acesso_permitido']:
                 st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
                     
     if graphs2 == "Tabela IRR Portfilio":
-        tabela.mostrar_tabelas()
-        df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         tabela = TabelaPortfolioLucro(df_empresa)
     elif graphs2 == "Núcleo VS consenso":       
-        df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         lucro_consenso = lucroconsenso(df_empresa)
         lucro_consenso.mostrar_tabelas()
               
