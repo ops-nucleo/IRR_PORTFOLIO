@@ -481,13 +481,13 @@ if st.session_state['acesso_permitido']:
         tabela.mostrar_tabelas()
         
     elif graphs2 == "Núcleo VS consenso":
-      class lucroconsenso:
+        class lucroconsenso:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
                 self.lista_empresas = ["SBSP3", "EQTL3", "RAIL3", "CPLE6", "ELET3"]
-
+        
             def filtrar_datas(self):
                 # Obtém datas únicas e ordena do menor para o maior
                 datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
@@ -582,14 +582,14 @@ if st.session_state['acesso_permitido']:
                     for col in df.columns:
                         html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
                     html += '</tr>'
-    
+        
                 html += '</tbody></table>'
                 return html
         
             def mostrar_tabelas(self):
                 # Título ajustado
                 st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Lucro Consenso</h1>", unsafe_allow_html=True)               
-                st.markdown("<p style='color:red; font-size:14px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:red; font-size:24px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
