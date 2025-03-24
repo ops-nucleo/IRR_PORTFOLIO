@@ -462,18 +462,20 @@ if st.session_state['acesso_permitido']:
                 }
                 self.download_excel(dfs_dict)
            
-        # Seção do Selectbox para a data (com a formatação que você mencionou)
-        col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1]) 
-        with col20:
-            datas_disponiveis = tabela.filtrar_datas()
-            data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-        with co21:
-            # Criando um radio estilizado
-            graphs2 = st.radio(
-                "",
-                ["Tabela IRR Portfilio", "Núcleo VS consenso"],
-                horizontal=True  # Exibe os botões lado a lado
-            )  
+            # Seção do Selectbox para a data (com a formatação que você mencionou)
+            col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1]) 
+            with col20:
+                datas_disponiveis = tabela.filtrar_datas()
+                data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
+            with co21:
+                # Criando um radio estilizado
+                graphs2 = st.radio(
+                    "",
+                    ["Tabela IRR Portfilio", "Núcleo VS consenso"],
+                    horizontal=True  # Exibe os botões lado a lado
+                )  
+
+    
     tabela.mostrar_tabelas()
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
 
