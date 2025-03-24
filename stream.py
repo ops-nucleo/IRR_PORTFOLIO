@@ -127,7 +127,8 @@ if st.session_state['acesso_permitido']:
             }
         </style>
     """, unsafe_allow_html=True)
-
+    tabela.mostrar_tabelas()
+    df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     class TabelaPortfolioLucro:
         def __init__(self, df_empresa):
             # Converte a coluna 'DATA ATUALIZACAO' para datetime
@@ -474,8 +475,7 @@ if st.session_state['acesso_permitido']:
                     ["Tabela IRR Portfilio", "Núcleo VS consenso"],
                     horizontal=True  # Exibe os botões lado a lado
                 )  
-    tabela.mostrar_tabelas()
-    df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
+
 
 
     class lucroconsenso:
