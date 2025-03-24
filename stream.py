@@ -516,63 +516,55 @@ if st.session_state['acesso_permitido']:
                 df_portfolio = df_portfolio[['Empresa', '%']]  # Seleciona apenas colunas finais para exibição
                 
                 return df_portfolio
-        
-            def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
+                
+            def criar_lucro_nucleo(self, df_filtrado, data_selecionada, empresas_ordenadas):
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+        
                 for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
+                    empresa_label = f"<span style='color:red'>{empresa}*</span>" if empresa in self.lista_empresas else empresa
+                    linha = {'Empresa': empresa_label}
                     for i, ano in enumerate(anos):
                         coluna_lucro = 'EBITDA ajustado' if empresa in self.lista_empresas else 'Lucro líquido ajustado'
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)][coluna_lucro]
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
         
-        
-                # Formatando os números no estilo americano
                 for ano in anos:
                     df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
                 return df_lucro, anos
-                
-            def criar_lucro_consenso(self, df_filtrado, data_selecionada,empresas_ordenadas):
+        
+            def criar_lucro_consenso(self, df_filtrado, data_selecionada, empresas_ordenadas):
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+        
                 for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
+                    empresa_label = f"<span style='color:red'>{empresa}*</span>" if empresa in self.lista_empresas else empresa
+                    linha = {'Empresa': empresa_label}
                     for i, ano in enumerate(anos):
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro Consenso']
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
         
-                # Formatando os números no estilo americano
                 for ano in anos:
                     df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if x != 0 else "-")
-
                 return df_lucro
-            
+        
             def nucleo_vs_consenso(self, df_lucro, df_lucro2, anos):
-                # Garantir que as colunas são numéricas e tratar erros
                 df_lucro[anos] = df_lucro[anos].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
                 df_lucro2[anos] = df_lucro2[anos].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
         
-                # Criar a DataFrame final com a coluna 'Empresa'
                 df_growth = pd.DataFrame({'Empresa': df_lucro['Empresa']})
         
-                # Loop pelos anos para calcular a diferença percentual
                 for ano in anos:
-                    df_growth[ano] = (df_lucro[ano] / df_lucro2[ano] - 1) * 100  # Cálculo da variação em %
-        
-                    # Tratar divisão por zero e valores NaN
-                    df_growth[ano] = df_growth[ano].replace([float('inf'), -float('inf')], 0)  # Substituir infinitos por 0
-                    df_growth[ano] = df_growth[ano].fillna(0)  # Substituir NaN por 0
-        
-                    # Converter para string formatada em %
+                    df_growth[ano] = (df_lucro[ano] / df_lucro2[ano] - 1) * 100
+                    df_growth[ano] = df_growth[ano].replace([float('inf'), -float('inf')], 0).fillna(0)
                     df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 0 else "-")
         
                 return df_growth
-       
+               
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
                 html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
