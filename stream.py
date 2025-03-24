@@ -500,14 +500,14 @@ if st.session_state['acesso_permitido']:
         
             def criar_tabela_portfolio(self, df_filtrado, check):
                 df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)
-                df_portfolio.columns = ['Empresa', '% Portfólio']
-                df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
-                df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
+                df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
+                df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
+                
                 if check == "x":
                     df_portfolio['Empresa'] = df_portfolio['Ticker'].apply(lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x)
                 
-                df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.1f}%")
-                df_portfolio = df_portfolio.rename(columns={"% Portfólio": "%"})
+                df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
+                df_portfolio = df_portfolio[['Empresa', '%']]  # Seleciona apenas colunas finais para exibição
                 return df_portfolio
         
             def criar_lucro_nucleo(self, df_filtrado, data_selecionada, empresas_ordenadas):
