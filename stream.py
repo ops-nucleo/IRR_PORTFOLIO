@@ -464,10 +464,10 @@ if st.session_state['acesso_permitido']:
            
     # Seção do Selectbox para a data (com a formatação que você mencionou)
     col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1]) 
-    with col20:
+    with col21:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-    with co21:
+    with co20:
         # Criando um radio estilizado
         graphs2 = st.radio(
             "",
