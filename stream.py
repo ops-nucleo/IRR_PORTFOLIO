@@ -498,11 +498,15 @@ if st.session_state['acesso_permitido']:
                 df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
                 return df_filtrado
         
-            def criar_tabela_portfolio(self, df_filtrado):
+            def criar_tabela_portfolio(self, df_filtrado, check):
                 df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)
                 df_portfolio.columns = ['Empresa', '% Portfólio']
                 df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
                 df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
+                if check == "x":
+                    df_portfolio['Empresa'] = df_portfolio['Ticker'].apply(
+                            lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x)
+                
                 df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.1f}%")
                 df_portfolio = df_portfolio.rename(columns={"% Portfólio": "%"})
                 return df_portfolio
@@ -579,17 +583,17 @@ if st.session_state['acesso_permitido']:
                 st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
         
                 # Mensagem de observação
-                st.markdown("<p style='color:red; font-size:14px; text-align:center'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:red; font-size:24px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
-                df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+                df_portfolio = self.criar_tabela_portfolio(df_filtrado, "y")
                 empresas_ordenadas = df_portfolio['Empresa'].tolist()
                 # Exibir tabelas lado a lado
                 col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
         
                 # Tabela de Portfolio
                 with col1:
-                    df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+                    df_portfolio = self.criar_tabela_portfolio(df_filtrado, "x")                    
                     html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
                     st.markdown(html_portfolio, unsafe_allow_html=True)
         
@@ -618,7 +622,6 @@ if st.session_state['acesso_permitido']:
         
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         lucro_consenso = lucroconsenso(df_empresa)
-        st.markdown("<p style='color:red; font-size:14px; text-align:center'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
         lucro_consenso.mostrar_tabelas()
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
