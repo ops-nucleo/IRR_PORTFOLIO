@@ -498,16 +498,34 @@ if st.session_state['acesso_permitido']:
                 df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
                 return df_filtrado
         
-            def criar_tabela_portfolio(self, df_filtrado, check):
-                df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)
-                df_portfolio.columns = ['Empresa', '% Portfólio']
+            # def criar_tabela_portfolio(self, df_filtrado, check):
+            #     df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)
+            #     df_portfolio.columns = ['Empresa', '% Portfólio']
+            #     df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
+            #     df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
+                              
+            #     df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
+            #     df_portfolio = df_portfolio[['Empresa', '%']]  # Seleciona apenas colunas finais para exibição
+            #     if check == "x":
+            #         df_portfolio['Empresa'] = df_portfolio['Empresa'].apply(lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x)
+            #     return df_portfolio
+                
+            def criar_tabela_portfolio(self, df_filtrado, check):        
+                df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)   
+                # Ordena por '% Portfolio' antes de renomear a coluna
                 df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
                 df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
-                              
+                # Formata os valores e renomeia as colunas no final
                 df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
-                df_portfolio = df_portfolio[['Empresa', '%']]  # Seleciona apenas colunas finais para exibição
+                # Renomeia 'Ticker' para 'Empresa'
+                df_portfolio = df_portfolio.rename(columns={'Ticker': 'Empresa'})
+                # Aplica o * em vermelho se for o caso
                 if check == "x":
-                    df_portfolio['Empresa'] = df_portfolio['Empresa'].apply(lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x)
+                    df_portfolio['Empresa'] = df_portfolio['Empresa'].apply(
+                        lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x
+                    )
+                # Mantém apenas colunas finais
+                df_portfolio = df_portfolio[['Empresa', '%']]
                 return df_portfolio
         
             def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
