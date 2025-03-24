@@ -502,15 +502,19 @@ if st.session_state['acesso_permitido']:
                 return df_filtrado
         
             def criar_tabela_portfolio(self, df_filtrado):
-                # Primeira tabela: "Portfolio"
                 df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)
-                df_portfolio.columns = ['Empresa', '% Portfólio']
-                # Certificando-se de que os valores são numéricos e tratando NaN
-                df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
-                df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
-                # Formatando os números
-                df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.1f}%")
-                df_portfolio = df_portfolio.rename(columns={"% Portfólio": "%"})
+                df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
+                df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
+                
+                # Cria coluna 'Empresa' com destaque para tickers da lista
+                df_portfolio['Empresa'] = df_portfolio['Ticker'].apply(
+                    lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x
+                )
+                
+                # Ajusta porcentagens e colunas
+                df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
+                df_portfolio = df_portfolio[['Empresa', '%']]  # Seleciona apenas colunas finais para exibição
+                
                 return df_portfolio
         
             def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
@@ -593,7 +597,6 @@ if st.session_state['acesso_permitido']:
             def mostrar_tabelas(self):
                 # Título ajustado
                 st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Lucro Consenso</h1>", unsafe_allow_html=True)               
-                #    Mensagem de observação
                 st.markdown("<p style='color:red; font-size:14px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
@@ -631,10 +634,9 @@ if st.session_state['acesso_permitido']:
                     st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
                    # Uso da classe no Streamlit
         
-        df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
-        lucro_consenso = lucroconsenso(df_empresa)
-       
-        lucro_consenso.mostrar_tabelas()
+    df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
+    lucro_consenso = lucroconsenso(df_empresa)
+    lucro_consenso.mostrar_tabelas()
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
