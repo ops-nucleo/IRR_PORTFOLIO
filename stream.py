@@ -474,10 +474,11 @@ if st.session_state['acesso_permitido']:
                     ["Tabela IRR Portfilio", "Núcleo VS consenso"],
                     horizontal=True  # Exibe os botões lado a lado
                 )  
-
-    
-    tabela.mostrar_tabelas()
+                
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
+    tabela = TabelaPortfolioLucro(df_empresa)
+    tabela.mostrar_tabelas()
+
 
 
     class lucroconsenso:
