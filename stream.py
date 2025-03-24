@@ -487,113 +487,99 @@ if st.session_state['acesso_permitido']:
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
                 self.lista_empresas = ["SBSP3", "EQTL3", "RAIL3", "CPLE6", "ELET3"]
-
+        
             def filtrar_datas(self):
-                # Obtém datas únicas e ordena do menor para o maior
                 datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
-                # Formata as datas para o formato brasileiro
                 datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
                 return datas_formatadas
         
             def filtrar_por_data(self, data_selecionada):
-                # Converte a data do formato brasileiro para datetime antes de filtrar
                 data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
                 df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
                 return df_filtrado
         
             def criar_tabela_portfolio(self, df_filtrado):
-                # Primeira tabela: "Portfolio"
                 df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)
                 df_portfolio.columns = ['Empresa', '% Portfólio']
-                # Certificando-se de que os valores são numéricos e tratando NaN
                 df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
                 df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
-                # Formatando os números
                 df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.1f}%")
                 df_portfolio = df_portfolio.rename(columns={"% Portfólio": "%"})
                 return df_portfolio
         
-            def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
+            def criar_lucro_nucleo(self, df_filtrado, data_selecionada, empresas_ordenadas):
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+        
                 for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
+                    empresa_label = f"<span style='color:red'>{empresa}*</span>" if empresa in self.lista_empresas else empresa
+                    linha = {'Empresa': empresa_label}
                     for i, ano in enumerate(anos):
                         coluna_lucro = 'EBITDA ajustado' if empresa in self.lista_empresas else 'Lucro líquido ajustado'
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)][coluna_lucro]
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
         
-        
-                # Formatando os números no estilo americano
                 for ano in anos:
                     df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
                 return df_lucro, anos
-                
-            def criar_lucro_consenso(self, df_filtrado, data_selecionada,empresas_ordenadas):
+        
+            def criar_lucro_consenso(self, df_filtrado, data_selecionada, empresas_ordenadas):
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+        
                 for empresa in empresas_ordenadas:
-                    linha = {'Empresa': empresa}
+                    empresa_label = f"<span style='color:red'>{empresa}*</span>" if empresa in self.lista_empresas else empresa
+                    linha = {'Empresa': empresa_label}
                     for i, ano in enumerate(anos):
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro Consenso']
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = pd.concat([df_lucro, pd.DataFrame([linha])], ignore_index=True)
         
-                # Formatando os números no estilo americano
                 for ano in anos:
                     df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if x != 0 else "-")
-
                 return df_lucro
-            
+        
             def nucleo_vs_consenso(self, df_lucro, df_lucro2, anos):
-                # Garantir que as colunas são numéricas e tratar erros
                 df_lucro[anos] = df_lucro[anos].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
                 df_lucro2[anos] = df_lucro2[anos].replace(',', '', regex=True).apply(pd.to_numeric, errors='coerce')
         
-                # Criar a DataFrame final com a coluna 'Empresa'
                 df_growth = pd.DataFrame({'Empresa': df_lucro['Empresa']})
         
-                # Loop pelos anos para calcular a diferença percentual
                 for ano in anos:
-                    df_growth[ano] = (df_lucro[ano] / df_lucro2[ano] - 1) * 100  # Cálculo da variação em %
-        
-                    # Tratar divisão por zero e valores NaN
-                    df_growth[ano] = df_growth[ano].replace([float('inf'), -float('inf')], 0)  # Substituir infinitos por 0
-                    df_growth[ano] = df_growth[ano].fillna(0)  # Substituir NaN por 0
-        
-                    # Converter para string formatada em %
+                    df_growth[ano] = (df_lucro[ano] / df_lucro2[ano] - 1) * 100
+                    df_growth[ano] = df_growth[ano].replace([float('inf'), -float('inf')], 0).fillna(0)
                     df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 0 else "-")
         
                 return df_growth
-       
+        
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
                 html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
                 colspan = df.shape[1]
                 html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
-                html += '</tr><tr>'
-                colunas_listadas = df.columns
-                html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
-                for col in colunas_listadas:
+                html += '</tr><tr style="background-color: rgb(0, 32, 96); color: white;">'
+                for col in df.columns:
                     html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
                 html += '</tr></thead><tbody>'
                 for i, row in df.iterrows():
                     bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
                     html += f'<tr style="background-color: {bg_color}; color: black;">'
                     for col in df.columns:
-                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{row[col]}</td>'
+                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{row[col]}</td>'
                     html += '</tr>'
-    
                 html += '</tbody></table>'
                 return html
+
         
             def mostrar_tabelas(self):
                 # Título ajustado
-                st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)               
-
+                st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
+        
+                # Mensagem de observação
+                st.markdown("<p style='color:red; font-size:14px; text-align:center'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
@@ -629,9 +615,10 @@ if st.session_state['acesso_permitido']:
                     df_growth = df_growth.drop(columns=['Empresa'])
                     st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
                    # Uso da classe no Streamlit
+        
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         lucro_consenso = lucroconsenso(df_empresa)
-       
+        st.markdown("<p style='color:red; font-size:14px; text-align:center'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
         lucro_consenso.mostrar_tabelas()
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
