@@ -504,7 +504,7 @@ if st.session_state['acesso_permitido']:
                 df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
                               
                 df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
-                df_portfolio = df_portfolio[['Empresa', '%']]  # Seleciona apenas colunas finais para exibição
+                df_portfolio = df_portfolio[['Ticker', '%']]  # Seleciona apenas colunas finais para exibição
                 if check == "x":
                     df_portfolio['Empresa'] = df_portfolio['Ticker'].apply(lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x)
                 return df_portfolio
