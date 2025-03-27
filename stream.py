@@ -464,6 +464,7 @@ if st.session_state['acesso_permitido']:
 
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
+    
 
     class lucroconsenso:
         def __init__(self, df_empresa):
@@ -629,7 +630,13 @@ if st.session_state['acesso_permitido']:
             key="graphs2"
         )
     
-
+    # ✅ Usa a variável graphs2 para verificar a escolha
+    if graphs2 == "Tabela IRR Portfilio":
+        tabela.mostrar_tabelas()
+    
+    elif graphs2 == "Núcleo VS consenso":
+        consenso = lucroconsenso(df_empresa)
+        consenso.mostrar_tabelas()
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
     
@@ -1110,10 +1117,4 @@ if st.session_state['acesso_permitido']:
                 df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
 
-    # ✅ Usa a variável graphs2 para verificar a escolha
-    if graphs2 == "Tabela IRR Portfilio":
-        tabela.mostrar_tabelas()
-    
-    elif graphs2 == "Núcleo VS consenso":
-        consenso = lucroconsenso(df_empresa)
-        consenso.mostrar_tabelas()
+
