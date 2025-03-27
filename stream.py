@@ -470,17 +470,16 @@ if st.session_state['acesso_permitido']:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
     
-    # Primeiro, garanta que o session_state['graphs2'] exista
+    # 🔒 Primeiro garante que a chave exista no session_state
     if 'graphs2' not in st.session_state:
         st.session_state.graphs2 = "Tabela IRR Portfilio"
     
     with co21:
-        # Criando um radio estilizado
+        # Agora pode acessar sem erro
         graphs2 = st.radio(
             "",
             ["Tabela IRR Portfilio", "Núcleo VS consenso"],
             horizontal=True,
-            index=["Tabela IRR Portfilio", "Núcleo VS consenso"].index(st.session_state.graphs2),
             key="graphs2"
         )
     
