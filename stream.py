@@ -631,11 +631,11 @@ if st.session_state['acesso_permitido']:
     
     # ✅ Usa a variável graphs2 para verificar a escolha
     if graphs2 == "Tabela IRR Portfilio":
-        tabela.mostrar_tabelas(data_selecionada)
+        tabela.mostrar_tabelas()
     
     elif graphs2 == "Núcleo VS consenso":
         consenso = lucroconsenso(df_empresa)
-        consenso.mostrar_tabelas(data_selecionada)
+        consenso.mostrar_tabelas()
 
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
