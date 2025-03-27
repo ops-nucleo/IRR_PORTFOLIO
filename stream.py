@@ -464,31 +464,7 @@ if st.session_state['acesso_permitido']:
 
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
-    if 'graphs2' not in st.session_state:
-        st.session_state.graphs2 = "Tabela IRR Portfilio"
-    
-    col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1])
-    
-    with col20:
-        datas_disponiveis = tabela.filtrar_datas()
-        data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-    
-    with co21:
-        # ✅ NÃO atribui ao session_state de novo aqui
-        graphs2 = st.radio(
-            "",
-            ["Tabela IRR Portfilio", "Núcleo VS consenso"],
-            horizontal=True,
-            key="graphs2"
-        )
-    
-    # ✅ Usa a variável graphs2 para verificar a escolha
-    if graphs2 == "Tabela IRR Portfilio":
-        tabela.mostrar_tabelas(data_selecionada)
-    
-    elif graphs2 == "Núcleo VS consenso":
-        consenso = lucroconsenso(df_empresa)
-        consenso.mostrar_tabelas(data_selecionada)
+
     class lucroconsenso:
         def __init__(self, df_empresa):
             # Converte a coluna 'DATA ATUALIZACAO' para datetime
@@ -633,7 +609,33 @@ if st.session_state['acesso_permitido']:
                 df_growth = df_growth.drop(columns=['Empresa'])
                 st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
                # Uso da classe no Streamlit
-        
+
+
+    if 'graphs2' not in st.session_state:
+        st.session_state.graphs2 = "Tabela IRR Portfilio"
+    
+    col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1])
+    
+    with col20:
+        datas_disponiveis = tabela.filtrar_datas()
+        data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
+    
+    with co21:
+        # ✅ NÃO atribui ao session_state de novo aqui
+        graphs2 = st.radio(
+            "",
+            ["Tabela IRR Portfilio", "Núcleo VS consenso"],
+            horizontal=True,
+            key="graphs2"
+        )
+    
+    # ✅ Usa a variável graphs2 para verificar a escolha
+    if graphs2 == "Tabela IRR Portfilio":
+        tabela.mostrar_tabelas(data_selecionada)
+    
+    elif graphs2 == "Núcleo VS consenso":
+        consenso = lucroconsenso(df_empresa)
+        consenso.mostrar_tabelas(data_selecionada)
 
               
     st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
