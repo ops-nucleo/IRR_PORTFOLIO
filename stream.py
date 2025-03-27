@@ -464,12 +464,16 @@ if st.session_state['acesso_permitido']:
 
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
-            
-    # Seção do Selectbox para a data (com a formatação que você mencionou)
     col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1]) 
+    
     with col20:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
+    
+    # Primeiro, garanta que o session_state['graphs2'] exista
+    if 'graphs2' not in st.session_state:
+        st.session_state.graphs2 = "Tabela IRR Portfilio"
+    
     with co21:
         # Criando um radio estilizado
         graphs2 = st.radio(
@@ -479,9 +483,6 @@ if st.session_state['acesso_permitido']:
             index=["Tabela IRR Portfilio", "Núcleo VS consenso"].index(st.session_state.graphs2),
             key="graphs2"
         )
-    if 'graphs2' not in st.session_state:
-        st.session_state.graphs2 = "Tabela IRR Portfilio"
-
     
     elif graphs2 == "Núcleo VS consenso":
         class lucroconsenso:
