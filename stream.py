@@ -9,16 +9,20 @@ import datetime
 from io import BytesIO
 from xlsxwriter import Workbook
 st.set_page_config(layout="wide")
-st.markdown(
-    """
+st.markdown("""
+    <div id="anchor_top"></div>
     <script>
-        window.onload = function() {
-            window.scrollTo(0, 0);
+        const scrollToTop = () => {
+            const anchor = document.getElementById("anchor_top");
+            if (anchor) {
+                anchor.scrollIntoView({behavior: "auto", block: "start"});
+            }
         };
+        window.addEventListener("load", () => {
+            setTimeout(scrollToTop, 100);  // Delay para garantir que todos os componentes carregaram
+        });
     </script>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 excel_file_path = 'base_empilhada_total.csv'
 
 
