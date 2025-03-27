@@ -475,7 +475,8 @@ if st.session_state['acesso_permitido']:
         graphs2 = st.radio(
             "",
             ["Tabela IRR Portfilio", "Núcleo VS consenso"],
-            horizontal=True  # Exibe os botões lado a lado
+            horizontal=True,  # Exibe os botões lado a lado
+            index=0  # força a primeira opção como padrão
         )  
     if graphs2 == "Tabela IRR Portfilio":
         tabela.mostrar_tabelas()
