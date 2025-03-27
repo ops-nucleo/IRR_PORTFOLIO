@@ -10,17 +10,25 @@ from io import BytesIO
 from xlsxwriter import Workbook
 st.set_page_config(layout="wide")
 st.markdown("""
-    <div id="anchor_top"></div>
+    <div id="topo_tabela"></div>
     <script>
         const scrollToTop = () => {
-            const anchor = document.getElementById("anchor_top");
-            if (anchor) {
-                anchor.scrollIntoView({behavior: "auto", block: "start"});
+            const target = document.getElementById("topo_tabela");
+            if (target) {
+                target.scrollIntoView({behavior: "smooth", block: "start"});
             }
         };
-        window.addEventListener("load", () => {
-            setTimeout(scrollToTop, 100);  // Delay para garantir que todos os componentes carregaram
+
+        // Observa mudanças no body pra detectar quando os elementos do Streamlit terminam de carregar
+        const observer = new MutationObserver((mutations, obs) => {
+            const appReady = document.querySelector('section.main');
+            if (appReady) {
+                scrollToTop();  // rola pro topo
+                obs.disconnect();  // para de observar depois
+            }
         });
+
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 """, unsafe_allow_html=True)
 excel_file_path = 'base_empilhada_total.csv'
