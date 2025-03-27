@@ -8,7 +8,7 @@ from matplotlib.ticker import FuncFormatter
 import datetime
 from io import BytesIO
 from xlsxwriter import Workbook
-import streamlit.components.v1 as components
+
 st.set_page_config(layout="wide")
 
 excel_file_path = 'base_empilhada_total.csv'
@@ -1118,13 +1118,3 @@ if st.session_state['acesso_permitido']:
                 # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                 df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
-
-# Força rolagem ao topo após renderizar a página
-components.html(
-    """
-    <script>
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    </script>
-    """,
-    height=0,
-)
