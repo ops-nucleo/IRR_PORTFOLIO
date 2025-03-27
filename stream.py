@@ -464,29 +464,29 @@ if st.session_state['acesso_permitido']:
 
     df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
     tabela = TabelaPortfolioLucro(df_empresa)
-    # ✅ INTERFACE DE DATA E BOTÃO DE TROCA
     if 'graphs2' not in st.session_state:
         st.session_state.graphs2 = "Tabela IRR Portfilio"
-
+    
     col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1])
-
+    
     with col20:
         datas_disponiveis = tabela.filtrar_datas()
         data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-
+    
     with co21:
-        st.session_state.graphs2 = st.radio(
+        # ✅ NÃO atribui ao session_state de novo aqui
+        graphs2 = st.radio(
             "",
             ["Tabela IRR Portfilio", "Núcleo VS consenso"],
             horizontal=True,
             key="graphs2"
         )
-
-    # ✅ MOSTRA TABELAS BASEADO NA ESCOLHA
-    if st.session_state.graphs2 == "Tabela IRR Portfilio":
+    
+    # ✅ Usa a variável graphs2 para verificar a escolha
+    if graphs2 == "Tabela IRR Portfilio":
         tabela.mostrar_tabelas(data_selecionada)
-
-    elif st.session_state.graphs2 == "Núcleo VS consenso":
+    
+    elif graphs2 == "Núcleo VS consenso":
         consenso = lucroconsenso(df_empresa)
         consenso.mostrar_tabelas(data_selecionada)
     class lucroconsenso:
