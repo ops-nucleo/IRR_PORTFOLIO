@@ -8,6 +8,7 @@ from matplotlib.ticker import FuncFormatter
 import datetime
 from io import BytesIO
 from xlsxwriter import Workbook
+import streamlit.components.v1 as components
 st.set_page_config(layout="wide")
 
 excel_file_path = 'base_empilhada_total.csv'
@@ -1118,25 +1119,12 @@ if st.session_state['acesso_permitido']:
                 df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
 
-st.markdown("""
-    <div id="topo_tabela"></div>
+# Força rolagem ao topo após renderizar a página
+components.html(
+    """
     <script>
-        const scrollToTop = () => {
-            const target = document.getElementById("topo_tabela");
-            if (target) {
-                target.scrollIntoView({behavior: "smooth", block: "start"});
-            }
-        };
-
-        // Observa mudanças no body pra detectar quando os elementos do Streamlit terminam de carregar
-        const observer = new MutationObserver((mutations, obs) => {
-            const appReady = document.querySelector('section.main');
-            if (appReady) {
-                scrollToTop();  // rola pro topo
-                obs.disconnect();  // para de observar depois
-            }
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     </script>
-""", unsafe_allow_html=True)
+    """,
+    height=0,
+)
