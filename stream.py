@@ -9,6 +9,16 @@ import datetime
 from io import BytesIO
 from xlsxwriter import Workbook
 st.set_page_config(layout="wide")
+st.markdown(
+    """
+    <script>
+        window.onload = function() {
+            window.scrollTo(0, 0);
+        };
+    </script>
+    """,
+    unsafe_allow_html=True
+)
 excel_file_path = 'base_empilhada_total.csv'
 
 
