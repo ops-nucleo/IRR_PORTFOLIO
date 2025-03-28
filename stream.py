@@ -8,7 +8,7 @@ from matplotlib.ticker import FuncFormatter
 import datetime
 from io import BytesIO
 from xlsxwriter import Workbook
-
+import base64
 st.set_page_config(layout="wide")
 
 excel_file_path = 'base_empilhada_total.csv'
@@ -32,6 +32,16 @@ if not st.session_state['acesso_permitido']:
         st.stop()  # Impede que o resto do aplicativo seja executado se nenhuma senha for inserida
 
 if st.session_state['acesso_permitido']:
+    scroll_top_script = """
+    <script>
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
+        });
+    </script>
+    """
+    st.markdown(scroll_top_script, unsafe_allow_html=True)
+
+    
     # Definir o CSS para usar uma imagem de fundo
     def set_background(logo_path):
         st.markdown(
@@ -47,7 +57,7 @@ if st.session_state['acesso_permitido']:
         )
     
     # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
-    import base64
+
     def get_image_as_base64(path):
         with open(path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode()
