@@ -32,16 +32,7 @@ if not st.session_state['acesso_permitido']:
         st.stop()  # Impede que o resto do aplicativo seja executado se nenhuma senha for inserida
 
 if st.session_state['acesso_permitido']:
-    scroll_top_script = """
-    <script>
-        window.addEventListener('load', function() {
-            window.scrollTo(0, 0);
-        });
-    </script>
-    """
-    st.markdown(scroll_top_script, unsafe_allow_html=True)
-
-    
+   
     # Definir o CSS para usar uma imagem de fundo
     def set_background(logo_path):
         st.markdown(
@@ -1128,3 +1119,17 @@ if st.session_state['acesso_permitido']:
                 # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                 df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
+    
+    
+    scroll_top_script = """
+    <script>
+    window.addEventListener('DOMContentLoaded', function() {
+        // Espera 400ms e então rola para o topo
+        setTimeout(function() {
+            window.scrollTo(0, 0);
+        }, 400);
+    });
+    </script>
+    """
+    
+    st.markdown(scroll_top_script, unsafe_allow_html=True)
