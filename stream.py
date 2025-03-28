@@ -23,10 +23,8 @@ if not st.session_state['acesso_permitido']:
     if senha_usuario:
         if senha_usuario == st.secrets["access_token"]:
             st.session_state['acesso_permitido'] = True
-            st.success('Acesso permitido.')
             st.experimental_rerun()
         else:
-            st.error("Senha incorreta. Você não tem permissão para acessar este aplicativo.")
             st.stop()  # Impede que o resto do aplicativo seja executado
     else:
         st.stop()  # Impede que o resto do aplicativo seja executado se nenhuma senha for inserida
@@ -1120,3 +1118,25 @@ if st.session_state['acesso_permitido']:
                     df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
     
     
+
+        # scroll_top_script = """
+        # <script>
+        # function scrollTopStreamlit() {
+        #     // Pega a div do conteúdo principal do Streamlit.
+        #     const main = window.parent.document.querySelector('section.main');
+        #     if (main) {
+        #         main.scrollTop = 0;
+        #     }
+        #     // Se não achar, tenta no window mesmo:
+        #     else {
+        #         window.scrollTo(0, 0);
+        #     }
+        # }
+        
+        # document.addEventListener('DOMContentLoaded', function() {
+        #     setTimeout(scrollTopStreamlit, 800);
+        # });
+        # </script>
+        # """
+        # import streamlit.components.v1 as components
+        # components.html(scroll_top_script, height=0)
