@@ -375,7 +375,7 @@ if st.session_state['acesso_permitido']:
             )
         def mostrar_tabelas(self):
             # Título ajustado
-            st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
+            st.markdown("<h1 style='text-align: center;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
             # Filtra os dados pela data selecionada
             df_filtrado = self.filtrar_por_data(data_selecionada)
             df_portfolio = self.criar_tabela_portfolio(df_filtrado)
