@@ -1119,17 +1119,14 @@ if st.session_state['acesso_permitido']:
                 # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                 df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
 
-    
-    
+    import streamlit.components.v1 as components
     scroll_top_script = """
     <script>
     window.addEventListener('DOMContentLoaded', function() {
-        // Espera 400ms e então rola para o topo
         setTimeout(function() {
             window.scrollTo(0, 0);
         }, 400);
     });
     </script>
     """
-    
-    st.markdown(scroll_top_script, unsafe_allow_html=True)
+    components.html(scroll_top_script, height=0)  # Um "iframe" invisível
