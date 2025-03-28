@@ -1119,24 +1119,24 @@ if st.session_state['acesso_permitido']:
     
     
 
-        # scroll_top_script = """
-        # <script>
-        # function scrollTopStreamlit() {
-        #     // Pega a div do conteúdo principal do Streamlit.
-        #     const main = window.parent.document.querySelector('section.main');
-        #     if (main) {
-        #         main.scrollTop = 0;
-        #     }
-        #     // Se não achar, tenta no window mesmo:
-        #     else {
-        #         window.scrollTo(0, 0);
-        #     }
-        # }
+        scroll_top_script = """
+        <script>
+        function scrollTopStreamlit() {
+            // Pega a div do conteúdo principal do Streamlit.
+            const main = window.parent.document.querySelector('section.main');
+            if (main) {
+                main.scrollTop = 0;
+            }
+            // Se não achar, tenta no window mesmo:
+            else {
+                window.scrollTo(0, 0);
+            }
+        }
         
-        # document.addEventListener('DOMContentLoaded', function() {
-        #     setTimeout(scrollTopStreamlit, 800);
-        # });
-        # </script>
-        # """
-        # import streamlit.components.v1 as components
-        # components.html(scroll_top_script, height=0)
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(scrollTopStreamlit, 800);
+        });
+        </script>
+        """
+        import streamlit.components.v1 as components
+        components.html(scroll_top_script, height=0)
