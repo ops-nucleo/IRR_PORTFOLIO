@@ -384,8 +384,9 @@ if st.session_state['acesso_permitido']:
                 # Tabela de Portfolio
                 with col1:
                     df_portfolio = self.criar_tabela_portfolio(df_filtrado)
-                    df_portfolio = df_portfolio.rename(columns={"Empresa": "Company"})
-                    html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
+                    df_portfolio4 = df_portfolio.copy()
+                    df_portfolio4 = df_portfolio4.rename(columns={"Empresa": "Company"})
+                    html_portfolio = self.gerar_html_tabela(df_portfolio4, "Portfolio")
                     st.markdown(html_portfolio, unsafe_allow_html=True)
         
                 # Tabela de Lucro
