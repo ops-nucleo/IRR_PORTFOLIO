@@ -384,6 +384,7 @@ if st.session_state['acesso_permitido']:
                 # Tabela de Portfolio
                 with col1:
                     df_portfolio = self.criar_tabela_portfolio(df_filtrado)
+                    df_portfolio = df_portfolio.rename(columns={"Empresa": "Company"})
                     html_portfolio = self.gerar_html_tabela(df_portfolio, "Portfolio")
                     st.markdown(html_portfolio, unsafe_allow_html=True)
         
@@ -392,7 +393,7 @@ if st.session_state['acesso_permitido']:
                     df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada,empresas_ordenadas)
                     df_lucro2 = df_lucro.copy()
                     df_lucro2 = df_lucro2.drop(columns=['Empresa'])
-                    html_lucro = self.gerar_html_tabela(df_lucro2, "Lucro")
+                    html_lucro = self.gerar_html_tabela(df_lucro2, "Net Income Estimated")
                     st.markdown(html_lucro, unsafe_allow_html=True)
         
                 # Tabela de earnings growth
@@ -414,7 +415,7 @@ if st.session_state['acesso_permitido']:
                     df_pee = self.df_pe(df_filtrado, data_selecionada, empresas_ordenadas)
                     df_pee2 = df_pee.copy()
                     df_pee2 = df_pee2.drop(columns=['Empresa'])
-                    html_pee = self.gerar_html_tabela(df_pee2, "P/E saída")
+                    html_pee = self.gerar_html_tabela(df_pee2, "Exit P/E")
                     st.markdown(html_pee, unsafe_allow_html=True)
                     
     
