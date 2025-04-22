@@ -679,7 +679,8 @@ if st.session_state['acesso_permitido']:
                             colunas.append(f"{data} - {ano}")
                 
                 df_tabela = pd.DataFrame(columns=colunas)
-                empresas = self.df_empresa['Ticker'].unique()
+                df_filtrado = df_empresa[df_empresa['DATA ATUALIZACAO'].isin(datas_recentes)]
+                empresas = df_filtrado['Ticker'].unique()
                 
                 for empresa in empresas:
                     linha = {'Empresa': empresa}
