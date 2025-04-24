@@ -671,7 +671,7 @@ if st.session_state['acesso_permitido']:
                         quintas.append(quinta_tentativa)
                     else:
                         dias_uteis_anteriores = datas_disponiveis[datas_disponiveis < quinta_tentativa]
-                        if not dias_uteis_anteriores.empty:
+                        if len(dias_uteis_anteriores) > 0:
                             ultima_data_util = dias_uteis_anteriores[0]
                             quintas.append(ultima_data_util)
                     
