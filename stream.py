@@ -681,7 +681,7 @@ if st.session_state['acesso_permitido']:
                     st.warning("Não há dados suficientes para exibir 4 quintas-feiras anteriores.")
                     return pd.DataFrame()
             
-                datas_recentes = sorted(quintas, reverse=True)
+                datas_recentes = sorted(quintas)
                 
                 anos = [2024, 2025, 2026, 2027]
                 colunas = ['Empresa']
