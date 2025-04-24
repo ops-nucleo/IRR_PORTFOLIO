@@ -659,13 +659,29 @@ if st.session_state['acesso_permitido']:
                 data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
                 datas_disponiveis = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
                 
-                idx = np.where(datas_disponiveis == data_selecionada)[0][0] if data_selecionada in datas_disponiveis else None
-                
-                if idx is not None and idx + 3 < len(datas_disponiveis):
-                    datas_recentes = datas_disponiveis[idx:idx+4][::-1]  # Mantendo a data selecionada e pegando as 3 seguintes da esquerda para a direita
-                else:
-                    st.warning("Não há dados suficientes para exibir 4 semanas.")
+                quintas = []
+                i = 0
+                while len(quintas) < 4 and i < 30:  # Limite para não fazer loop infinito
+                    data_tentativa = (pd.Timestamp.today() - pd.DateOffset(weeks=i)).normalize()
+                    quinta_tentativa = data_tentativa - pd.DateOffset(days=(data_tentativa.weekday() - 3) % 7)  # 3 = quinta-feira
+                    quinta_tentativa = quinta_tentativa.normalize()
+                    
+                    # Tenta usar a quinta-feira, senão usa o dia útil anterior disponível
+                    if quinta_tentativa in datas_disponiveis:
+                        quintas.append(quinta_tentativa)
+                    else:
+                        dias_uteis_anteriores = datas_disponiveis[datas_disponiveis < quinta_tentativa]
+                        if not dias_uteis_anteriores.empty:
+                            ultima_data_util = dias_uteis_anteriores[0]
+                            quintas.append(ultima_data_util)
+                    
+                    i += 1
+            
+                if len(quintas) < 4:
+                    st.warning("Não há dados suficientes para exibir 4 quintas-feiras anteriores.")
                     return pd.DataFrame()
+            
+                datas_recentes = sorted(quintas, reverse=True)
                 
                 anos = [2024, 2025, 2026, 2027]
                 colunas = ['Empresa']
