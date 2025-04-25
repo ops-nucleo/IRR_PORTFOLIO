@@ -172,6 +172,7 @@ if st.session_state['acesso_permitido']:
                     anos = [ano_inicial + i for i in range(4)]
                     
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
+                df_lucro_ap = pd.DataFrame(columns=['Empresa'] + anos[1:])
                 empresas = df_filtrado['Ticker'].unique()
         
                 for empresa in empresas_ordenadas:
@@ -180,11 +181,13 @@ if st.session_state['acesso_permitido']:
                         lucro_ano = df_filtrado[(df_filtrado['Ticker'] == empresa) & (df_filtrado['Ano Referência'] == ano)]['Lucro líquido ajustado']
                         linha[ano] = lucro_ano.values[0] if not lucro_ano.empty else np.nan
                     df_lucro = df_lucro.append(linha, ignore_index=True)
+                    df_lucro_ap = df_lucro_ap.append(linha, ignore_index=True)
         
                 # Formatando os números no estilo americano
                 for ano in anos:
                     df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
-                return df_lucro
+                    df_lucro_ap[ano] = pd.to_numeric(df_lucro_ap[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
+                return df_lucro, df_lucro_ap
         
             def calcular_earnings_growth(self, df_lucro, anos):
                 df_growth = pd.DataFrame(columns=['Empresa'] + anos[1:])
@@ -391,8 +394,8 @@ if st.session_state['acesso_permitido']:
         
                 # Tabela de Lucro
                 with col2:
-                    df_lucro = self.criar_tabela_lucro(df_filtrado, data_selecionada,empresas_ordenadas)
-                    df_lucro2 = df_lucro.copy()
+                    df_lucro, df_lucro_ap  = self.criar_tabela_lucro(df_filtrado, data_selecionada,empresas_ordenadas)
+                    df_lucro2 = df_lucro_ap.copy()
                     df_lucro2 = df_lucro2.drop(columns=['Empresa'])
                     html_lucro = self.gerar_html_tabela(df_lucro2, "Net Income Estimated")
                     st.markdown(html_lucro, unsafe_allow_html=True)
