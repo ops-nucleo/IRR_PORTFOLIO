@@ -187,9 +187,10 @@ if st.session_state['acesso_permitido']:
                         linha_ap[ano] = linha.get(ano, np.nan)
                     df_lucro_ap = df_lucro_ap.append(linha_ap, ignore_index=True)
                         
-                # Formatando os números no estilo americano
                 for ano in anos:
                     df_lucro[ano] = pd.to_numeric(df_lucro[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
+
+                for ano in anos[1:]:   
                     df_lucro_ap[ano] = pd.to_numeric(df_lucro_ap[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
                 return df_lucro, df_lucro_ap
         
