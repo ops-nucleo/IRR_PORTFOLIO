@@ -1046,7 +1046,8 @@ if st.session_state['acesso_permitido']:
         elif graphs == "TIR média ponderada Nucleo Capital":
             class AvgIRRAnalysis:
                 def __init__(self):
-                    self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
+                    self.excel_file_path = 'base_empilhada_total.csv'
+                    self.df_mkt = pd.read_csv(self.excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
              
                 def filtrar_datas(self,variavel):
                     df_empresa = self.df_mkt[(self.df_mkt[variavel].notna())]
