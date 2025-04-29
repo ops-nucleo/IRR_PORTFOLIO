@@ -222,7 +222,7 @@ if st.session_state['acesso_permitido']:
                             ev_ebtda[ano] = df_filtrado.loc[
                                 (df_filtrado['Ticker'] == empresa) & 
                                 (df_filtrado['Ano Referência'] == ano), 
-                                'P/E Calculado'
+                                'EV/EBITDA'
                             ].values[0].round(1)
                         except IndexError:
                             ev_ebtda[ano] = ""  
