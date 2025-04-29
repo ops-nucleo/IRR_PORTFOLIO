@@ -782,7 +782,7 @@ if st.session_state['acesso_permitido']:
                         for j, col in enumerate(df.columns):
                             cell_color = ""
                             if j > 1:  # Evita a primeira coluna (nomes das empresas)
-                                prev_col = df.columns[j - 4] if j - 4 >= 1 else None  # Comparação com a mesma empresa na semana anterior
+                                prev_col = df.columns[j - 3] if j - 3 >= 1 else None  # Comparação com a mesma empresa na semana anterior
                                 if prev_col:
                                     valor_atual = df.at[i, col]
                                     valor_anterior = df.at[i, prev_col]
