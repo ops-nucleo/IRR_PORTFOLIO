@@ -227,7 +227,7 @@ if st.session_state['acesso_permitido']:
                         except IndexError:
                             ev_ebtda[ano] = ""  
             
-                    df_ev = pd.concat([df_pe_calc, pd.DataFrame([ev_ebtda])], ignore_index=True)
+                    df_ev = pd.concat([df_ev, pd.DataFrame([ev_ebtda])], ignore_index=True)
             
                 return df_ev
             
