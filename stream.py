@@ -224,10 +224,10 @@ if st.session_state['acesso_permitido']:
                                 (df_filtrado['Ano Referência'] == ano), 
                                 'EV/EBITDA'
                             ].values[0].round(1)
-                            if valor > 0:
+                            if isinstance(valor, (int, float)):
                                 ev_ebtda[ano] = f"{round(valor, 1)}x"
                             else:
-                                ev_ebtda[ano] = ""  
+                                ev_ebtda[ano] = "&nbsp;"  # Mantém o espaço sem conteúdo visível
     
                         except IndexError:
                             ev_ebtda[ano] = ""  
