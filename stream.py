@@ -766,7 +766,7 @@ if st.session_state['acesso_permitido']:
                 else:   
                     html += '<th rowspan="2" style="border: 1px solid #ddd; padding: 8px; text-align: center;">Empresa</th>'
                     for data in datas_formatadas:
-                        html += f'<th colspan="4" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
+                        html += f'<th colspan="3" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{data}</th>'
                     html += '</tr>'
                     
                     html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
