@@ -224,7 +224,11 @@ if st.session_state['acesso_permitido']:
                                 (df_filtrado['Ano Referência'] == ano), 
                                 'EV/EBITDA'
                             ].values[0].round(1)
-                            ev_ebtda[ano] = f"{round(valor, 1)}x"
+                            if valor > 0:
+                                ev_ebtda[ano] = f"{round(valor, 1)}x"
+                            else:
+                                ev_ebtda[ano] = ""  
+    
                         except IndexError:
                             ev_ebtda[ano] = ""  
             
