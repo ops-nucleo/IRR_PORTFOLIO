@@ -134,7 +134,8 @@ if st.session_state['acesso_permitido']:
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
-        
+                self.semestre = 1 if date.today().month <= 6 else 2
+            
             def filtrar_datas(self):
                 # Obtém datas únicas e ordena do menor para o maior
                 datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
@@ -165,11 +166,8 @@ if st.session_state['acesso_permitido']:
             def criar_tabela_lucro(self, df_filtrado, data_selecionada,empresas_ordenadas):
                 # Segunda tabela: "Lucro" (mostra os 4 anos a partir da data filtrada)
                 ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
-                if ano_inicial == 2025:
-                    ano_inicial = 2024
-                    anos = [ano_inicial + i for i in range(4)]
-                else:
-                    anos = [ano_inicial + i for i in range(4)]
+                ano_inicial -= 1
+                anos = [ano_inicial + i for i in range(4)]
                     
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
                 df_lucro_ap = pd.DataFrame(columns=['Empresa'] + anos[1:])
@@ -211,7 +209,29 @@ if st.session_state['acesso_permitido']:
                 for ano in anos[1:]:
                     df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
                 return df_growth
-    
+                
+            def df_evebtda(self, df_filtrado, data_selecionada, empresas_ordenadas):
+                ano_atual = pd.to_datetime(data_selecionada).year
+                anos = [ano_atual + i for i in range(0, 2)]           
+                df_ev = pd.DataFrame(columns=['Empresa'] + anos)         
+                       
+                for empresa in empresas_ordenadas:
+                    ev_ebtda = {'Empresa': empresa}
+            
+                    for ano in anos:
+                        try:
+                            ev_ebtda[ano] = df_filtrado.loc[
+                                (df_filtrado['Ticker'] == empresa) & 
+                                (df_filtrado['Ano Referência'] == ano), 
+                                'P/E Calculado'
+                            ].values[0].round(1)
+                        except IndexError:
+                            ev_ebtda[ano] = ""  
+            
+                    df_ev = pd.concat([df_pe_calc, pd.DataFrame([ev_ebtda])], ignore_index=True)
+            
+                return df_ev
+            
             def apresentar_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
                 ano_atual = pd.to_datetime(data_selecionada).year
                 anos = [ano_atual + i for i in range(0, 2)]           
@@ -387,7 +407,7 @@ if st.session_state['acesso_permitido']:
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
                 empresas_ordenadas = df_portfolio['Empresa'].tolist()
                 # Exibir tabelas lado a lado
-                col1, col2, col3, col4, col5, col6, col7 = st.columns([1.15, 1.15, 1, 0.7, 0.5, 1.25, 1.25])
+                col1, col2, col3, col4, col5, col6, col7, col8 = st.columns([1.15, 1.15, 1, 0.7, 0.7, 0.5, 1, 0.7])
         
                 # Tabela de Portfolio
                 with col1:
@@ -419,8 +439,18 @@ if st.session_state['acesso_permitido']:
                     df_pe2 = df_pe2.drop(columns=['Empresa'])
                     html_pe = self.gerar_html_tabela(df_pe2, "P/E")
                     st.markdown(html_pe, unsafe_allow_html=True)
-                # Tabela de P/E
+
+                # Tabela EVEBITDA
                 with col5:
+                    df_ev = self.df_evebtda(df_filtrado, data_selecionada, empresas_ordenadas)
+                    df_ev2 = df_ev.copy()
+                    df_ev2 = df_ev2.drop(columns=['Empresa'])
+                    html_pee = self.gerar_html_tabela(df_ev2, "EV/EBITDA")
+                    st.markdown(html_pee, unsafe_allow_html=True)               
+
+                
+                # Tabela de Exit P/E
+                with col6:
                     df_pee = self.df_pe(df_filtrado, data_selecionada, empresas_ordenadas)
                     df_pee2 = df_pee.copy()
                     df_pee2 = df_pee2.drop(columns=['Empresa'])
@@ -429,7 +459,7 @@ if st.session_state['acesso_permitido']:
                     
     
                 # Tabela de TIR
-                with col6:
+                with col7:
                     df_tir = self.calcular_tir(df_filtrado, data_selecionada, empresas_ordenadas)
                     df_tir2 = df_tir.copy()
                     df_tir2 = df_tir2.drop(columns=['Empresa'])
@@ -437,7 +467,7 @@ if st.session_state['acesso_permitido']:
                     st.markdown(html_tir, unsafe_allow_html=True)
                     
                 # Tabela de Scorecards
-                with col7:
+                with col8:
                     df_score = self.apresentar_scorecard(df_filtrado, data_selecionada, empresas_ordenadas)
                     df_score2 = df_score.copy()
                     df_score2 = df_score2.drop(columns=['Empresa'])
