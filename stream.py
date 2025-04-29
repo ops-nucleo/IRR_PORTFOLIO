@@ -134,7 +134,6 @@ if st.session_state['acesso_permitido']:
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
-                self.semestre = 1 if date.today().month <= 6 else 2
             
             def filtrar_datas(self):
                 # Obtém datas únicas e ordena do menor para o maior
