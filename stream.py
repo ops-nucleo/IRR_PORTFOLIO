@@ -691,7 +691,7 @@ if st.session_state['acesso_permitido']:
             
                 datas_recentes = sorted(quintas)
                 
-                anos = [2024, 2025, 2026, 2027]
+                anos = [2025, 2026, 2027]
                 colunas = ['Empresa']
                 datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
                 
