@@ -6,6 +6,7 @@ import matplotlib.dates as mdates
 from st_aggrid import AgGrid, GridOptionsBuilder
 from matplotlib.ticker import FuncFormatter
 import datetime
+from datetime import date
 from io import BytesIO
 from xlsxwriter import Workbook
 import base64
@@ -516,7 +517,11 @@ if st.session_state['acesso_permitido']:
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
-                self.lista_empresas = ["SBSP3", "EQTL3", "RAIL3", "CPLE6", "ELET3"]
+                self.lista_empresas = (
+                        self.df_empresa[self.df_empresa["P/E"].isna()]["Ticker"]
+                        .drop_duplicates()
+                        .tolist()
+                    )
         
             def filtrar_datas(self):
                 datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
@@ -725,7 +730,8 @@ if st.session_state['acesso_permitido']:
             
                 datas_recentes = sorted(quintas)
                 
-                anos = [2025, 2026, 2027]
+                ano_inicial = date.today().year
+                anos = [ano_inicial + i for i in range(3)]
                 colunas = ['Empresa']
                 datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
                 
