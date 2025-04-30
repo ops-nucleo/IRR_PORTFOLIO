@@ -517,11 +517,7 @@ if st.session_state['acesso_permitido']:
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
                 self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
-                self.lista_empresas = (
-                        self.df_empresa[self.df_empresa["P/E"].isna()]["Ticker"]
-                        .drop_duplicates()
-                        .tolist()
-                    )
+                self.lista_empresas =  None
         
             def filtrar_datas(self):
                 datas = np.sort(self.df_empresa['DATA ATUALIZACAO'].dropna().unique())[::-1]
@@ -627,6 +623,11 @@ if st.session_state['acesso_permitido']:
                 st.markdown("<p style='color:red; font-size:24px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
+                self.lista_empresas = (
+                    self.df_filtrado[self.df_filtrado["P/E"].isna()]["Ticker"]
+                    .drop_duplicates()
+                    .tolist()
+                )
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado, "y")
                 empresas_ordenadas = df_portfolio['Empresa'].tolist()
                 # Exibir tabelas lado a lado
