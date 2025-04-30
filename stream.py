@@ -624,7 +624,7 @@ if st.session_state['acesso_permitido']:
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 self.lista_empresas = (
-                    self.df_filtrado[self.df_filtrado["P/E"].isna()]["Ticker"]
+                    df_filtrado[df_filtrado["P/E"].isna()]["Ticker"]
                     .drop_duplicates()
                     .tolist()
                 )
