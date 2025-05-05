@@ -247,11 +247,12 @@ if st.session_state['acesso_permitido']:
             
                     for ano in anos:
                         try:
-                            pe_cal[ano] = df_filtrado.loc[
+                            valor = df_filtrado.loc[
                                 (df_filtrado['Ticker'] == empresa) & 
                                 (df_filtrado['Ano Referência'] == ano), 
                                 'P/E Calculado'
                             ].values[0].round(1)
+                            pe_cal[ano] = f"{valor}x"
                         except IndexError:
                             pe_cal[ano] = ""  
             
@@ -294,7 +295,7 @@ if st.session_state['acesso_permitido']:
                         valor = dados[coluna_original].values[0]
             
                         if isinstance(valor, (int, float)):  # Apenas formata se for número
-                            linha[coluna_nova] = f"{valor:,.1f}"
+                            linha[coluna_nova] = f"{round(valor, 1)}x"
                         else:
                             linha[coluna_nova] = "&nbsp;"  # Mantém o espaço sem conteúdo visível
             
