@@ -758,9 +758,12 @@ if st.session_state['acesso_permitido']:
                             for ano in anos:
                                 valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
                                 linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
-                    if len(set(linha.keys())) != len(linha.keys()):
-                        st.error(f"❗ Chave duplicada detectada: {linha}")
-                        st.stop()
+                    duplicadas = [col for col in linha.keys() if col in df_tabela.columns and df_tabela.columns.duplicated().any()]
+                    
+                    if duplicadas:
+                        st.error(f"❗ Chave(s) duplicada(s) detectada(s) ao tentar adicionar: {duplicadas}")
+                        st.json(linha)  # Mostra o dicionário completo
+                        st.stop()  # Para o script para você ver o erro na tela
                     df_tabela = pd.concat([df_tabela, pd.DataFrame([linha])], ignore_index=True)
 
                 for col in df_tabela.columns[1:]:
