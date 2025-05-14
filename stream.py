@@ -758,8 +758,11 @@ if st.session_state['acesso_permitido']:
                             for ano in anos:
                                 valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
                                 linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
-                    df_tabela = df_tabela.append(linha, ignore_index=True)
-                
+                    if len(set(linha.keys())) != len(linha.keys()):
+                        st.error(f"❗ Chave duplicada detectada: {linha}")
+                        st.stop()
+                    df_tabela = pd.concat([df_tabela, pd.DataFrame([linha])], ignore_index=True)
+
                 for col in df_tabela.columns[1:]:
                     if variavel == "% Portfolio":
                         df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:.1%}")
