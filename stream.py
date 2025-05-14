@@ -711,7 +711,7 @@ if st.session_state['acesso_permitido']:
                 quintas = []
                 i = 0
                 while len(quintas) < 4 and i < 30:  # Limite para não fazer loop infinito
-                    data_tentativa = (pd.Timestamp.today() - pd.DateOffset(weeks=i)).normalize()
+                    data_tentativa = (data_selecionada - pd.DateOffset(weeks=i)).normalize()
                     quinta_tentativa = data_tentativa - pd.DateOffset(days=(data_tentativa.weekday() - 3) % 7)  # 3 = quinta-feira
                     quinta_tentativa = quinta_tentativa.normalize()
                     
