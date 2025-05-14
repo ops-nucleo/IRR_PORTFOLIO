@@ -716,14 +716,15 @@ if st.session_state['acesso_permitido']:
                     quinta_tentativa = quinta_tentativa.normalize()
                     
                     # Tenta usar a quinta-feira, senão usa o dia útil anterior disponível
-                    if quinta_tentativa in datas_disponiveis:
+                    if quinta_tentativa in datas_disponiveis and quinta_tentativa not in quintas:
                         quintas.append(quinta_tentativa)
                     else:
                         dias_uteis_anteriores = datas_disponiveis[datas_disponiveis < quinta_tentativa]
                         if len(dias_uteis_anteriores) > 0:
                             ultima_data_util = dias_uteis_anteriores[0]
-                            quintas.append(ultima_data_util)
-                    
+                            if ultima_data_util not in quintas:
+                                quintas.append(ultima_data_util)
+                  
                     i += 1
             
                 if len(quintas) < 4:
@@ -732,7 +733,7 @@ if st.session_state['acesso_permitido']:
             
                 datas_recentes = sorted(quintas)
                 
-                ano_inicial = date.today().year
+                ano_inicial = data_selecionada.year
                 anos = [ano_inicial + i for i in range(3)]
                 colunas = ['Empresa']
                 datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
@@ -758,12 +759,7 @@ if st.session_state['acesso_permitido']:
                             for ano in anos:
                                 valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data) & (self.df_empresa['Ano Referência'] == ano)][variavel]
                                 linha[f"{datas_formatadas[i]} - {ano}"] = valor.values[0] if not valor.empty else np.nan
-                    duplicadas = [col for col in linha.keys() if col in df_tabela.columns and df_tabela.columns.duplicated().any()]
-                    
-                    if duplicadas:
-                        st.error(f"❗ Chave(s) duplicada(s) detectada(s) ao tentar adicionar: {duplicadas}")
-                        st.json(linha)  # Mostra o dicionário completo
-                        st.stop()  # Para o script para você ver o erro na tela
+                  
                     df_tabela = pd.concat([df_tabela, pd.DataFrame([linha])], ignore_index=True)
 
                 for col in df_tabela.columns[1:]:
