@@ -724,35 +724,6 @@ if st.session_state['acesso_permitido']:
                     st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
                    # Uso da classe no Streamlit
     
-    
-        if 'graphs2' not in st.session_state:
-            st.session_state.graphs2 = "Tabela IRR Portfilio"
-        
-        col20, co21, col22, col23 = st.columns([0.3, 1.7, 1, 1])
-        
-        with col20:
-            datas_disponiveis = tabela.filtrar_datas()
-            data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
-        
-        with co21:
-            # ✅ NÃO atribui ao session_state de novo aqui
-
-            graphs2 = st.radio( "", ["Tabela IRR Portfilio", "Núcleo VS consenso", "Retorno Nubi"], horizontal=True, key="graphs2" )
-        
-        # ✅ Usa a variável graphs2 para verificar a escolha
-        if graphs2 == "Tabela IRR Portfilio":
-            tabela.mostrar_tabelas()
-        
-        elif graphs2 == "Núcleo VS consenso":
-            consenso = lucroconsenso(df_empresa)
-            consenso.mostrar_tabelas()
-
-        if graphs2 == "Retorno Nubi":
-            tabela_nubi = TabelaRetornoNubi()
-            tabela_nubi.mostrar_tabela()
-        
-        st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
-        
         class TabelaAnaliticaProjecoes:
             def __init__(self, df_empresa):
                 self.df_empresa = df_empresa
@@ -933,12 +904,38 @@ if st.session_state['acesso_permitido']:
                             variavel_ = None
                             html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos, variavel_)
                             st.markdown(html_tabela, unsafe_allow_html=True)
+
+        if 'graphs2' not in st.session_state:
+            st.session_state.graphs2 = "Tabela IRR Portfilio"
         
-        # Instanciando e exibindo a nova classe no Streamlit
-        df_empresa = pd.read_csv('base_empilhada_total.csv')
-        tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
-        tabela_projecoes.mostrar_tabela_projecoes()
-        st.markdown("<br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
+        col20, co21, col22, col23 = st.columns([0.3, 2.7, 0.5, 0.5])
+        
+        with col20:
+            datas_disponiveis = tabela.filtrar_datas()
+            data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
+        
+        with co21:
+            # ✅ NÃO atribui ao session_state de novo aqui
+            graphs2 = st.radio( "", ["Tabela IRR Portfilio", "Núcleo VS consenso", "Projecões históricas","Retorno Nubi"], horizontal=True, key="graphs2" )
+        
+        # ✅ Usa a variável graphs2 para verificar a escolha
+        if graphs2 == "Tabela IRR Portfilio":
+            tabela.mostrar_tabelas()
+        
+        elif graphs2 == "Núcleo VS consenso":
+            consenso = lucroconsenso(df_empresa)
+            consenso.mostrar_tabelas()
+    
+        if graphs2 == "Projecões históricas":
+            tabela_projecoes = TabelaAnaliticaProjecoes()
+            tabela_projecoes.mostrar_tabela_projecoes()
+
+        if graphs2 == "Retorno Nubi":
+            tabela_nubi = TabelaRetornoNubi()
+            tabela_nubi.mostrar_tabela()
+        
+        st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
+        
         # Customizando o estilo dos botões
         st.markdown("""
             <style>
