@@ -532,6 +532,7 @@ if st.session_state['acesso_permitido']:
 
        
             def gerar_html_tabela(self, df, titulo):
+                df = df.reset_index(drop=True)
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
                 html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
                 colspan = df.shape[1]
