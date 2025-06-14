@@ -406,8 +406,6 @@ if st.session_state['acesso_permitido']:
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
             def mostrar_tabelas(self):
-                # Título ajustado
-                st.markdown("<h1 style='text-align: center;color: black;'>IRR Portfólio</h1>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado)
@@ -691,9 +689,7 @@ if st.session_state['acesso_permitido']:
     
         
             def mostrar_tabelas(self):
-                # Título ajustado
-                st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Nucleo VS Consensus</h1>", unsafe_allow_html=True)
-        
+       
                 # Mensagem de observação
                 st.markdown("<p style='color:red; font-size:24px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
