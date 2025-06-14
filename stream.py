@@ -927,7 +927,7 @@ if st.session_state['acesso_permitido']:
             consenso.mostrar_tabelas()
     
         if graphs2 == "Projecões históricas":
-            tabela_projecoes = TabelaAnaliticaProjecoes()
+            tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
             tabela_projecoes.mostrar_tabela_projecoes()
 
         if graphs2 == "Retorno Nubi":
