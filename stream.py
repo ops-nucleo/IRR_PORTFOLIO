@@ -915,7 +915,7 @@ if st.session_state['acesso_permitido']:
         if 'graphs2' not in st.session_state:
             st.session_state.graphs2 = "Tabela IRR Portfilio"
         
-        col20, co21= st.columns([1, 3])
+        col20, co21, col22, col23 = st.columns([1, 3, 0.5, 0.5])
         
         with col20:
             datas_disponiveis = tabela.filtrar_datas()
