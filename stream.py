@@ -555,10 +555,13 @@ if st.session_state['acesso_permitido']:
             def mostrar_tabela(self):
                 # --- Filtro de Data ---
                 df_filtrado = self.filtrar_por_data(data_selecionada)
+                col20, co21, col22, col23 = st.columns([0.5, 3.5, 0.5, 0.5])
+    
+                with col20:
+                    prioridades = df_filtrado['Prioridade'].unique()
+                    prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)                
 
                 # --- Filtro de Prioridade ---
-                prioridades = df_filtrado['Prioridade'].unique()
-                prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)
                 df_filtrado = df_filtrado[df_filtrado['Prioridade'] == prioridade_selecionada]
 
                 # --- Montar tabela final ---
