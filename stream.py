@@ -516,7 +516,7 @@ if st.session_state['acesso_permitido']:
         class TabelaRetornoNubi:
             def __init__(self, df_nubi):
                 # Lê o arquivo
-                self.df_empresa = pd.read_excel('tabela_clust_irr.xlsx')
+                self.df_empresa = df_nubi
                 self.df_empresa['Prioridade'] = self.df_empresa['Prioridade'].fillna('Sem prioridade')
                 self.df_empresa['date'] = pd.to_datetime(self.df_empresa['date']).dt.date  # Converte a coluna de data
 
@@ -530,10 +530,7 @@ if st.session_state['acesso_permitido']:
                 df_filtrado = self.df_empresa[self.df_empresa['date'] == data_selecionada]
                 return df_filtrado
 
-            def criar_tabela_nubi(self,df_filtrado, data_selecionada):
-                df_filtrado = df_filtrado[(df_filtrado['date'] == data_selecionada)] 
-                return df_filtrado
-        
+       
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
                 html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
@@ -560,7 +557,6 @@ if st.session_state['acesso_permitido']:
                 # --- Filtro de Prioridade ---
                 prioridades = df_filtrado['Prioridade'].unique()
                 prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)
-                df_filtrado = self.criar_tabela_nubi(df_filtrado,data_selecionada)
                 df_filtrado = df_filtrado[df_filtrado['Prioridade'] == prioridade_selecionada]
 
                 # --- Montar tabela final ---
