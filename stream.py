@@ -515,9 +515,19 @@ if st.session_state['acesso_permitido']:
         class TabelaRetornoNubi:
             def __init__(self):
                 # Lê o arquivo
-                self.df = pd.read_excel('tabela_clust_irr.xlsx')  # Ajusta o caminho se precisar
-                self.df['Prioridade'] = self.df['Prioridade'].fillna('Sem prioridade')
-                self.df['date'] = pd.to_datetime(self.df['date']).dt.date  # Converte a coluna de data
+                self.df_empresa = pd.read_excel('tabela_clust_irr.xlsx')  # Ajusta o caminho se precisar
+                self.df_empresa['Prioridade'] = self.df_empresa['Prioridade'].fillna('Sem prioridade')
+                self.df_empresa['date'] = pd.to_datetime(self.df_empresa['date']).dt.date  # Converte a coluna de data
+
+            def filtrar_datas(self):
+                datas = np.sort(self.df_empresa['date'].dropna().unique())[::-1]
+                datas_formatadas = pd.to_datetime(datas).strftime('%d/%m/%Y')
+                return datas_formatadas
+        
+            def filtrar_por_data(self, data_selecionada):
+                data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+                df_filtrado = self.df_empresa[self.df_empresa['date'] == data_selecionada]
+                return df_filtrado
 
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
@@ -539,16 +549,14 @@ if st.session_state['acesso_permitido']:
 
             def mostrar_tabela(self):
                 # --- Filtro de Data ---
-                datas_disponiveis = sorted(self.df['date'].unique(), reverse=True)
-                data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis, format_func=lambda x: x.strftime('%d/%m/%Y'))
-
-                df_filtrado_data = self.df[self.df['date'] == data_selecionada]
+                df_filtrado = self.filtrar_por_data(data_selecionada)
+                
 
                 # --- Filtro de Prioridade ---
-                prioridades = df_filtrado_data['Prioridade'].unique()
+                prioridades = df_filtrado['Prioridade'].unique()
                 prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)
 
-                df_filtrado = df_filtrado_data[df_filtrado_data['Prioridade'] == prioridade_selecionada]
+                df_filtrado = df_filtrado[df_filtrado['Prioridade'] == prioridade_selecionada]
 
                 # --- Montar tabela final ---
                 df_final = df_filtrado.rename(columns={
@@ -591,7 +599,6 @@ if st.session_state['acesso_permitido']:
                 df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
                 return df_filtrado
         
-               
             def criar_tabela_portfolio(self, df_filtrado, check):        
                 df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)   
                 df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
@@ -908,7 +915,7 @@ if st.session_state['acesso_permitido']:
         if 'graphs2' not in st.session_state:
             st.session_state.graphs2 = "Tabela IRR Portfilio"
         
-        col20, co21, col22, col23 = st.columns([0.3, 2.7, 0.5, 0.5])
+        col20, co21, col22, col23 = st.columns([0.3, 3, 0.2, 0.5])
         
         with col20:
             datas_disponiveis = tabela.filtrar_datas()
@@ -923,11 +930,11 @@ if st.session_state['acesso_permitido']:
             tabela.mostrar_tabelas()
         
         elif graphs2 == "Núcleo VS consenso":
-            consenso = lucroconsenso(df_empresa)
+            consenso = lucroconsenso()
             consenso.mostrar_tabelas()
     
         if graphs2 == "Projecões históricas":
-            tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
+            tabela_projecoes = TabelaAnaliticaProjecoes()
             tabela_projecoes.mostrar_tabela_projecoes()
 
         if graphs2 == "Retorno Nubi":
