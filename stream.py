@@ -576,9 +576,9 @@ if st.session_state['acesso_permitido']:
                 df_final = df_final[colunas_exibir]
 
                 # --- Formatação numérica ---
-                for col in ["preço", "YTD", "retorno 3 m", "retorno 6 m"]:
+                for col in ["Preço", "YTD", "retorno 3 m", "retorno 6 m"]:
                     df_final[col] = pd.to_numeric(df_final[col], errors='coerce')
-                    if col == 'preço':
+                    if col == 'Preço':
                         df_final[col] = df_final[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "")
                     else:
                         df_final[col] = df_final[col].apply(lambda x: f"{x:.1%}" if pd.notnull(x) else "")
