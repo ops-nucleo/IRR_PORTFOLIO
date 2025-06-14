@@ -894,14 +894,10 @@ if st.session_state['acesso_permitido']:
             
             def mostrar_tabela_projecoes(self):
                 st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'></h1>", unsafe_allow_html=True)
-                
-                        # Layout das seleções usando colunas para alinhamento
-                col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])  # Adicionando col6 para os radio buttons
+                # Layout das seleções usando colunas para alinhamento
+                col1, co21, col22, col23 = st.columns([0.5, 3.5, 0.5, 0.5])
     
                 with col1:
-                    datas_disponiveis = self.filtrar_datas_disponiveis()
-                    data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis)
-                with col2:
                     variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
                 
                 if data_selecionada and variavel_selecionada:
@@ -917,6 +913,7 @@ if st.session_state['acesso_permitido']:
                             variavel_ = None
                             html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos, variavel_)
                             st.markdown(html_tabela, unsafe_allow_html=True)
+
 
         if 'graphs2' not in st.session_state:
             st.session_state.graphs2 = "Tabela IRR Portfilio"
