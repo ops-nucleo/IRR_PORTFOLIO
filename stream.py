@@ -549,6 +549,7 @@ if st.session_state['acesso_permitido']:
                     html += '</tr>'
 
                 html += '</tbody></table>'
+                return html
 
             def mostrar_tabela(self):
                 # --- Filtro de Data ---
