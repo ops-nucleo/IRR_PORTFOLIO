@@ -510,12 +510,13 @@ if st.session_state['acesso_permitido']:
                     self.download_excel(dfs_dict)
     
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
+        df_nubi = pd.read_excel('tabela_clust_irr.xlsx')
         tabela = TabelaPortfolioLucro(df_empresa)
         
         class TabelaRetornoNubi:
-            def __init__(self):
+            def __init__(self, df_nubi):
                 # Lê o arquivo
-                self.df_empresa = pd.read_excel('tabela_clust_irr.xlsx')  # Ajusta o caminho se precisar
+                self.df_empresa = df_nubi
                 self.df_empresa['Prioridade'] = self.df_empresa['Prioridade'].fillna('Sem prioridade')
                 self.df_empresa['date'] = pd.to_datetime(self.df_empresa['date']).dt.date  # Converte a coluna de data
 
@@ -529,10 +530,16 @@ if st.session_state['acesso_permitido']:
                 df_filtrado = self.df_empresa[self.df_empresa['date'] == data_selecionada]
                 return df_filtrado
 
+            def criar_tabela_nubi(self,df_filtrado, data_selecionada):
+                df_filtrado = df_filtrado[(df_filtrado['date'] == data_selecionada)] 
+                return df_filtrado
+        
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
-                html += f'<thead><tr style="background-color: rgb(0, 32, 96); color: white;"><th colspan="{df.shape[1]}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th></tr>'
-                html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+                html += '<thead><tr style="background-color: rgb(0, 32, 96); color: white;">'
+                colspan = df.shape[1]
+                html += f'<th colspan="{colspan}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th>'
+                html += '</tr><tr style="background-color: rgb(0, 32, 96); color: white;">'
                 for col in df.columns:
                     html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
                 html += '</tr></thead><tbody>'
@@ -545,29 +552,27 @@ if st.session_state['acesso_permitido']:
                     html += '</tr>'
 
                 html += '</tbody></table>'
-                return html
 
             def mostrar_tabela(self):
                 # --- Filtro de Data ---
                 df_filtrado = self.filtrar_por_data(data_selecionada)
-                
 
                 # --- Filtro de Prioridade ---
                 prioridades = df_filtrado['Prioridade'].unique()
                 prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)
-
+                df_filtrado = self.criar_tabela_nubi(df_filtrado,data_selecionada)
                 df_filtrado = df_filtrado[df_filtrado['Prioridade'] == prioridade_selecionada]
 
                 # --- Montar tabela final ---
                 df_final = df_filtrado.rename(columns={
                     'TICKER': 'Empresa',
-                    'price': 'preço',
+                    'price': 'Preço',
                     'Year To Date': 'YTD',
                     'Retorno 3 meses': 'retorno 3 m',
                     'Retorno 6 meses': 'retorno 6 m'
                 })
 
-                colunas_exibir = ["Empresa", "preço", "YTD", "retorno 3 m", "retorno 6 m"]
+                colunas_exibir = ["Empresa", "Preço", "YTD", "retorno 3 m", "retorno 6 m"]
                 df_final = df_final[colunas_exibir]
 
                 # --- Formatação numérica ---
@@ -579,7 +584,7 @@ if st.session_state['acesso_permitido']:
                         df_final[col] = df_final[col].apply(lambda x: f"{x:.1%}" if pd.notnull(x) else "")
 
                 # --- Renderiza HTML ---
-                html = self.gerar_html_tabela(df_final, "Retorno Nubi - BBG")
+                html = self.gerar_html_tabela(df_final, "Empresas Nubi")
                 st.markdown(html, unsafe_allow_html=True)
 
         class lucroconsenso:
@@ -938,7 +943,7 @@ if st.session_state['acesso_permitido']:
             tabela_projecoes.mostrar_tabela_projecoes()
 
         if graphs2 == "Retorno Nubi":
-            tabela_nubi = TabelaRetornoNubi()
+            tabela_nubi = TabelaRetornoNubi(df_nubi)
             tabela_nubi.mostrar_tabela()
         
         st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
