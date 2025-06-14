@@ -898,7 +898,7 @@ if st.session_state['acesso_permitido']:
                 col1, co21, col22, col23 = st.columns([0.7, 3.3, 0.5, 0.5])
     
                 with col1:
-                    variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
+                    variavel_selecionada = st.selectbox('Select the variable:', self.variaveis)
                 
                 if data_selecionada and variavel_selecionada:
                     if variavel_selecionada == "% Portfolio":
