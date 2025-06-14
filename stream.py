@@ -929,7 +929,7 @@ if st.session_state['acesso_permitido']:
             graphs2 = st.radio( "", ["IRR Portfolio Table", "Nucleo VS Consensus", "Historical Projections","Nubi Return"], horizontal=True, key="graphs2" )
         
         # ✅ Usa a variável graphs2 para verificar a escolha
-        if graphs2 == "	IRR Portfolio Table":
+        if graphs2 == "IRR Portfolio Table":
             tabela.mostrar_tabelas()
         
         elif graphs2 == "Nucleo VS Consensus":
