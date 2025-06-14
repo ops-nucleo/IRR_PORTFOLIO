@@ -719,7 +719,7 @@ if st.session_state['acesso_permitido']:
                     df_lucro, anos = self.criar_lucro_nucleo(df_filtrado, data_selecionada,empresas_ordenadas)
                     df_lucro2 = df_lucro.copy()
                     df_lucro2 = df_lucro2.drop(columns=['Empresa'])
-                    html_lucro = self.gerar_html_tabela(df_lucro2, "Lucro Núcleo")
+                    html_lucro = self.gerar_html_tabela(df_lucro2, "Earnings (Nucleo Projection)")
                     st.markdown(html_lucro, unsafe_allow_html=True)
         
                 # Tabela de earnings growth
@@ -727,7 +727,7 @@ if st.session_state['acesso_permitido']:
                     df_lucro3 = self.criar_lucro_consenso(df_filtrado, data_selecionada,empresas_ordenadas)
                     df_lucro4 = df_lucro3.copy()
                     df_lucro4 = df_lucro4.drop(columns=['Empresa'])
-                    html_lucro = self.gerar_html_tabela(df_lucro4, "Lucro consenso")
+                    html_lucro = self.gerar_html_tabela(df_lucro4, "Consensus Earnings")
                     st.markdown(html_lucro, unsafe_allow_html=True)
         
                 # Tabela de P/E Calculado
@@ -926,7 +926,7 @@ if st.session_state['acesso_permitido']:
         
         with co21:
             # ✅ NÃO atribui ao session_state de novo aqui
-            graphs2 = st.radio( "", ["IRR Portfolio Table", "Nucleo VS Consensus", "Historical Projections","Nubi Return"], horizontal=True, key="graphs2" )
+            graphs2 = st.radio( "", ["IRR Portfolio Table", "Nucleo VS Consensus", "Historical Projections","Nubi Companies Returns"], horizontal=True, key="graphs2" )
         
         # ✅ Usa a variável graphs2 para verificar a escolha
         if graphs2 == "IRR Portfolio Table":
@@ -940,7 +940,7 @@ if st.session_state['acesso_permitido']:
             tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
             tabela_projecoes.mostrar_tabela_projecoes()
 
-        if graphs2 == "Nubi Return":
+        if graphs2 == "Nubi Companies Returns":
             tabela_nubi = TabelaRetornoNubi(df_nubi)
             tabela_nubi.mostrar_tabela()
         
