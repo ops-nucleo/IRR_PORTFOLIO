@@ -514,9 +514,11 @@ if st.session_state['acesso_permitido']:
         
         class TabelaRetornoNubi:
             def __init__(self):
-                self.df = pd.read_excel('tabela_clust_irr.xlsx')  # Ou o caminho correto se você já salva em CSV
+                # Lê o arquivo
+                self.df = pd.read_excel('tabela_clust_irr.xlsx')  # Ajusta o caminho se precisar
                 self.df['Prioridade'] = self.df['Prioridade'].fillna('Sem prioridade')
-        
+                self.df['date'] = pd.to_datetime(self.df['date']).dt.date  # Converte a coluna de data
+
             def gerar_html_tabela(self, df, titulo):
                 html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
                 html += f'<thead><tr style="background-color: rgb(0, 32, 96); color: white;"><th colspan="{df.shape[1]}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th></tr>'
@@ -524,24 +526,31 @@ if st.session_state['acesso_permitido']:
                 for col in df.columns:
                     html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
                 html += '</tr></thead><tbody>'
-        
+
                 for i, row in df.iterrows():
                     bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
                     html += f'<tr style="background-color: {bg_color}; color: black;">'
                     for col in df.columns:
                         html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{row[col]}</td>'
                     html += '</tr>'
-        
+
                 html += '</tbody></table>'
                 return html
-        
+
             def mostrar_tabela(self):
-                prioridades = self.df['Prioridade'].unique()
+                # --- Filtro de Data ---
+                datas_disponiveis = sorted(self.df['date'].unique(), reverse=True)
+                data_selecionada = st.selectbox('Selecione a data:', datas_disponiveis, format_func=lambda x: x.strftime('%d/%m/%Y'))
+
+                df_filtrado_data = self.df[self.df['date'] == data_selecionada]
+
+                # --- Filtro de Prioridade ---
+                prioridades = df_filtrado_data['Prioridade'].unique()
                 prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)
-        
-                df_filtrado = self.df[self.df['Prioridade'] == prioridade_selecionada]
-        
-                # Montar DataFrame final
+
+                df_filtrado = df_filtrado_data[df_filtrado_data['Prioridade'] == prioridade_selecionada]
+
+                # --- Montar tabela final ---
                 df_final = df_filtrado.rename(columns={
                     'TICKER': 'Empresa',
                     'price': 'preço',
@@ -549,21 +558,22 @@ if st.session_state['acesso_permitido']:
                     'Retorno 3 meses': 'retorno 3 m',
                     'Retorno 6 meses': 'retorno 6 m'
                 })
-        
+
                 colunas_exibir = ["Empresa", "preço", "YTD", "retorno 3 m", "retorno 6 m"]
                 df_final = df_final[colunas_exibir]
-        
-                # Formatar as colunas numéricas
+
+                # --- Formatação numérica ---
                 for col in ["preço", "YTD", "retorno 3 m", "retorno 6 m"]:
                     df_final[col] = pd.to_numeric(df_final[col], errors='coerce')
                     if col == 'preço':
                         df_final[col] = df_final[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "")
                     else:
                         df_final[col] = df_final[col].apply(lambda x: f"{x:.1%}" if pd.notnull(x) else "")
-        
+
+                # --- Renderiza HTML ---
                 html = self.gerar_html_tabela(df_final, "Retorno Nubi - BBG")
                 st.markdown(html, unsafe_allow_html=True)
-    
+
         class lucroconsenso:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
