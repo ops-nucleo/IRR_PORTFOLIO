@@ -675,12 +675,8 @@ if st.session_state['acesso_permitido']:
         
         with co21:
             # ✅ NÃO atribui ao session_state de novo aqui
-            graphs2 = st.radio(
-                "",
-                ["Tabela IRR Portfilio", "Núcleo VS consenso"],
-                horizontal=True,
-                key="graphs2"
-            )
+
+            graphs2 = st.radio( "", ["Tabela IRR Portfilio", "Núcleo VS consenso", "Retorno Nubi"], horizontal=True, key="graphs2" )
         
         # ✅ Usa a variável graphs2 para verificar a escolha
         if graphs2 == "Tabela IRR Portfilio":
