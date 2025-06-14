@@ -930,7 +930,7 @@ if st.session_state['acesso_permitido']:
             tabela.mostrar_tabelas()
         
         elif graphs2 == "Núcleo VS consenso":
-            consenso = lucroconsenso()
+            consenso = lucroconsenso(df_empresa)
             consenso.mostrar_tabelas()
     
         if graphs2 == "Projecões históricas":
