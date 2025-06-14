@@ -559,25 +559,25 @@ if st.session_state['acesso_permitido']:
     
                 with col20:
                     prioridades = df_filtrado['Prioridade'].unique()
-                    prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)                
+                    prioridade_selecionada = st.selectbox('Select the status:', prioridades)                
 
                 # --- Filtro de Prioridade ---
                 df_filtrado = df_filtrado[df_filtrado['Prioridade'] == prioridade_selecionada]
 
                 # --- Montar tabela final ---
                 df_final = df_filtrado.rename(columns={
-                    'TICKER': 'Empresa',
-                    'price': 'Preço',
+                    'TICKER': 'Company',
+                    'price': 'Price',
                     'Year To Date': 'YTD',
-                    'Retorno 3 meses': 'retorno 3 m',
-                    'Retorno 6 meses': 'retorno 6 m'
+                    'Retorno 3 meses': '3-month return',
+                    'Retorno 6 meses': '6-month return'
                 })
 
-                colunas_exibir = ["Empresa", "Preço", "YTD", "retorno 3 m", "retorno 6 m"]
+                colunas_exibir = ["Company", "Price", "YTD", "3-month return", "6-month return"]
                 df_final = df_final[colunas_exibir]
 
                 # --- Formatação numérica ---
-                for col in ["Preço", "YTD", "retorno 3 m", "retorno 6 m"]:
+                for col in ["Price", "YTD", "3-month return", "6-month return"]:
                     df_final[col] = pd.to_numeric(df_final[col], errors='coerce')
                     if col == 'Preço':
                         df_final[col] = df_final[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "")
@@ -585,7 +585,7 @@ if st.session_state['acesso_permitido']:
                         df_final[col] = df_final[col].apply(lambda x: f"{x:.1%}" if pd.notnull(x) else "")
 
                 # --- Renderiza HTML ---
-                html = self.gerar_html_tabela(df_final, "Empresas Nubi")
+                html = self.gerar_html_tabela(df_final, "Nubi Companies")
                 st.markdown(html, unsafe_allow_html=True)
 
         class lucroconsenso:
@@ -692,7 +692,7 @@ if st.session_state['acesso_permitido']:
         
             def mostrar_tabelas(self):
                 # Título ajustado
-                st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Nucleo VS Consenso</h1>", unsafe_allow_html=True)
+                st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'>Nucleo VS Consensus</h1>", unsafe_allow_html=True)
         
                 # Mensagem de observação
                 st.markdown("<p style='color:red; font-size:24px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
@@ -734,7 +734,7 @@ if st.session_state['acesso_permitido']:
                 with col4:
                     df_growth = self.nucleo_vs_consenso(df_lucro, df_lucro4, anos)
                     df_growth = df_growth.drop(columns=['Empresa'])
-                    st.markdown(self.gerar_html_tabela(df_growth, "Núcleo VS consenso"), unsafe_allow_html=True)
+                    st.markdown(self.gerar_html_tabela(df_growth, "Nucleo VS Consensus"), unsafe_allow_html=True)
                    # Uso da classe no Streamlit
     
         class TabelaAnaliticaProjecoes:
@@ -916,7 +916,7 @@ if st.session_state['acesso_permitido']:
 
 
         if 'graphs2' not in st.session_state:
-            st.session_state.graphs2 = "Tabela IRR Portfilio"
+            st.session_state.graphs2 = "IRR Portfolio Table"
         
         col20, co21, col22, col23 = st.columns([0.5, 3.5, 0.5, 0.5])
         
@@ -926,21 +926,21 @@ if st.session_state['acesso_permitido']:
         
         with co21:
             # ✅ NÃO atribui ao session_state de novo aqui
-            graphs2 = st.radio( "", ["Tabela IRR Portfilio", "Núcleo VS consenso", "Projecões históricas","Retorno Nubi"], horizontal=True, key="graphs2" )
+            graphs2 = st.radio( "", ["IRR Portfolio Table", "Nucleo VS Consensus", "Historical Projections","Nubi Return"], horizontal=True, key="graphs2" )
         
         # ✅ Usa a variável graphs2 para verificar a escolha
-        if graphs2 == "Tabela IRR Portfilio":
+        if graphs2 == "	IRR Portfolio Table":
             tabela.mostrar_tabelas()
         
-        elif graphs2 == "Núcleo VS consenso":
+        elif graphs2 == "Nucleo VS Consensus":
             consenso = lucroconsenso(df_empresa)
             consenso.mostrar_tabelas()
     
-        if graphs2 == "Projecões históricas":
+        if graphs2 == "Historical Projections":
             tabela_projecoes = TabelaAnaliticaProjecoes(df_empresa)
             tabela_projecoes.mostrar_tabela_projecoes()
 
-        if graphs2 == "Retorno Nubi":
+        if graphs2 == "Nubi Return":
             tabela_nubi = TabelaRetornoNubi(df_nubi)
             tabela_nubi.mostrar_tabela()
         
@@ -993,13 +993,13 @@ if st.session_state['acesso_permitido']:
             # Criando um radio estilizado
             graphs = st.radio(
                 "",
-                ["Análise das projeções dos modelos", "TIR média ponderada Nucleo Capital"],
+                ["Model Projections Analysis", "Nucleo Capital Weighted Average IRR"],
                 horizontal=True  # Exibe os botões lado a lado
             )
     
         
         # Exibir o gráfico correspondente
-        if graphs == "Análise das projeções dos modelos":
+        if graphs == "Model Projections Analysis":
             class EmpresaAnalysis:
                 def __init__(self):
                     self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
@@ -1155,7 +1155,7 @@ if st.session_state['acesso_permitido']:
                             # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                             df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
         
-        elif graphs == "TIR média ponderada Nucleo Capital":
+        elif graphs == "Nucleo Capital Weighted Average IRR":
             class AvgIRRAnalysis:
                 def __init__(self):
                     self.excel_file_path = 'base_empilhada_total.csv'
