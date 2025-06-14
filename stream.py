@@ -516,7 +516,7 @@ if st.session_state['acesso_permitido']:
         class TabelaRetornoNubi:
             def __init__(self, df_nubi):
                 # Lê o arquivo
-                self.df_empresa = df_nubi
+                self.df_empresa = pd.read_excel('tabela_clust_irr.xlsx')
                 self.df_empresa['Prioridade'] = self.df_empresa['Prioridade'].fillna('Sem prioridade')
                 self.df_empresa['date'] = pd.to_datetime(self.df_empresa['date']).dt.date  # Converte a coluna de data
 
