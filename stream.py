@@ -512,6 +512,57 @@ if st.session_state['acesso_permitido']:
         df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
         tabela = TabelaPortfolioLucro(df_empresa)
         
+    class TabelaRetornoNubi:
+        def __init__(self):
+            self.df = pd.read_excel('tabela_clust_irr.xlsx')  # Ou o caminho correto se você já salva em CSV
+            self.df['Prioridade'] = self.df['Prioridade'].fillna('Sem prioridade')
+    
+        def gerar_html_tabela(self, df, titulo):
+            html = '<table style="width:100%; border-collapse: collapse; margin: auto;">'
+            html += f'<thead><tr style="background-color: rgb(0, 32, 96); color: white;"><th colspan="{df.shape[1]}" style="border: 1px solid #ddd; padding: 8px; text-align: center;">{titulo}</th></tr>'
+            html += '<tr style="background-color: rgb(0, 32, 96); color: white;">'
+            for col in df.columns:
+                html += f'<th style="border: 1px solid #ddd; padding: 8px; text-align: center;">{col}</th>'
+            html += '</tr></thead><tbody>'
+    
+            for i, row in df.iterrows():
+                bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
+                html += f'<tr style="background-color: {bg_color}; color: black;">'
+                for col in df.columns:
+                    html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{row[col]}</td>'
+                html += '</tr>'
+    
+            html += '</tbody></table>'
+            return html
+    
+        def mostrar_tabela(self):
+            prioridades = self.df['Prioridade'].unique()
+            prioridade_selecionada = st.selectbox('Selecione a Prioridade:', prioridades)
+    
+            df_filtrado = self.df[self.df['Prioridade'] == prioridade_selecionada]
+    
+            # Montar DataFrame final
+            df_final = df_filtrado.rename(columns={
+                'TICKER': 'Empresa',
+                'price': 'preço',
+                'Year To Date': 'YTD',
+                'Retorno 3 meses': 'retorno 3 m',
+                'Retorno 6 meses': 'retorno 6 m'
+            })
+    
+            colunas_exibir = ["Empresa", "preço", "YTD", "retorno 3 m", "retorno 6 m"]
+            df_final = df_final[colunas_exibir]
+    
+            # Formatar as colunas numéricas
+            for col in ["preço", "YTD", "retorno 3 m", "retorno 6 m"]:
+                df_final[col] = pd.to_numeric(df_final[col], errors='coerce')
+                if col == 'preço':
+                    df_final[col] = df_final[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "")
+                else:
+                    df_final[col] = df_final[col].apply(lambda x: f"{x:.1%}" if pd.notnull(x) else "")
+    
+            html = self.gerar_html_tabela(df_final, "Retorno Nubi - BBG")
+            st.markdown(html, unsafe_allow_html=True)
     
         class lucroconsenso:
             def __init__(self, df_empresa):
@@ -685,7 +736,11 @@ if st.session_state['acesso_permitido']:
         elif graphs2 == "Núcleo VS consenso":
             consenso = lucroconsenso(df_empresa)
             consenso.mostrar_tabelas()
-                  
+
+        if graphs2 == "Retorno Nubi":
+            tabela_nubi = TabelaRetornoNubi()
+            tabela_nubi.mostrar_tabela()
+        
         st.markdown("<br><br>", unsafe_allow_html=True)  # Cria espaço extra entre os componentes
         
         class TabelaAnaliticaProjecoes:
