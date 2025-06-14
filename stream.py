@@ -895,7 +895,7 @@ if st.session_state['acesso_permitido']:
             def mostrar_tabela_projecoes(self):
                 st.markdown("<h1 style='text-align: center; margin-top: -50px;color: black;'></h1>", unsafe_allow_html=True)
                 # Layout das seleções usando colunas para alinhamento
-                col1, co21, col22, col23 = st.columns([0.8, 3.2, 0.5, 0.5])
+                col1, co21, col22, col23 = st.columns([0.7, 3.3, 0.5, 0.5])
     
                 with col1:
                     variavel_selecionada = st.selectbox('Selecione a variável:', self.variaveis)
