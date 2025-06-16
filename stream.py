@@ -880,7 +880,7 @@ if st.session_state['acesso_permitido']:
                                         cell_color = "background-color: yellow;"  # Mudança brusca para ou de zero
                                     else:
                                         variacao = abs((valor_atual / valor_anterior) - 1)
-                                        if variacao > 0.05:  # Mudança maior que 5%
+                                        if variacao > 0.1:  # Mudança maior que 5%
                                             cell_color = "background-color: yellow;"
                                            
                             html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black; {cell_color}">{row[col]}</td>'
