@@ -777,7 +777,7 @@ if st.session_state['acesso_permitido']:
                 
                 ano_inicial = data_selecionada.year
                 anos = [ano_inicial + i for i in range(3)]
-                colunas = ['Empresa']
+                colunas = ['Company']
                 datas_formatadas = [pd.to_datetime(data).strftime('%d-%b-%y') for data in datas_recentes]
                 
                 for data in datas_formatadas:
@@ -792,7 +792,7 @@ if st.session_state['acesso_permitido']:
                 empresas = df_filtrado['Ticker'].unique()
                 
                 for empresa in empresas:
-                    linha = {'Empresa': empresa}
+                    linha = {'Company': empresa}
                     for i, data in enumerate(datas_recentes):
                         if variavel == "% Portfolio":
                             valor = self.df_empresa[(self.df_empresa['Ticker'] == empresa) & (self.df_empresa['DATA ATUALIZACAO'] == data)][variavel]
@@ -810,10 +810,8 @@ if st.session_state['acesso_permitido']:
                     else:
                         df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
                 if variavel == "% Portfolio":
-                    df_tabela = df_tabela.rename(columns={'Empresa': 'Company'})
                     return df_tabela, datas_formatadas
                 else:
-                    df_tabela = df_tabela.rename(columns={'Empresa': 'Company'})
                     return df_tabela, datas_formatadas, anos
             
             def gerar_html_tabela(self, df, titulo, datas_formatadas, anos, variavel):
