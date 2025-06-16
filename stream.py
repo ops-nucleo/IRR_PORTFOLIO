@@ -277,7 +277,8 @@ if st.session_state['acesso_permitido']:
                             score_cards[coluna] = ""  
             
                     df_score = pd.concat([df_score, pd.DataFrame([score_cards])], ignore_index=True)
-            
+                    df_score = df_score.rename(columns={ 'Negocios': 'Business', 'People': 'Price'})
+
                 return df_score
     
             def df_pe(self, df_filtrado, data_selecionada, empresas_ordenadas):
@@ -608,14 +609,14 @@ if st.session_state['acesso_permitido']:
                 df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
                 df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
                 df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
-                df_portfolio = df_portfolio.rename(columns={'Ticker': 'Empresa'})
+                df_portfolio = df_portfolio.rename(columns={'Ticker': 'Company'})
     
                 # Aplica o * em vermelho se for o caso
                 if check == "x":
-                    df_portfolio['Empresa'] = df_portfolio['Empresa'].apply(
+                    df_portfolio['Company'] = df_portfolio['Company'].apply(
                         lambda x: f"<span style='color:red'>{x}*</span>" if x in self.lista_empresas else x
                     )
-                df_portfolio = df_portfolio[['Empresa', '%']]
+                df_portfolio = df_portfolio[['Company', '%']]
                 return df_portfolio
         
             def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
