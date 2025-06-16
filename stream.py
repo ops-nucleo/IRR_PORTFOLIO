@@ -701,7 +701,7 @@ if st.session_state['acesso_permitido']:
                     .tolist()
                 )
                 df_portfolio = self.criar_tabela_portfolio(df_filtrado, "y")
-                empresas_ordenadas = df_portfolio['Empresa'].tolist()
+                empresas_ordenadas = df_portfolio['Company'].tolist()
                 # Exibir tabelas lado a lado
                 col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
         
