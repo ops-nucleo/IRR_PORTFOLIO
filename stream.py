@@ -277,7 +277,7 @@ if st.session_state['acesso_permitido']:
                             score_cards[coluna] = ""  
             
                     df_score = pd.concat([df_score, pd.DataFrame([score_cards])], ignore_index=True)
-                df_score = df_score.rename(columns={ 'Negocios': 'Business', 'People': 'Price'})
+                df_score = df_score.rename(columns={'Negocios': 'Business', 'People': 'Price'})
 
                 return df_score
     
@@ -692,7 +692,7 @@ if st.session_state['acesso_permitido']:
             def mostrar_tabelas(self):
        
                 # Mensagem de observação
-                st.markdown("<p style='color:red; font-size:24px; text-align:left'>As empresas com * estão usando o EBITDA na tabela abaixo</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:red; font-size:24px; text-align:left'>The companies marked with an asterisk (*) are using EBITDA in the table below.</p>", unsafe_allow_html=True)
                 # Filtra os dados pela data selecionada
                 df_filtrado = self.filtrar_por_data(data_selecionada)
                 self.lista_empresas = (
@@ -810,8 +810,10 @@ if st.session_state['acesso_permitido']:
                     else:
                         df_tabela[col] = pd.to_numeric(df_tabela[col], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
                 if variavel == "% Portfolio":
+                    df_tabela = df_tabela.rename(columns={'Empresa': 'Company'})
                     return df_tabela, datas_formatadas
                 else:
+                    df_tabela = df_tabela.rename(columns={'Empresa': 'Company'})
                     return df_tabela, datas_formatadas, anos
             
             def gerar_html_tabela(self, df, titulo, datas_formatadas, anos, variavel):
