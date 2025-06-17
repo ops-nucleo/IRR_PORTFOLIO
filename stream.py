@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -56,6 +57,17 @@ if st.session_state['acesso_permitido']:
         logo_path = 'nucleo.png'
         set_background(get_image_as_base64(logo_path))
     
+        # Cache das bases
+        @st.cache_data
+        def carregar_base_principal():
+            return pd.read_csv('base_empilhada_total.csv')
+
+        @st.cache_data
+        def carregar_base_nubi():
+            return pd.read_excel('tabela_clust_irr.xlsx')
+
+        df_empresa = carregar_base_principal()
+        df_nubi = carregar_base_nubi()
     
         st.markdown("""
                 <style>
@@ -507,11 +519,7 @@ if st.session_state['acesso_permitido']:
                         "P/E e IRR": df_tir
                     }
                     self.download_excel(dfs_dict)
-    
-        df_empresa = pd.read_csv(excel_file_path)  # Substitua com o caminho correto no seu ambiente
-        df_nubi = pd.read_excel('tabela_clust_irr.xlsx')
-        tabela = TabelaPortfolioLucro(df_empresa)
-        
+
         class TabelaRetornoNubi:
             def __init__(self, df_nubi):
                 # Lê o arquivo
@@ -911,6 +919,7 @@ if st.session_state['acesso_permitido']:
                             html_tabela = self.gerar_html_tabela(df_projecoes, "", datas_formatadas, anos, variavel_)
                             st.markdown(html_tabela, unsafe_allow_html=True)
 
+        tabela = TabelaPortfolioLucro(df_empresa)
 
         if 'graphs2' not in st.session_state:
             st.session_state.graphs2 = "IRR Portfolio Table"
@@ -918,8 +927,10 @@ if st.session_state['acesso_permitido']:
         col20, co21, col22, col23 = st.columns([0.5, 3.5, 0.5, 0.5])
         
         with col20:
+            tabela = TabelaPortfolioLucro(df_empresa)
             datas_disponiveis = tabela.filtrar_datas()
             data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
+
         
         with co21:
             # ✅ NÃO atribui ao session_state de novo aqui
@@ -983,90 +994,139 @@ if st.session_state['acesso_permitido']:
                 }
             </style>
         """, unsafe_allow_html=True)
-        # Criando um radio com opções lado a lado dentro de colunas
-        col1, col2, col3  = st.columns([1, 1, 1])
         
-        with col1:
-            # Criando um radio estilizado
-            graphs = st.radio(
-                "",
-                ["Model Projections Analysis", "Nucleo Capital Weighted Average IRR"],
-                horizontal=True  # Exibe os botões lado a lado
-            )
+        
+        class EmpresaAnalysis:
+            def __init__(self):
+                self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
+                self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
+                                "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
+                                "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
+                                "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "CDI", "P/E", "IRR"]
+                self.empresas = np.sort(self.df_mkt['Ticker'].dropna().unique())
     
+            def filtrar_variaveis(self, empresa):
+                df_empresa = self.df_mkt[self.df_mkt['Ticker'] == empresa]
+                variaveis_disponiveis = [col for col in self.colunas if df_empresa[col].notna().any()]
+                return variaveis_disponiveis
+            
+            def filtrar_anos(self, empresa, variavel):
+                df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
+                return df_empresa['Ano Referência'].dropna().unique()
+            
+            def filtrar_datas(self, empresa, variavel, ano):
+                df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
+                datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
+                return datas
+    
+            def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate):
+                df_filtrado = self.df_mkt[
+                    (self.df_mkt['Ticker'] == empresa) & 
+                    (self.df_mkt['Ano Referência'] == ano_ref) & 
+                    (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
+                    (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
+                ]
+                
+                df_filtrado = df_filtrado.dropna(subset=[variavel])
+                if df_filtrado.empty:
+                    st.warning(f"Não possuímos dados de {variavel} nessas datas.")
+                    return None, None, None
+                # Ajuste de escala para evitar notação científica no eixo Y
+                df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
+                df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
+                
+                # Calculando os limites do eixo Y com base em 40% de folga
+                min_val = df_filtrado[variavel].min()
+                max_val = df_filtrado[variavel].max()
+                y_folga = 0.4 * (max_val - min_val)
+            
+                # Calculando os limites do eixo X (datas) com folga
+                data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
+                data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
+                x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
+            
+                # Cria o gráfico com o primeiro eixo Y (a variável principal)
+                fig, ax1 = plt.subplots(figsize=(10, 4.2))
+                ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
+                ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
+                ax1.set_xlabel("Data", fontsize=5)
+                ax1.set_ylabel(variavel, fontsize=5)
+                ax1.tick_params(axis='x', labelsize=5)
+                ax1.tick_params(axis='y', labelsize=5)
+                ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
+                ax1.set_ylim([min_val - y_folga, max_val + y_folga])
+                ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+                fig.autofmt_xdate()
+                ax1.grid(True)
+                
+                if variavel in {"CDI", "IRR"}:             
+                    def formatar_percentual(x, pos):
+                        return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+                    ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
+                
+                return fig, df_filtrado, self.df_mkt
+
+        class AvgIRRAnalysis:
+            def __init__(self):
+                self.excel_file_path = 'base_empilhada_total.csv'
+                self.df_mkt = pd.read_csv(self.excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
+            
+            def filtrar_datas(self,variavel):
+                df_empresa = self.df_mkt[(self.df_mkt[variavel].notna())]
+                datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
+                return datas
+    
+            def gerar_grafico(self, variavel, data_de, data_ate):
+                df_filtrado = self.df_mkt[                           
+                    (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
+                    (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
+                ]
+                df_filtrado = df_filtrado.dropna(subset=[variavel])
+                if df_filtrado.empty:
+                    st.warning(f"Não possuímos dados de {variavel} nessas datas.")
+                    return None, None, None
+                # Ajuste de escala para evitar notação científica no eixo Y
+                df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
+                df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
+                
+                # Calculando os limites do eixo Y com base em 40% de folga
+                min_val = df_filtrado[variavel].min()
+                max_val = df_filtrado[variavel].max()
+                y_folga = 0.4 * (max_val - min_val)
+            
+                # Calculando os limites do eixo X (datas) com folga
+                data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
+                data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
+                x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
+            
+                # Cria o gráfico com o primeiro eixo Y (a variável principal)
+                fig, ax1 = plt.subplots(figsize=(10, 4.2))
+                ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
+                ax1.set_title(f"{variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
+                ax1.set_xlabel("Data", fontsize=5)
+                ax1.set_ylabel(variavel, fontsize=5)
+                ax1.tick_params(axis='x', labelsize=5)
+                ax1.tick_params(axis='y', labelsize=5)
+                ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
+                ax1.set_ylim([min_val - y_folga, max_val + y_folga])
+                ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
+                fig.autofmt_xdate()
+                ax1.grid(True)
+                
+                def formatar_percentual(x, pos):
+                    return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
+                ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
+            
+                return fig, df_filtrado, self.df_mkt
+
         
-        # Exibir o gráfico correspondente
+        # Criando um radio com opções lado a lado dentro de colunas
+        col1, col2, col3 = st.columns([1, 1, 1])
+
+        with col1:
+            graphs = st.radio("", ["Model Projections Analysis", "Nucleo Capital Weighted Average IRR"], horizontal=True)
+
         if graphs == "Model Projections Analysis":
-            class EmpresaAnalysis:
-                def __init__(self):
-                    self.df_mkt = pd.read_csv(excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
-                    self.colunas = ["Ativo permanente", "Capex", "Capital de giro", "Capital investido (medio)", 
-                                    "Despesas operacionais", "Dívida Líquida", "Dividendos", "EBIT ajustado", 
-                                    "EBITDA ajustado", "FCFE", "Lucro bruto", "Lucro líquido ajustado", 
-                                    "Net debt/EBITDA", "Patrimônio líquido", "Receita líquida", "Resultado financeiro", "CDI", "P/E", "IRR"]
-                    self.empresas = np.sort(self.df_mkt['Ticker'].dropna().unique())
-        
-                def filtrar_variaveis(self, empresa):
-                    df_empresa = self.df_mkt[self.df_mkt['Ticker'] == empresa]
-                    variaveis_disponiveis = [col for col in self.colunas if df_empresa[col].notna().any()]
-                    return variaveis_disponiveis
-                
-                def filtrar_anos(self, empresa, variavel):
-                    df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
-                    return df_empresa['Ano Referência'].dropna().unique()
-                
-                def filtrar_datas(self, empresa, variavel, ano):
-                    df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
-                    datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
-                    return datas
-        
-                def gerar_grafico(self, empresa, variavel, ano_ref, data_de, data_ate):
-                    df_filtrado = self.df_mkt[
-                        (self.df_mkt['Ticker'] == empresa) & 
-                        (self.df_mkt['Ano Referência'] == ano_ref) & 
-                        (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
-                        (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
-                    ]
-                    
-                    df_filtrado = df_filtrado.dropna(subset=[variavel])
-                    if df_filtrado.empty:
-                        st.warning(f"Não possuímos dados de {variavel} nessas datas.")
-                        return None, None, None
-                    # Ajuste de escala para evitar notação científica no eixo Y
-                    df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
-                    df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
-                    
-                    # Calculando os limites do eixo Y com base em 40% de folga
-                    min_val = df_filtrado[variavel].min()
-                    max_val = df_filtrado[variavel].max()
-                    y_folga = 0.4 * (max_val - min_val)
-                
-                    # Calculando os limites do eixo X (datas) com folga
-                    data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
-                    data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
-                    x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
-                
-                    # Cria o gráfico com o primeiro eixo Y (a variável principal)
-                    fig, ax1 = plt.subplots(figsize=(10, 4.2))
-                    ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
-                    ax1.set_title(f"{empresa} - {variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
-                    ax1.set_xlabel("Data", fontsize=5)
-                    ax1.set_ylabel(variavel, fontsize=5)
-                    ax1.tick_params(axis='x', labelsize=5)
-                    ax1.tick_params(axis='y', labelsize=5)
-                    ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
-                    ax1.set_ylim([min_val - y_folga, max_val + y_folga])
-                    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-                    fig.autofmt_xdate()
-                    ax1.grid(True)
-                    
-                    if variavel in {"CDI", "IRR"}:             
-                        def formatar_percentual(x, pos):
-                            return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
-                        ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
-                    
-                    return fig, df_filtrado, self.df_mkt
-            # Instancia a classe de análise
             analysis = EmpresaAnalysis()
             
             # Layout das seleções usando colunas para alinhamento
@@ -1153,59 +1213,6 @@ if st.session_state['acesso_permitido']:
                             df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
         
         elif graphs == "Nucleo Capital Weighted Average IRR":
-            class AvgIRRAnalysis:
-                def __init__(self):
-                    self.excel_file_path = 'base_empilhada_total.csv'
-                    self.df_mkt = pd.read_csv(self.excel_file_path, parse_dates=['DATA ATUALIZACAO'])  # Carregar com a data já formatada
-             
-                def filtrar_datas(self,variavel):
-                    df_empresa = self.df_mkt[(self.df_mkt[variavel].notna())]
-                    datas = np.sort(df_empresa['DATA ATUALIZACAO'].dropna().unique())
-                    return datas
-        
-                def gerar_grafico(self, variavel, data_de, data_ate):
-                    df_filtrado = self.df_mkt[                           
-                        (self.df_mkt['DATA ATUALIZACAO'] >= data_de) & 
-                        (self.df_mkt['DATA ATUALIZACAO'] <= data_ate)
-                    ]
-                    df_filtrado = df_filtrado.dropna(subset=[variavel])
-                    if df_filtrado.empty:
-                        st.warning(f"Não possuímos dados de {variavel} nessas datas.")
-                        return None, None, None
-                    # Ajuste de escala para evitar notação científica no eixo Y
-                    df_filtrado[variavel] = df_filtrado[variavel].astype(str).str.replace(',', '')
-                    df_filtrado[variavel] = pd.to_numeric(df_filtrado[variavel], errors='coerce')
-                    
-                    # Calculando os limites do eixo Y com base em 40% de folga
-                    min_val = df_filtrado[variavel].min()
-                    max_val = df_filtrado[variavel].max()
-                    y_folga = 0.4 * (max_val - min_val)
-                
-                    # Calculando os limites do eixo X (datas) com folga
-                    data_inicio = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].min())
-                    data_fim = pd.to_datetime(df_filtrado['DATA ATUALIZACAO'].max())
-                    x_folga = pd.Timedelta(days=2)  # Adicionando 2 dias de folga nas extremidades
-                
-                    # Cria o gráfico com o primeiro eixo Y (a variável principal)
-                    fig, ax1 = plt.subplots(figsize=(10, 4.2))
-                    ax1.plot(pd.to_datetime(df_filtrado['DATA ATUALIZACAO']), df_filtrado[variavel], marker='o', color='tab:blue', markersize=8)
-                    ax1.set_title(f"{variavel} from {data_de.strftime('%d/%m/%Y')} to {data_ate.strftime('%d/%m/%Y')}", fontsize=7)
-                    ax1.set_xlabel("Data", fontsize=5)
-                    ax1.set_ylabel(variavel, fontsize=5)
-                    ax1.tick_params(axis='x', labelsize=5)
-                    ax1.tick_params(axis='y', labelsize=5)
-                    ax1.set_xlim([data_inicio - x_folga, data_fim + x_folga])
-                    ax1.set_ylim([min_val - y_folga, max_val + y_folga])
-                    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
-                    fig.autofmt_xdate()
-                    ax1.grid(True)
-                    
-                    def formatar_percentual(x, pos):
-                        return f'{x * 100:.1f}%'  # Multiplica por 100 para mostrar como percentual corretamente
-                    ax1.yaxis.set_major_formatter(FuncFormatter(formatar_percentual))
-                
-                    return fig, df_filtrado, self.df_mkt
-            # Instancia a classe de análise
             analysis = AvgIRRAnalysis()
             
             # Layout das seleções usando colunas para alinhamento
@@ -1253,27 +1260,3 @@ if st.session_state['acesso_permitido']:
                 
                     # Ajustando a formatação da coluna DATA ATUALIZACAO para dd/mm/aaaa
                     df_filtrado_para_exibir['DATA ATUALIZACAO'] = pd.to_datetime(df_filtrado_para_exibir['DATA ATUALIZACAO']).dt.strftime('%d/%m/%Y')
-    
-    
-
-        scroll_top_script = """
-        <script>
-        function scrollTopStreamlit() {
-            // Pega a div do conteúdo principal do Streamlit.
-            const main = window.parent.document.querySelector('section.main');
-            if (main) {
-                main.scrollTop = 0;
-            }
-            // Se não achar, tenta no window mesmo:
-            else {
-                window.scrollTo(0, 0);
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(scrollTopStreamlit, 800);
-        });
-        </script>
-        """
-        import streamlit.components.v1 as components
-        components.html(scroll_top_script, height=0)
