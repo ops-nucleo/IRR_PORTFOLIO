@@ -146,7 +146,8 @@ if st.session_state['acesso_permitido']:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
-                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], errors='coerce')
+
             
             def filtrar_datas(self):
                 # Obtém datas únicas e ordena do menor para o maior
@@ -599,7 +600,7 @@ if st.session_state['acesso_permitido']:
             def __init__(self, df_empresa):
                 # Converte a coluna 'DATA ATUALIZACAO' para datetime
                 self.df_empresa = df_empresa
-                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], errors='coerce')
                 self.lista_empresas =  None
         
             def filtrar_datas(self):
@@ -745,7 +746,7 @@ if st.session_state['acesso_permitido']:
         class TabelaAnaliticaProjecoes:
             def __init__(self, df_empresa):
                 self.df_empresa = df_empresa
-                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], format='%m/%d/%Y')
+                self.df_empresa['DATA ATUALIZACAO'] = pd.to_datetime(self.df_empresa['DATA ATUALIZACAO'], errors='coerce')
                 self.variaveis = [
                     "Lucro líquido ajustado", "Receita líquida", "EBITDA ajustado", "Dividendos", "% Portfolio"
                 ]  # Adicione mais variáveis se necessário
