@@ -288,7 +288,7 @@ if st.session_state['acesso_permitido']:
                                 coluna
                             ].values[0].round(1)
                         except IndexError:
-                            score_cards[coluna] = "&nbsp;"
+                            score_cards[coluna] = ""
             
                     df_score = pd.concat([df_score, pd.DataFrame([score_cards])], ignore_index=True)
                 df_score = df_score.rename(columns={'Negocios': 'Business', 'People': 'Price'})
