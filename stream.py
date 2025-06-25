@@ -171,10 +171,10 @@ if st.session_state['acesso_permitido']:
                 df_portfolio['% Portfólio'] = pd.to_numeric(df_portfolio['% Portfólio'], errors='coerce').fillna(0)
                 df_portfolio = df_portfolio.sort_values(by='% Portfólio', ascending=False).reset_index(drop=True)
                 # Formatando os números
+                df_portfolio = df_portfolio[df_portfolio["% Portfólio"] != 0]
                 df_portfolio['% Portfólio'] = df_portfolio['% Portfólio'].apply(lambda x: f"{x * 100:.1f}%")
                 df_portfolio['Mkt cap'] = pd.to_numeric(df_portfolio['Mkt cap'], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}")
                 df_portfolio = df_portfolio.rename(columns={"% Portfólio": "%"})
-                df_portfolio = df_portfolio[df_portfolio["%"] != 0]
                 return df_portfolio
         
             def criar_tabela_lucro(self, df_filtrado, data_selecionada,empresas_ordenadas):
