@@ -667,6 +667,7 @@ if st.session_state['acesso_permitido']:
                 df_portfolio = df_filtrado[['Ticker', '% Portfolio']].drop_duplicates().reset_index(drop=True)   
                 df_portfolio['% Portfolio'] = pd.to_numeric(df_portfolio['% Portfolio'], errors='coerce').fillna(0)
                 df_portfolio = df_portfolio[df_portfolio['% Portfolio'] != 0]
+                df_portfolio = df_filtrado[~(df_filtrado['Ticker'] == 'CPLE3')]
                 df_portfolio = df_portfolio.sort_values(by='% Portfolio', ascending=False).reset_index(drop=True)
                 df_portfolio['%'] = df_portfolio['% Portfolio'].apply(lambda x: f"{x * 100:.1f}%")
                 df_portfolio = df_portfolio.rename(columns={'Ticker': 'Company'})
