@@ -1221,21 +1221,21 @@ if st.session_state['acesso_permitido']:
                         datas_disponiveis = sorted(pd.to_datetime(datas_disponiveis))
                         # Caixa de seleção "De" (remover a última data)
                         data_de = st.date_input(
-                                "From:",
-                                value=pd.to_datetime(datas_disponiveis[:-1][-1]),
-                                min_value=pd.to_datetime(datas_disponiveis[-1]),
-                                max_value=pd.to_datetime(datas_disponiveis[-2]),
-                                key="data_de_range"
-                            )
+                            "From:",
+                            value=datas_disponiveis[0],
+                            min_value=datas_disponiveis[0],
+                            max_value=datas_disponiveis[-1],
+                            key="data_de_range"
+                        )
                     with col5:
                         # Caixa de seleção "Até" (remover a primeira data)
                         data_ate = st.date_input(
                             "To:",
-                            value=pd.to_datetime(datas_disponiveis[1]),
-                            min_value=pd.to_datetime(datas_disponiveis[1]),
-                            max_value=pd.to_datetime(datas_disponiveis[0]),
+                            value=datas_disponiveis[-1],
+                            min_value=datas_disponiveis[0],
+                            max_value=datas_disponiveis[-1],
                             key="data_ate_range"
-                            )
+                        )
                                 
                     # Só atualiza o gráfico quando todas as seleções estão preenchidas
                     if ano_selecionado and data_de and data_ate:
