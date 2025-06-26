@@ -699,7 +699,7 @@ if st.session_state['acesso_permitido']:
                             valor = str(row[col]).replace("%", "").replace(",", ".").strip()
                             try:
                                 valor_float = float(valor)
-                                if abs(valor_float) >= 0.1:
+                                if abs(valor_float) >= 10.0:
                                     cell_color = "background-color: yellow;"
                             except ValueError:
                                 pass  # ignora células que não são números
