@@ -235,24 +235,6 @@ if st.session_state['acesso_permitido']:
                     df_lucro_ap[ano] = pd.to_numeric(df_lucro_ap[ano], errors='coerce').fillna(0).apply(lambda x: f"{x:,.0f}" if not pd.isna(x) else 'nan')
                 return df_lucro, df_lucro_ap
         
-            # def calcular_earnings_growth(self, df_lucro, anos):
-            #     df_growth = pd.DataFrame(columns=['Empresa'] + anos[1:])
-            #     for _, row in df_lucro.iterrows():
-            #         empresa = row['Empresa']
-            #         crescimento = {'Empresa': empresa}
-            #         for i in range(1, len(anos)):
-            #             if row[anos[i - 1]] != 'nan' and row[anos[i]] != 'nan':
-            #                 try:
-            #                     crescimento[anos[i]] = (float(row[anos[i]].replace(',', '')) / float(row[anos[i - 1]].replace(',', '')) - 1) * 100
-            #                 except ValueError:
-            #                     crescimento[anos[i]] = 'nan'
-            #             else:
-            #                 crescimento[anos[i]] = 'nan'
-            #         df_growth = df_growth.append(crescimento, ignore_index=True)
-            #     for ano in anos[1:]:
-            #         df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if x != 'nan' else 'nan')
-            #     return df_growth
-
             def calcular_earnings_growth(self, df_lucro, anos):
                 df_growth = pd.DataFrame(columns=['Empresa'] + anos[1:])
                 
@@ -279,6 +261,7 @@ if st.session_state['acesso_permitido']:
                     df_growth[ano] = df_growth[ano].apply(lambda x: f"{x:.1f}%" if pd.notna(x) else 'nan')
                 
                 return df_growth
+                
             def df_evebtda(self, df_filtrado, data_selecionada, empresas_ordenadas):
                 ano_atual = pd.to_datetime(data_selecionada).year
                 anos = [ano_atual + i for i in range(0, 2)]           
@@ -320,10 +303,16 @@ if st.session_state['acesso_permitido']:
                                 (df_filtrado['Ticker'] == empresa) & 
                                 (df_filtrado['Ano Referência'] == ano), 
                                 'P/E Calculado'
-                            ].values[0].round(1)
-                            pe_cal[ano] = f"{valor}x"
-                        except IndexError:
-                            pe_cal[ano] = ""  
+                            ].values[0]
+                            
+                            # Verifica se valor é numérico e não nulo
+                            if pd.notna(valor) and isinstance(valor, (int, float)) and valor > 0:
+                                pe_cal[ano] = f"{round(valor, 1)}x"
+                            else:
+                                pe_cal[ano] = "&nbsp;"  # espaço invisível no HTML
+            
+                        except (IndexError, ValueError, TypeError):
+                            pe_cal[ano] = "&nbsp;"  # mantém consistência com EV/EBITDA
             
                     df_pe_calc = pd.concat([df_pe_calc, pd.DataFrame([pe_cal])], ignore_index=True)
             
