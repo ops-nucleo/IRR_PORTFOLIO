@@ -47,32 +47,24 @@ if st.session_state['acesso_permitido']:
                 unsafe_allow_html=True
             )
             st.markdown("""
-                <style>
-                    /* Estilo para o rótulo */
-                    label[for="date_input_data"], label[for="data_de"], label[for="data_ate"] {
-                        font-weight: bold;
-                        font-size: 16px;
-                        font-family: Calibri, sans-serif;
-                    }
-            
-                    /* Estilo para a borda externa do calendário */
-                    div[data-testid="stDateInput"] {
-                        border: 2px solid rgb(0, 32, 96);  /* Azul Nucleo Capital */
-                        border-radius: 5px;
-                        padding: 5px;
-                        background-color: rgb(189, 215, 238); /* Azul bebê */
-                    }
-            
-                    /* Estilo para o campo de input interno */
-                    div[data-testid="stDateInput"] input {
-                        font-weight: bold;
-                        font-size: 16px;
-                        color: black;
-                        font-family: Calibri, sans-serif;
-                        background-color: transparent;
-                    }
-                </style>
-            """, unsafe_allow_html=True)
+                            <style>
+                            /* Estilo para o rótulo do calendário */
+                            label[for="date_input_data"] {
+                                font-weight: bold;
+                                font-size: 16px;
+                            }
+                        
+                            /* Estilo para o campo do calendário */
+                            div[data-testid="stDateInput"] input {
+                                border: 2px solid #1F77B4;  /* Mesma cor da borda azul que você usa */
+                                border-radius: 5px;
+                                padding: 8px;
+                                font-weight: bold;
+                                font-size: 16px;
+                                color: black;
+                            }
+                            </style>
+                        """, unsafe_allow_html=True)
         # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
     
         def get_image_as_base64(path):
