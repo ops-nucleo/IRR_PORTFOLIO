@@ -584,7 +584,11 @@ if st.session_state['acesso_permitido']:
 
                 colunas_exibir = ["Company", "Price", "YTD", "3-month return", "6-month return"]
                 df_final = df_final[colunas_exibir]
-
+                
+                # --- Ordenar pela coluna YTD (antes da formatação) ---
+                df_final["YTD"] = pd.to_numeric(df_final["YTD"], errors='coerce')
+                df_final = df_final.sort_values("YTD", ascending=False)
+                
                 # --- Formatação numérica ---
                 for col in ["Price", "YTD", "3-month return", "6-month return"]:
                     df_final[col] = pd.to_numeric(df_final[col], errors='coerce')
