@@ -946,7 +946,13 @@ if st.session_state['acesso_permitido']:
         with col20:
             tabela = TabelaPortfolioLucro(df_empresa)
             datas_disponiveis = tabela.filtrar_datas()
-            data_selecionada = st.selectbox('Select update date:', datas_disponiveis, key="selectbox_data")
+            
+            data_min = pd.to_datetime(tabela.df_empresa['DATA ATUALIZACAO'].min())
+            data_max = pd.to_datetime(tabela.df_empresa['DATA ATUALIZACAO'].max())
+            
+            data_selecionada = st.date_input('Select update date:',value=data_max,
+                min_value=data_min,max_value=data_max,format="DD/MM/YYYY",
+                key="date_input_data")
 
         
         with co21:
