@@ -48,35 +48,54 @@ if st.session_state['acesso_permitido']:
             )
             st.markdown("""
                 <style>
-                /* Estilo do rótulo */
-                label[for="date_input_data"],
-                label[for="date_input_data_de"],
-                label[for="date_input_data_ate"] {
+                /* Rótulos (título acima dos inputs) */
+                div[data-testid="stDateInput"] label {
                     font-weight: bold;
                     font-size: 16px;
                     font-family: Calibri, sans-serif;
                 }
             
-                /* Estilo do campo interno do calendário */
-                div[data-testid="stDateInput"] input {
-                    background-color: rgb(189, 215, 238) !important; /* Azul claro Nucleo */
+                /* Container inteiro do calendário */
+                div[data-testid="stDateInput"] {
+                    background-color: rgb(189, 215, 238) !important; /* Fundo azul claro */
                     border: 2px solid rgb(0, 32, 96) !important;     /* Azul escuro Nucleo */
                     border-radius: 5px;
-                    padding: 8px;
+                    padding: 5px;
+                    font-family: Calibri, sans-serif;
+                }
+            
+                /* Campo interno de texto */
+                div[data-testid="stDateInput"] input {
                     font-weight: bold;
                     font-size: 16px;
                     color: black;
                     font-family: Calibri, sans-serif;
                 }
             
-                /* Borda da selectbox */
+                /* Estilo visual das selectbox (já estava bom, mas unificado abaixo) */
+                div[data-baseweb="select"] {
+                    background-color: rgb(189, 215, 238) !important;
+                    border-radius: 5px;
+                    padding: 5px;
+                    font-family: Calibri, sans-serif !important;
+                }
+            
                 div[data-baseweb="select"] > div {
-                    border: 2px solid rgb(0, 32, 96) !important; /* Azul Nucleo Capital */
+                    border: 2px solid rgb(0, 32, 96) !important;
+                }
+            
+                div[data-baseweb="select"] div {
+                    color: black !important;
+                    font-weight: bold;
+                    font-family: Calibri, sans-serif !important;
+                }
+            
+                div[data-baseweb="popover"] {
+                    background-color: rgb(189, 215, 238) !important;
                     font-family: Calibri, sans-serif !important;
                 }
                 </style>
             """, unsafe_allow_html=True)
-
         # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
     
         def get_image_as_base64(path):
