@@ -1240,8 +1240,8 @@ if st.session_state['acesso_permitido']:
                     # Só atualiza o gráfico quando todas as seleções estão preenchidas
                     if ano_selecionado and data_de and data_ate:
                         # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
-                        data_de = pd.to_datetime(data_de, format='%d/%m/%Y')
-                        data_ate = pd.to_datetime(data_ate, format='%d/%m/%Y')
+                        data_de = pd.to_datetime(data_de)
+                        data_ate = pd.to_datetime(data_ate)
             
                         # Gerar gráfico e obter DataFrame filtrado com a opção de comparação
                         fig, df_filtrado, df_completa = analysis.gerar_grafico(empresa_selecionada, variavel_selecionada, ano_selecionado, data_de, data_ate)
