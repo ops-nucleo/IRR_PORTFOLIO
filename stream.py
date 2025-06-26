@@ -46,7 +46,25 @@ if st.session_state['acesso_permitido']:
                 """,
                 unsafe_allow_html=True
             )
-        
+            st.markdown("""
+                <style>
+                /* Estilo para o rótulo do calendário */
+                label[for="date_input_data"] {
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+            
+                /* Estilo para o campo do calendário */
+                div[data-testid="stDateInput"] input {
+                    border: 2px solid #1F77B4;  /* Mesma cor da borda azul que você usa */
+                    border-radius: 5px;
+                    padding: 8px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    color: black;
+                }
+                </style>
+            """, unsafe_allow_html=True)
         # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
     
         def get_image_as_base64(path):
