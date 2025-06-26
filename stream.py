@@ -1025,7 +1025,7 @@ if st.session_state['acesso_permitido']:
             
             def filtrar_anos(self, empresa, variavel):
                 df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt[variavel].notna())]
-                return df_empresa['Ano Referência'].dropna().unique()
+                return sorted(df_empresa['Ano Referência'].dropna().unique().astype(int), reverse=True)
             
             def filtrar_datas(self, empresa, variavel, ano):
                 df_empresa = self.df_mkt[(self.df_mkt['Ticker'] == empresa) & (self.df_mkt['Ano Referência'] == ano) &(self.df_mkt[variavel].notna())]
