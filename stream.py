@@ -1218,8 +1218,7 @@ if st.session_state['acesso_permitido']:
                     # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
                     with col4:
                         # Aqui convertemos as datas para exibição em formato correto
-                        datas_formatadas = pd.to_datetime(datas_disponiveis)
-            
+                        datas_disponiveis = sorted(pd.to_datetime(datas_disponiveis))
                         # Caixa de seleção "De" (remover a última data)
                         data_de = st.date_input(
                                 "From:",
