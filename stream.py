@@ -57,7 +57,7 @@ if st.session_state['acesso_permitido']:
                     font-family: Calibri, sans-serif;
                 }
             
-                /* Estilo APENAS do campo interno do calendário */
+                /* Estilo do campo interno do calendário */
                 div[data-testid="stDateInput"] input {
                     background-color: rgb(189, 215, 238) !important; /* Azul claro Nucleo */
                     border: 2px solid rgb(0, 32, 96) !important;     /* Azul escuro Nucleo */
@@ -67,6 +67,12 @@ if st.session_state['acesso_permitido']:
                     font-size: 16px;
                     color: black;
                     font-family: Calibri, sans-serif;
+                }
+            
+                /* Borda da selectbox */
+                div[data-baseweb="select"] > div {
+                    border: 2px solid rgb(0, 32, 96) !important; /* Azul Nucleo Capital */
+                    font-family: Calibri, sans-serif !important;
                 }
                 </style>
             """, unsafe_allow_html=True)
