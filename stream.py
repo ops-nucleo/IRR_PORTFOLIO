@@ -1218,20 +1218,26 @@ if st.session_state['acesso_permitido']:
                     # Agora, colocar "De" e "Até" lado a lado ocupando a metade do espaço
                     with col4:
                         # Aqui convertemos as datas para exibição em formato correto
-                        datas_formatadas = pd.to_datetime(datas_disponiveis).strftime('%d/%m/%Y')
+                        datas_formatadas = pd.to_datetime(datas_disponiveis)
             
                         # Caixa de seleção "De" (remover a última data)
-                        data_de = st.selectbox('From:', datas_formatadas[:-1], key='data_de')  # Remover a última data da lista
-            
+                        data_de = st.date_input(
+                                "From:",
+                                value=pd.to_datetime(datas_disponiveis[:-1][-1]),
+                                min_value=pd.to_datetime(datas_disponiveis[-1]),
+                                max_value=pd.to_datetime(datas_disponiveis[-2]),
+                                key="data_de_range"
+                            )
                     with col5:
                         # Caixa de seleção "Até" (remover a primeira data)
-                            data_ate = st.selectbox(
-                            'To:',
-                            datas_formatadas[1:],  # Remover a primeira data da lista
-                            key='data_ate',
-                            index=len(datas_formatadas[1:]) - 1  # Última data da lista como default
-                        )
-            
+                        data_ate = st.date_input(
+                            "To:",
+                            value=pd.to_datetime(datas_disponiveis[1]),
+                            min_value=pd.to_datetime(datas_disponiveis[1]),
+                            max_value=pd.to_datetime(datas_disponiveis[0]),
+                            key="data_ate_range"
+                            )
+                                
                     # Só atualiza o gráfico quando todas as seleções estão preenchidas
                     if ano_selecionado and data_de and data_ate:
                         # Converte as strings selecionadas de volta para datetime antes de usar no gráfico
