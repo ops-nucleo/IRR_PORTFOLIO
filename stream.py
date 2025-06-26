@@ -1225,6 +1225,7 @@ if st.session_state['acesso_permitido']:
                             value=datas_disponiveis[0],
                             min_value=datas_disponiveis[0],
                             max_value=datas_disponiveis[-1],
+                            format="DD/MM/YYYY",
                             key="data_de_range"
                         )
                     with col5:
@@ -1234,6 +1235,7 @@ if st.session_state['acesso_permitido']:
                             value=datas_disponiveis[-1],
                             min_value=datas_disponiveis[0],
                             max_value=datas_disponiveis[-1],
+                            format="DD/MM/YYYY",
                             key="data_ate_range"
                         )
                                 
