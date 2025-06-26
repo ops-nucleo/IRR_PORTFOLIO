@@ -693,6 +693,17 @@ if st.session_state['acesso_permitido']:
                     bg_color = 'rgb(191, 191, 191)' if i % 2 == 0 else 'white'
                     html += f'<tr style="background-color: {bg_color}; color: black;">'
                     for col in df.columns:
+                        cell_color = ""
+                    
+                        # Verifica se é a tabela "Nucleo VS Consensus" e tenta extrair valor percentual
+                        if titulo == "Nucleo VS Consensus":
+                            valor = str(row[col]).replace("%", "").replace(",", ".").strip()
+                            try:
+                                valor_float = float(valor)
+                                if abs(valor_float) >= 10.0:
+                                    cell_color = "background-color: yellow;"
+                            except ValueError:
+                                pass  # ignora células que não são números
                         html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{row[col]}</td>'
                     html += '</tr>'
                 html += '</tbody></table>'
