@@ -179,7 +179,7 @@ if st.session_state['acesso_permitido']:
         
             def criar_tabela_lucro(self, df_filtrado, data_selecionada,empresas_ordenadas):
                 # Segunda tabela: "Lucro" (mostra os 4 anos a partir da data filtrada)
-                ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
+                ano_inicial = pd.to_datetime(data_selecionada).year
                 ano_inicial -= 1
                 anos = [ano_inicial + i for i in range(4)]
                     
@@ -535,7 +535,7 @@ if st.session_state['acesso_permitido']:
                 return datas_formatadas
         
             def filtrar_por_data(self, data_selecionada):
-                data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+                data_selecionada = pd.to_datetime(data_selecionada)
                 df_filtrado = self.df_empresa[self.df_empresa['date'] == data_selecionada]
                 return df_filtrado
 
@@ -614,7 +614,7 @@ if st.session_state['acesso_permitido']:
                 return datas_formatadas
         
             def filtrar_por_data(self, data_selecionada):
-                data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+                data_selecionada = pd.to_datetime(data_selecionada)
                 df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
                 return df_filtrado
         
@@ -635,7 +635,7 @@ if st.session_state['acesso_permitido']:
                 return df_portfolio
         
             def criar_lucro_nucleo(self, df_filtrado, data_selecionada,empresas_ordenadas):
-                ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
+                ano_inicial = pd.to_datetime(data_selecionada).year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
                 for empresa in empresas_ordenadas:
@@ -653,7 +653,7 @@ if st.session_state['acesso_permitido']:
                 return df_lucro, anos
         
             def criar_lucro_consenso(self, df_filtrado, data_selecionada,empresas_ordenadas):
-                ano_inicial = pd.to_datetime(data_selecionada, format='%d/%m/%Y').year
+                ano_inicial = pd.to_datetime(data_selecionada).year
                 anos = [ano_inicial + i for i in range(2)]
                 df_lucro = pd.DataFrame(columns=['Empresa'] + anos)
                 for empresa in empresas_ordenadas:
@@ -772,7 +772,7 @@ if st.session_state['acesso_permitido']:
                 return pd.to_datetime(datas).strftime('%d/%m/%Y')
             
             def obter_tabela_projecoes(self, data_selecionada, variavel):
-                data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+                data_selecionada = pd.to_datetime(data_selecionada)
                 datas_disponiveis = np.sort(self.df_empresa['DATA ATUALIZACAO'].unique())[::-1]
                 
                 quintas = []
