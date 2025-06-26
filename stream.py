@@ -158,7 +158,7 @@ if st.session_state['acesso_permitido']:
         
             def filtrar_por_data(self, data_selecionada):
                 # Converte a data do formato brasileiro para datetime antes de filtrar
-                data_selecionada = pd.to_datetime(data_selecionada, format='%d/%m/%Y')
+                data_selecionada = pd.to_datetime(data_selecionada)
                 df_filtrado = self.df_empresa[self.df_empresa['DATA ATUALIZACAO'] == data_selecionada]
                 return df_filtrado
         
