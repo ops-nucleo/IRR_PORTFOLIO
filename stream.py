@@ -703,7 +703,7 @@ if st.session_state['acesso_permitido']:
                                     cell_color = "background-color: yellow;"
                             except ValueError:
                                 pass  # ignora células que não são números
-                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{row[col]}</td>'
+                        html += f'<td style="border: 1px solid #ddd; padding: 8px; text-align: center; {cell_color}">{row[col]}</td>'
                     html += '</tr>'
                 html += '</tbody></table>'
                 return html
