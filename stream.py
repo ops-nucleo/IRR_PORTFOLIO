@@ -501,7 +501,8 @@ if st.session_state['acesso_permitido']:
                 with col6:
                     df_pee = self.df_pe(df_filtrado, data_selecionada, empresas_ordenadas)
                     df_pee2 = df_pee.copy()
-                    df_pee2 = df_pee2.drop(columns=['Empresa'])
+                    if 'Empresa' in df_pee2.columns:
+                        df_pee2 = df_pee2.drop(columns=['Empresa'])
                     html_pee = self.gerar_html_tabela(df_pee2, "Exit P/E")
                     st.markdown(html_pee, unsafe_allow_html=True)
                     
