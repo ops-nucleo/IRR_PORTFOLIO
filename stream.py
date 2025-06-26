@@ -48,19 +48,19 @@ if st.session_state['acesso_permitido']:
             )
             st.markdown("""
                 <style>
-                /* Estilo para o rótulo do calendário */
+                /* Estilo do rótulo */
                 label[for="date_input_data"],
-                label[for="data_de"],
-                label[for="data_ate"] {
+                label[for="date_input_data_de"],
+                label[for="date_input_data_ate"] {
                     font-weight: bold;
                     font-size: 16px;
                     font-family: Calibri, sans-serif;
                 }
             
-                /* Estilo apenas para o input do calendário */
+                /* Estilo APENAS do campo interno do calendário */
                 div[data-testid="stDateInput"] input {
-                    background-color: rgb(189, 215, 238); /* Azul claro no input */
-                    border: 2px solid rgb(0, 32, 96);  /* Azul Nucleo Capital */
+                    background-color: rgb(189, 215, 238) !important; /* Azul claro Nucleo */
+                    border: 2px solid rgb(0, 32, 96) !important;     /* Azul escuro Nucleo */
                     border-radius: 5px;
                     padding: 8px;
                     font-weight: bold;
@@ -70,6 +70,7 @@ if st.session_state['acesso_permitido']:
                 }
                 </style>
             """, unsafe_allow_html=True)
+
         # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
     
         def get_image_as_base64(path):
