@@ -57,28 +57,19 @@ if st.session_state['acesso_permitido']:
                     font-family: Calibri, sans-serif;
                 }
             
-                /* Estilo para a caixa do calendário (como o selectbox) */
-                div[data-testid="stDateInput"] {
-                    background-color: rgb(189, 215, 238); /* Fundo azul claro */
-                    border-radius: 5px;
-                    padding: 5px;
-                    font-family: Calibri, sans-serif;
-                }
-            
-                /* Estilo para o campo de entrada do calendário */
+                /* Estilo apenas para o input do calendário */
                 div[data-testid="stDateInput"] input {
-                    border: 2px solid #1F77B4;  /* Azul da borda */
+                    background-color: rgb(189, 215, 238); /* Azul claro no input */
+                    border: 2px solid rgb(0, 32, 96);  /* Azul Nucleo Capital */
                     border-radius: 5px;
                     padding: 8px;
                     font-weight: bold;
                     font-size: 16px;
                     color: black;
                     font-family: Calibri, sans-serif;
-                    background-color: transparent;
                 }
                 </style>
             """, unsafe_allow_html=True)
-
         # Converter a imagem para Base64 para que possa ser incluída diretamente no CSS
     
         def get_image_as_base64(path):
